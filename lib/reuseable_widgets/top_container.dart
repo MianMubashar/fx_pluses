@@ -18,16 +18,7 @@ class TopContainer extends StatelessWidget {
       height: size.height * 0.12,
       width: size.width,
       decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color(0xFF8F38FF),
-              Color(0xFF5861FF),
-            ],
-            begin: FractionalOffset(0.0, 0.0),
-            end: FractionalOffset(0.0, 1.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp,
-          ),
+          gradient: gradient,
           borderRadius: BorderRadius.circular(15)),
       child: Container(
         padding: EdgeInsets.only(left: 20, right: 20),

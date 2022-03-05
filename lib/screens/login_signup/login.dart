@@ -1,13 +1,18 @@
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fx_pluses/constants.dart';
+import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/top_container.dart';
-import 'package:fx_pluses/screens/login_signup/create_account/create_account.dart';
-import 'package:fx_pluses/screens/login_signup/create_account/signup.dart';
+import 'package:fx_pluses/screens/login_signup/signup.dart';
+import 'package:provider/provider.dart';
+
 
 class Login extends StatefulWidget {
+  static final String id='Login_Screen';
   const Login({Key? key}) : super(key: key);
 
   @override
@@ -16,6 +21,21 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   bool obscure = true;
+  String email='';
+  String password='';
+  String deviceToken='';
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getDeviceToken();
+  }
+
+  getDeviceToken() async {
+    deviceToken = (await FirebaseMessaging.instance.getToken())!;
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -33,7 +53,7 @@ class _LoginState extends State<Login> {
                 size: size,
                 onPress: () {
                   print('Create an account clicked');
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (contet) => Signup(),
@@ -62,6 +82,9 @@ class _LoginState extends State<Login> {
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(20),
                       )),
+                  onChanged: (value){
+                    email=value;
+                  },
                 ),
               ),
               const Text(
@@ -95,6 +118,9 @@ class _LoginState extends State<Login> {
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(20),
                       )),
+                  onChanged: (value){
+                    password=value;
+                  },
                 ),
               ),
               InkWell(
@@ -116,7 +142,28 @@ class _LoginState extends State<Login> {
               SizedBox(
                 height: size.height * 0.13,
               ),
-              MainButton(text: 'Log in', onPress: () {})
+              MainButton(text: 'Log in', onPress: () {
+                print('login clicked');
+                if(email==''){
+                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter email');
+                }else{
+                  if(password==''){
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter password');
+                  }else{
+                    final bool isValid = EmailValidator.validate(email);
+                    if(isValid){
+                      print('isValid $isValid');
+                      deviceToken == '' ? const CircularProgressIndicator(
+                        color: newColor,
+                      ): Provider.of<ApiDataProvider>(context,listen: false).loginRequest(context, email, password, deviceToken);
+                    }else{
+                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid email address');
+                    }
+
+                  }
+                }
+
+              })
             ],
           ),
         ),

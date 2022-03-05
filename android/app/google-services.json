@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "130219934275",
+    "project_id": "fx-pluses",
+    "storage_bucket": "fx-pluses.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130219934275:android:e81e55867c280ee970caf6",
+        "android_client_info": {
+          "package_name": "com.app.fxpluses.fx_pluses"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130219934275-6hrdink2rk09h2g3jjmfono5eqccfdfe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.fxpluses.fx_pluses",
+            "certificate_hash": "bfdcda9eccf8d36efe3031db3f727565668446ba"
+          }
+        },
+        {
+          "client_id": "130219934275-m1hmumem70pss1c6299qn584qlsr7jfk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4AqT7cB5Rn6r3OtIemgEay64yLB9peyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130219934275-m1hmumem70pss1c6299qn584qlsr7jfk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

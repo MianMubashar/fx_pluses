@@ -1,16 +1,49 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:fx_pluses/constants.dart';
+import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:provider/provider.dart';
 
 class OTP extends StatefulWidget {
-  const OTP({Key? key}) : super(key: key);
+  static final String id='OTP_Screen';
+  String verificationIdRecieved;
+  OTP({required this.verificationIdRecieved});
 
   @override
   _OTPState createState() => _OTPState();
 }
 
 class _OTPState extends State<OTP> {
+
+  String smsCode='';
+
+  verifyOtpCode() async{
+    if(widget.verificationIdRecieved==''){
+      print('verification id is null');
+    }else{
+      PhoneAuthCredential credential=PhoneAuthProvider.credential(verificationId: widget.verificationIdRecieved, smsCode: smsCode);
+      print('credentials are ${credential.smsCode}');
+      await FirebaseAuth.instance.signInWithCredential(credential).then((value) async{
+        await Provider.of<ApiDataProvider>(context, listen: false).registerRequest(
+          context,
+          Provider.of<ApiDataProvider>(context, listen: false).firstName,
+          Provider.of<ApiDataProvider>(context, listen: false).lastName,
+          Provider.of<ApiDataProvider>(context, listen: false).email,
+          Provider.of<ApiDataProvider>(context, listen: false).password,
+          Provider.of<ApiDataProvider>(context, listen: false).contact,
+          Provider.of<ApiDataProvider>(context, listen: false).countryCode,
+          Provider.of<ApiDataProvider>(context, listen: false).userId,
+          Provider.of<ApiDataProvider>(context, listen: false).roleId,
+          Provider.of<ApiDataProvider>(context, listen: false).deviceToken,
+        );
+
+      });
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -45,34 +78,41 @@ class _OTPState extends State<OTP> {
 
                 Center(
                   child: OtpTextField(
-                    numberOfFields: 5,
+                    numberOfFields: 6,
                     borderColor: Color(0xFF512DA8),
                     //set to true to show as box or false to show as dash
                     showFieldAsBox: true,
                     margin: EdgeInsets.only(bottom: 40,left: 10),
                     borderRadius: BorderRadius.circular(10),
 
-                    fieldWidth: size.width * 0.14,
+                    fieldWidth: size.width * 0.1,
                     //runs when a code is typed in
                     onCodeChanged: (String code) {
                       //handle validation or checks here
                     },
                     //runs when every textfield is filled
                     onSubmit: (String verificationCode){
-                      showDialog(
-                          context: context,
-                          builder: (context){
-                            return AlertDialog(
-                              title: Text("Verification Code"),
-                              content: Text('Code entered is $verificationCode'),
-                            );
-                          }
-                      );
+                      smsCode=verificationCode;
+                      // showDialog(
+                      //     context: context,
+                      //     builder: (context){
+                      //       return AlertDialog(
+                      //         title: Text("Verification Code"),
+                      //         content: Text('Code entered is $verificationCode'),
+                      //       );
+                      //     }
+                      // );
                     }, // end onSubmit
                   ),
                 ),
 
-                MainButton(text: 'Verify', onPress: (){}),
+                MainButton(text: 'Verify', onPress: () async{
+                  if(smsCode.length < 6){
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid code');
+                  }else{
+                    await verifyOtpCode();
+                  }
+                }),
 
                 SizedBox(height: size.height * 0.07,),
                 Text('Don\'t Recieve the OTP?',style: TextStyle(
@@ -82,6 +122,7 @@ class _OTPState extends State<OTP> {
                 InkWell(
                   onTap: (){
                     print('Resend Code clicked');
+                    Provider.of<ApiDataProvider>(context,listen: false).otpRequest(Provider.of<ApiDataProvider>(context,listen: false).contact, context);
                   },
                   child: Text('Resend Code',style: TextStyle(
                     color: Colors.black,

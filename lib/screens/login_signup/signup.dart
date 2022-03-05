@@ -4,12 +4,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/top_container.dart';
 import 'package:fx_pluses/reuseable_widgets/unordered_list.dart';
-import 'package:fx_pluses/screens/login_signup/create_account/create_account.dart';
+import 'package:fx_pluses/screens/customer/ccreate_account.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
+import 'package:fx_pluses/screens/merchant/mcreate_account.dart';
 
-import '../../../constants.dart';
+import '../../constants.dart';
 
 class Signup extends StatefulWidget {
+  static final String id='CSignup_Screen';
   const Signup({Key? key}) : super(key: key);
 
   @override
@@ -47,7 +49,7 @@ class _SignupState extends State<Signup> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CreateAccount(),
+                        builder: (context) => CCreateAccount(),
                       ),
                     );
                   });
@@ -98,15 +100,15 @@ class _SignupState extends State<Signup> {
               ),
               InkWell(
                 onTap: () {
+                  merchantSelected = !merchantSelected;
                   setState(() {
-                    merchantSelected = !merchantSelected;
                     if (merchantSelected == true) {
                       customerSelected = false;
                     }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => CreateAccount(),
+                        builder: (context) => MCreateAccount(),
                       ),
                     );
                   });

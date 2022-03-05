@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/onboarding_content.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
-import 'package:fx_pluses/screens/login_signup/create_account/create_account.dart';
-import 'package:fx_pluses/screens/login_signup/create_account/signup.dart';
+import 'package:fx_pluses/screens/login_signup/signup.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
+import 'package:fx_pluses/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
+  static final String id='Onboarding_Screen';
   const Home({Key? key}) : super(key: key);
 
   @override
@@ -16,6 +18,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int currentIndex = 0;
+
+  int initScreen=0;
+
+  abc() async{
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    preferences.setInt('initScreen', 1);
+    initScreen=await preferences.getInt('initScreen')!;
+
+    print('bbbbbbbbbbbbbb $initScreen');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    abc();
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

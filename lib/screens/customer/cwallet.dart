@@ -3,12 +3,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fx_pluses/constants.dart';
+import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:fx_pluses/screens/customer/ctransfer_dialog.dart';
+import 'package:fx_pluses/screens/customer/cwallet_to_wallet_transfer.dart';
+import 'package:fx_pluses/screens/customer/cwithdraw.dart';
 import 'package:fx_pluses/screens/customer/money_added_dialog.dart';
+import 'package:fx_pluses/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CWallet extends StatefulWidget {
+  static final String id = 'CWallet_Screen';
   const CWallet({Key? key}) : super(key: key);
 
   @override
@@ -16,16 +24,36 @@ class CWallet extends StatefulWidget {
 }
 
 class _CWalletState extends State<CWallet> {
+  Map<String, dynamic>? paymentInentData;
+  String? balance;
 
-  Map<String , dynamic>? paymentInentData;
-  
+  getData()async{
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    balance=await preferences.getString(SharedPreference.walletKey);
+    await Provider.of<ApiDataProvider>(context,listen: false).setBalance(balance!);
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(size: size,onPress: (){},text: 'Wallet',)),
+          child: appbar(
+            size: size,
+            onPress: () {},
+            text: 'Wallet',
+          )),
       body: Padding(
         padding: EdgeInsets.only(left: 20, right: 20, top: 30),
         child: Column(
@@ -37,16 +65,7 @@ class _CWalletState extends State<CWallet> {
               margin: EdgeInsets.only(bottom: 40),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF8F38FF),
-                    Color(0xFF5861FF),
-                  ],
-                  begin: FractionalOffset(0.0, 0.0),
-                  end: FractionalOffset(0.0, 1.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp,
-                ),
+                gradient: gradient,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,149 +82,171 @@ class _CWalletState extends State<CWallet> {
                             fontWeight: FontWeight.w400),
                         textAlign: TextAlign.start,
                       ),
-                      RichText(text: const TextSpan(
-                          text: '0,000',
-                          style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold
-                          ),
-                          children: [
+                      RichText(
+                          text: TextSpan(
+                              text:  Provider.of<ApiDataProvider>(context,listen: false).balance==null ?'0.00':Provider.of<ApiDataProvider>(context,listen: false).balance,
+                              style: TextStyle(
+                                  color: whiteColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                              children: [
                             TextSpan(
-                                text: 'PKR',
-                                style: TextStyle(
-                                    color: whiteColor,
-                                    fontSize: 10
-                                )
-                            )
-                          ]
-                      )),
+                                text: 'USD',
+                                style:
+                                    TextStyle(color: whiteColor, fontSize: 10))
+                          ])),
                     ],
                   ),
-
                   Row(
                     children: [
                       Flexible(
-                        child: Text('Please add balance to proceed transaction',style: TextStyle(
-                          color: whiteColor,
-                          fontSize: 15
-                        ),maxLines: 2,),
+                        child: Text(
+                          'Please add balance to proceed transaction',
+                          style: TextStyle(color: whiteColor, fontSize: 15),
+                          maxLines: 2,
+                        ),
                       ),
-                      SizedBox(width: 10,),
+                      SizedBox(
+                        width: 10,
+                      ),
                       InkWell(
-                        onTap: (){
+                        onTap: () async{
+                          await makePayment('20', 'USD',size);
                           print('add balance clicked');
                         },
-                        child: Text('Add Balance +',style: TextStyle(
-                          color: whiteColor,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500
-                        ),),
+                        child: Text(
+                          'Add Balance +',
+                          style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500),
+                        ),
                       )
                     ],
                   ),
-
                 ],
               ),
             ),
-            MainButton(text: 'Add Balance +', onPress: (){
-              setState(() {
-                makePayment();
-              });
-
-            },bottomMargin: 30,),
-            MainButton(text: 'Withdraw', onPress: (){},bottomMargin: 30,),
-            MainButton(text: 'Wallet to Wallet Transfer', onPress: (){
-              setState(() {
-                showDialog(context: context, builder: (BuildContext context)=>Dialog(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
-                  child: MoneyAddedDialog(size:size),
-                ));
-              });
-
-            })
-
+            MainButton(
+              text: 'Add Balance +',
+              onPress: () async {
+                await makePayment('20', 'USD',size);
+              },
+              bottomMargin: 30,
+            ),
+            MainButton(
+              text: 'Withdraw',
+              onPress: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CWithdraw()));
+              },
+              bottomMargin: 30,
+            ),
+            MainButton(
+                text: 'Wallet to Wallet Transfer',
+                onPress: () async{
+                  await Provider.of<ApiDataProvider>(context,listen: false).acceptedRequests(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CWalletToWalletTransfer()));
+                })
           ],
         ),
       ),
     );
   }
 
-  Future<void> makePayment() async{
-    try{
-      paymentInentData=await createPaymentIntent('20','USD');
-      Stripe.instance.initPaymentSheet(paymentSheetParameters: SetupPaymentSheetParameters(
+  Future<void> makePayment(String amount, String currency,size) async {
+    try {
+      paymentInentData = await createPaymentIntent(amount, currency);
+      await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
         paymentIntentClientSecret: paymentInentData!['client_secret'],
         applePay: true,
         googlePay: true,
         style: ThemeMode.dark,
         merchantCountryCode: 'US',
-        merchantDisplayName: 'Mubashar'
+              merchantDisplayName: 'FX Pluses'
       ));
 
-      displayPaymentSheet();
-    }catch(e){
-      print('exception ' +e.toString());
+      await displayPaymentSheet(amount,size);
+    } catch (e) {
+      print('exception ' + e.toString());
     }
   }
-  displayPaymentSheet() async {
 
+  displayPaymentSheet(amount,size) async {
     try {
-      await Stripe.instance.presentPaymentSheet(
-          parameters: PresentPaymentSheetParameters(
-            clientSecret: paymentInentData!['client_secret'],
-            confirmPayment: true,
-          )).then((newValue){
-
-
-        print('payment intent'+paymentInentData!['id'].toString());
-        print('payment intent'+paymentInentData!['client_secret'].toString());
-        print('payment intent'+paymentInentData!['amount'].toString());
-        print('payment intent'+paymentInentData.toString());
+      await Stripe.instance.presentPaymentSheet().then((newValue) async {
+        print('payment intent' + paymentInentData!['id'].toString());
+        print('payment intent' + paymentInentData!['client_secret'].toString());
+        print('payment intent' + paymentInentData!['amount'].toString());
+        print('payment intent' + paymentInentData.toString());
         //orderPlaceApi(paymentIntentData!['id'].toString());
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("paid successfully")));
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        String? token = await pref.getString(SharedPreference.bearerTokenKey);
+        String? amount1=await pref.getString(SharedPreference.walletKey);
+        List a=amount1!.split('.');
+        int amount2=int.parse(a[0]);
+        int amount3=int.parse(amount);
+
+        int total=amount2+amount3;
+        balance=total.toString();
+        SharedPreference.saveWalletBalanceSharedPreferences(total.toString());
+        Provider.of<ApiDataProvider>(context,listen: false).setBalance(balance!);
+        setState(() {
+          Provider.of<ApiDataProvider>(context, listen: false)
+              .updateWallet(context, token!, 1, amount, 0,'','');
+          showDialog(context: context, builder: (BuildContext context)=>Dialog(
+
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
+            child: MoneyAddedDialog(size: size,),
+          ));
+
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("paid successfully")));
 
         paymentInentData = null;
-
-      }).onError((error, stackTrace){
+      }).onError((error, stackTrace) {
         print('Exception/DISPLAYPAYMENTSHEET==> $error $stackTrace');
       });
-
-
     } on StripeException catch (e) {
       print('Exception/DISPLAYPAYMENTSHEET==> $e');
       showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            content: Text("Cancelled "),
-          ));
+                content: Text("Cancelled "),
+              ));
     } catch (e) {
       print('$e');
     }
   }
 
-  createPaymentIntent(String amount, String currency) async{
-    try{
-      Map<String,dynamic> body={
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
         'amount': calculateAmount(amount),
         'currency': currency,
         'payment_method_types[]': 'card',
       };
-      var response=await http.post(Uri.parse('https://api.stripe.com/v1/payment_intents'),
-      body: body,
-        headers: {
-          'Authorization': 'Bearer sk_test_51KUTspLzsnFu9r8sIixPxiTZpUpcNv91mp38hvFlCGFbCcj0GqqwNCRPPkeKd3njpOrzE4kQRj7Il9qGeEdIGpiL00barE2kvI',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      );
+      var response = await http.post(
+          Uri.parse('https://api.stripe.com/v1/payment_intents'),
+          body: body,
+          headers: {
+            'Authorization':
+                'Bearer sk_test_51KUTspLzsnFu9r8sIixPxiTZpUpcNv91mp38hvFlCGFbCcj0GqqwNCRPPkeKd3njpOrzE4kQRj7Il9qGeEdIGpiL00barE2kvI',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          });
 
       return jsonDecode(response.body.toString());
-    }catch(e){
-      print('exception ' +e.toString());
+    } catch (e) {
+      print('exception ' + e.toString());
     }
   }
-  calculateAmount(amount){
-    final price= int.parse(amount) * 100;
+
+  calculateAmount(amount) {
+    final price = int.parse(amount) * 100;
     return price.toString();
   }
 }

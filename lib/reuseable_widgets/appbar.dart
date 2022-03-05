@@ -15,7 +15,7 @@ class appbar extends StatelessWidget {
       title: Text(
         text,
         style: TextStyle(
-            color: whiteColor, fontSize: 25, fontWeight: FontWeight.w500),
+            color: whiteColor, fontSize: 23, fontWeight: FontWeight.w600),
       ),
       leading: IconButton(
         icon: Image.asset(
