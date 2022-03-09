@@ -28,7 +28,9 @@ class CInviteFriend2 extends StatelessWidget {
                 height: size.height * 0.08,
                 width: size.width * 0.08,
               ),
-              onPressed: (){},
+              onPressed: (){
+                Navigator.pop(context);
+              },
             ),
             actions: [
               Padding(

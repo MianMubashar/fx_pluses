@@ -91,6 +91,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: InternationalPhoneNumberInput(
+                  countries: ['PK'],
                   //formatInput: true,
                   initialValue: phoneNumber,
                   errorMessage: 'Invalid Phone Nummber',
@@ -312,19 +313,20 @@ class _CCreateAccountState extends State<CCreateAccount> {
                                     await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(5);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setUserId('');
 
-                                    await Provider.of<ApiDataProvider>(
-                                        context, listen: false)
-                                        .registerRequest(
-                                        context,
-                                        firstName,
-                                        lastName,
-                                        email,
-                                        password,
-                                        phoneNumber.toString(),
-                                        countryCode,
-                                        userId,
-                                        5,
-                                        deviceToken);
+                                      await Provider.of<ApiDataProvider>(
+                                          context, listen: false)
+                                          .registerRequest(
+                                          context,
+                                          firstName,
+                                          lastName,
+                                          email,
+                                          password,
+                                          phoneNumber.toString(),
+                                          countryCode,
+                                          userId,
+                                          5,
+                                          deviceToken);
+
                                   }
                                 }
 

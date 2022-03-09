@@ -17,7 +17,7 @@ class _MExchangeRatesState extends State<MExchangeRates> {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(size: size,onPress: (){},text: 'Exchange Rates',)),
+          child: appbar(size: size,onPress: (){},text: 'Exchange Rates',check: true,)),
       body: Padding(
         padding: EdgeInsets.only(left: 15,right: 15,top: 15),
         child: Column(

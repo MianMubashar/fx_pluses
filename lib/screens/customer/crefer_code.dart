@@ -14,7 +14,7 @@ class CReferCode extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(size: size,onPress: (){},text: 'Refer Code',)),
+          child: appbar(size: size,onPress: (){},text: 'Refer Code',check: true,)),
       body: Padding(
         padding: const EdgeInsets.only(left: 15.0,right: 15,top: 24),
         child: Column(

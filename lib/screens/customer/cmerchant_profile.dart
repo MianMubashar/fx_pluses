@@ -15,7 +15,7 @@ class CMerchantProfile extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
-        child: appbar(size: size, onPress: () {}, text: 'John Snow'),
+        child: appbar(size: size, onPress: () {}, text: 'John Snow',check: true,),
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 15.0,right: 15,bottom: 5,top: 15),

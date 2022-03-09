@@ -23,7 +23,9 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(size: size,onPress: (){},text: 'Merchants',)),
+          child: appbar(size: size,onPress: (){
+            Navigator.pop(context);
+          },text: 'Merchants',check: true,)),
       body: Padding(
         padding: const EdgeInsets.only(left: 15,right: 15,top: 20),
         child: Column(
@@ -142,7 +144,8 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                                 showDialog(context: context, builder: (BuildContext context)=>Dialog(
 
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
-                                  child: CTransferDialog(size:size,index:index),
+                                  child: CTransferDialog(size:size,index:index,
+                                    currency_id: Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,),
                                 ));
                               });
                             },

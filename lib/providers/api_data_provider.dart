@@ -8,9 +8,13 @@ import 'package:fx_pluses/model/chat_menu_model.dart';
 import 'package:fx_pluses/model/customer_transaction_history_model.dart';
 import 'package:fx_pluses/model/faqs_model.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
+import 'package:fx_pluses/model/get_currencies_model.dart';
 import 'package:fx_pluses/model/merchant_transaction_requests_model.dart';
 import 'package:fx_pluses/model/show_chat_model.dart';
 import 'package:fx_pluses/model/top_five_merchants.dart';
+import 'package:fx_pluses/model/user_wallets_model.dart';
+import 'package:fx_pluses/reuseable_widgets/customloader.dart';
+import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:fx_pluses/screens/customer/cbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/customer/chome.dart';
 import 'package:fx_pluses/screens/customer/cwallet_to_wallet_transfer.dart';
@@ -19,8 +23,11 @@ import 'package:fx_pluses/screens/merchant/mbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/merchant/mhome.dart';
 import 'package:fx_pluses/screens/merchant/otp.dart';
 import 'package:fx_pluses/shared_preferences.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiDataProvider extends ChangeNotifier {
   static const String BASE_URL =
@@ -38,8 +45,11 @@ class ApiDataProvider extends ChangeNotifier {
   int? _roleId;
   String? _deviceToken;
   String verificationIdRecieved='';
-  bool otp_check=false;
+  bool check=false;
   String? _balance;
+  int? _defaultCurrencyId;
+  String? _defaultCurrencyName;
+  String? _defaultCurrencySymbol;
   List<TopFiveMerchants> top_five_merchant_list=[];
   List<GetCountriesForMerchants> getCountriesForMerchants=[];
   List<String> _countryNameForTopFiveMerchantes=[];
@@ -49,16 +59,47 @@ class ApiDataProvider extends ChangeNotifier {
   List<CustomerTransactionHistoryModel> customerTransactionHistoryList=[];
   List<FaqsModel> faqsList=[];
   List<ShowChatModel> showChatList=[];
+  List<GetCurrenciesModel> getCurrenciesList=[];
+  List<UserWalletsModel> _userWalletModelList=[];
   Map? appSetting;
   Map? aboutUs;
   String? _bearerToken;
   String? _rating;
   String? _default_currency;
   String? _photoUrl;
+  int? _id;
+  int? _selectedCurrencyId;
+  String? _selectedWalletBalance;
+  String? _selectedCurrencySymbol;
 
 
 
 
+  setSelectedCurrencySymbol(String s){
+    _selectedCurrencySymbol=s;
+  }
+  setSelectedWalletBalance(String b){
+    _selectedWalletBalance=b;
+  }
+  setSelectedCurrencyId(int idd){
+    _selectedCurrencyId=idd;
+  }
+  setUserWalletModelList(List<UserWalletsModel> list) {
+    _userWalletModelList.clear();
+    _userWalletModelList=list;
+  }
+  setDefaultCurrencyId(int idd){
+    _defaultCurrencyId=idd;
+  }
+  setdefaultCurrencyName(String n){
+    _defaultCurrencyName=n;
+  }
+  setdefaultCurrencySymbol(String s){
+    _defaultCurrencySymbol=s;
+  }
+  setId(int idd){
+   _id=idd;
+ }
   setBearerToken(String bt){
     _bearerToken=bt;
   }
@@ -114,7 +155,9 @@ class ApiDataProvider extends ChangeNotifier {
   }
   setPhotoUrl(String photo){
     _photoUrl=photo;
+    notifyListeners();
   }
+
 
 
 
@@ -130,6 +173,7 @@ class ApiDataProvider extends ChangeNotifier {
     int roleId,
     String deviceToken,
   ) async {
+    Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'register');
     try {
       var header = {
@@ -161,11 +205,13 @@ class ApiDataProvider extends ChangeNotifier {
       var body = jsonEncode(roleId == 5 ? customerData : merchantData);
 
       var response = await http.post(url, headers: header, body: body);
+
       if (response.statusCode == 200) {
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
         bool status = apiResponse['status'];
         print('body is ${response.body}');
         if (status) {
+          Get.back();
           print('status is $status');
           if (roleId == 5) {
             Navigator.pushReplacement(
@@ -183,18 +229,24 @@ class ApiDataProvider extends ChangeNotifier {
             );
           }
         } else {
+          Get.back();
           print('status is $status');
           showSnackbar(context, apiResponse['error']);
           return false;
         }
       } else {
+        Get.back();
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
-        showSnackbar(context, apiResponse['error']['email'][0].toString());
+        Map<String, dynamic> a =apiResponse['error'];
+        getError(a, context);
         return false;
       }
     } catch (e) {
-      print('try catch error ${e}');
-      showSnackbar(context, e.toString());
+      Get.back();
+      // print('try catch error ${e}');
+      // showSnackbar(context, e.toString());
+      //Map<String, dynamic> apiResponse = jsonDecode(response.body);
+      //getError(apiResponse['error'], context);
     }
 
     return false;
@@ -202,6 +254,9 @@ class ApiDataProvider extends ChangeNotifier {
 
   Future<bool> loginRequest(BuildContext context, String email, String password,
       String device_token) async {
+    // Get.put(Get.dialog(CustomLoader()));
+    Get.dialog(CustomLoader());
+
     Uri url = Uri.parse(SERVER_URL + 'login');
     try {
       var header = {
@@ -224,43 +279,76 @@ class ApiDataProvider extends ChangeNotifier {
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
         bool status = apiResponse['status'];
         if (status) {
-          String user_id=apiResponse['user']['id'].toString();
+          _userWalletModelList.clear();
+
+          int user_id=apiResponse['user']['id'];
           String firstName=apiResponse['user']['first_name'];
           String lastName=apiResponse['user']['last_name'];
           String email=apiResponse['user']['email'];
-          String wallet=apiResponse['user']['wallet'];
+         // String wallet=apiResponse['user']['wallet'];
           int role_id=apiResponse['user']['role_id'];
           String country_code=apiResponse['user']['country_code'];
           String rating=apiResponse['user']['rating'];
           //String? default_currency=apiResponse['user']['default_currency'];
-          String photo_url=apiResponse['user']['profile_photo_url'];
+          String photo_url=apiResponse['user']['profile_photo_path'];
           String token=apiResponse['token'];
+          int currencyId=apiResponse['user']['default_currency_id'];
+          String currencyName=apiResponse['user']['default_currency']['name'];
+          String currencySymbol=apiResponse['user']['default_currency']['symbol'];
+          List<dynamic> user_wallets_data=apiResponse['user']['user_wallet'];
+
+          for(int i=0;i<user_wallets_data.length;i++){
+            if(UserWalletsModel.fromJson(user_wallets_data[i]).currency_id==currencyId){
+              await SharedPreference.saveWalletBalanceSharedPreferences(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+              setBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+              setSelectedWalletBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+            }
+            _userWalletModelList.add(UserWalletsModel.fromJson(user_wallets_data[i]));
+          }
+          final String encodedData=UserWalletsModel.encode(_userWalletModelList);
+
+
+
 
           await SharedPreference.saveUserIdSharedPreferences(user_id);
           await SharedPreference.saveFirstNameSharedPreferences(firstName);
           await SharedPreference.saveLastNameSharedPreferences(lastName);
           await SharedPreference.saveEmailSharedPreferences(email);
-          await SharedPreference.saveWalletBalanceSharedPreferences(wallet);
+          //await SharedPreference.saveWalletBalanceSharedPreferences(wallet);
           await SharedPreference.saveRoleIdSharedPreferences(role_id);
           await SharedPreference.saveCountryCodeSharedPreferences(country_code);
           await SharedPreference.saveRatingSharedPreferences(rating);
-          //await SharedPreference.saveDefaultCurrencySharedPreferences(default_currency!);
           await SharedPreference.savePhotoUrlSharedPreferences(photo_url);
           await SharedPreference.saveBearerTokenSharedPreferences(token);
           await SharedPreference.saveIsLoggedInSharedPreferences(true);
+          await SharedPreference.saveDefaultCurrencyIdSharedPreferences(currencyId);
+          await SharedPreference.saveDefaultCurrencyNameSharedPreferences(currencyName);
+          await SharedPreference.saveDefaultCurrencySymbolSharedPreferences(currencySymbol);
+          await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
 
 
-          setUserId(user_id);
-          setFirstName(firstName);
-          setLastName(lastName);
-          setEmail(email);
-          setBalance(wallet);
-          setRoleId(role_id);
-          setCountryCode(country_code);
-          setRating(rating);
+          await setId(user_id);
+          await setFirstName(firstName);
+          await setLastName(lastName);
+          await setEmail(email);
+          // setBalance(wallet);
+          await setRoleId(role_id);
+          await setCountryCode(country_code);
+          await setRating(rating);
           //setDefaultCurrency(default_currency);
-          setPhotoUrl(photo_url);
-          setBearerToken(token);
+          await setPhotoUrl(photo_url);
+          await setBearerToken(token);
+          await setDefaultCurrencyId(currencyId);
+          await setdefaultCurrencyName(currencyName);
+          await setdefaultCurrencySymbol(currencySymbol);
+          await setSelectedCurrencySymbol(currencySymbol);
+          await setSelectedCurrencyId(currencyId);
+
+
+          await getCountries(context, token);
+          await merchantTransactionRequests(context, token);
+          await getCurrencies(context, token);
+          Get.back();
           if(roleId==5){
             Navigator.pushReplacement(
               context,
@@ -281,10 +369,13 @@ class ApiDataProvider extends ChangeNotifier {
 
           return false;
         } else {
+          Get.back();
+          showSnackbar(context, apiResponse['message']);
           print('status is $status');
           return false;
         }
       } else {
+        Get.back();
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
         print(
             "status code is ${response.statusCode} and ${apiResponse['error']}");
@@ -292,12 +383,102 @@ class ApiDataProvider extends ChangeNotifier {
         return false;
       }
     } catch (e) {
+      Get.back();
       print('try catch error from login ${e}');
       return false;
     }
   }
 
-  Future<bool> updateWallet(BuildContext context, String token,int wallet_action_id,String amount,int to_user_id,String accountNumber,String name) async{
+  Future validateToken(BuildContext context,String token) async{
+    Uri url=Uri.parse(SERVER_URL + 'validate-token');
+    try{
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      };
+      var response= await http.post(url,headers: header);
+      if(response.statusCode ==200){
+        Map<String, dynamic> apiResponse=jsonDecode(response.body);
+        bool status=apiResponse['status'];
+        if(status){
+          _userWalletModelList.clear();
+
+          int user_id=apiResponse['user']['id'];
+          String firstName=apiResponse['user']['first_name'];
+          String lastName=apiResponse['user']['last_name'];
+          String email=apiResponse['user']['email'];
+          // String wallet=apiResponse['user']['wallet'];
+          int role_id=apiResponse['user']['role_id'];
+          String country_code=apiResponse['user']['country_code'];
+          String rating=apiResponse['user']['rating'];
+          //String? default_currency=apiResponse['user']['default_currency'];
+          String photo_url=apiResponse['user']['profile_photo_path'];
+          // String token=apiResponse['token'];
+          int currencyId=apiResponse['user']['default_currency_id'];
+          String currencyName=apiResponse['user']['default_currency']['name'];
+          String currencySymbol=apiResponse['user']['default_currency']['symbol'];
+          List<dynamic> user_wallets_data=apiResponse['user']['user_wallet'];
+
+          for(int i=0;i<user_wallets_data.length;i++){
+            if(UserWalletsModel.fromJson(user_wallets_data[i]).currency_id==currencyId){
+              await SharedPreference.saveWalletBalanceSharedPreferences(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+              setBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+              setSelectedWalletBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+            }
+            _userWalletModelList.add(UserWalletsModel.fromJson(user_wallets_data[i]));
+          }
+          final String encodedData=UserWalletsModel.encode(_userWalletModelList);
+
+
+
+
+          await SharedPreference.saveUserIdSharedPreferences(user_id);
+          await SharedPreference.saveFirstNameSharedPreferences(firstName);
+          await SharedPreference.saveLastNameSharedPreferences(lastName);
+          await SharedPreference.saveEmailSharedPreferences(email);
+          //await SharedPreference.saveWalletBalanceSharedPreferences(wallet);
+          await SharedPreference.saveRoleIdSharedPreferences(role_id);
+          await SharedPreference.saveCountryCodeSharedPreferences(country_code);
+          await SharedPreference.saveRatingSharedPreferences(rating);
+          await SharedPreference.savePhotoUrlSharedPreferences(photo_url);
+          await SharedPreference.saveBearerTokenSharedPreferences(token);
+          await SharedPreference.saveIsLoggedInSharedPreferences(true);
+          await SharedPreference.saveDefaultCurrencyIdSharedPreferences(currencyId);
+          await SharedPreference.saveDefaultCurrencyNameSharedPreferences(currencyName);
+          await SharedPreference.saveDefaultCurrencySymbolSharedPreferences(currencySymbol);
+          await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
+
+          await setId(user_id);
+          await setFirstName(firstName);
+          await setLastName(lastName);
+          await setEmail(email);
+          // setBalance(wallet);
+          await setRoleId(role_id);
+          await setCountryCode(country_code);
+          await setRating(rating);
+          //setDefaultCurrency(default_currency);
+          await setPhotoUrl(photo_url);
+          await setBearerToken(token);
+          await setDefaultCurrencyId(currencyId);
+          await setSelectedCurrencyId(currencyId);
+          await setdefaultCurrencyName(currencyName);
+          await setdefaultCurrencySymbol(currencySymbol);
+          await setSelectedCurrencySymbol(currencySymbol);
+
+
+
+          await getCountries(context, token);
+          await merchantTransactionRequests(context, token);
+          await getCurrencies(context, token);
+
+        }
+      }
+    }catch(e){
+      print('try catch error from validateToken');
+    }
+  }
+
+  Future<bool> updateWallet(BuildContext context, String token,int wallet_action_id,String amount,int to_user_id,String accountNumber,String name,int currencyId) async{
     Uri url=Uri.parse(SERVER_URL + 'update-wallet');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try{
@@ -311,6 +492,7 @@ class ApiDataProvider extends ChangeNotifier {
         Map addBalanceData = {
           'wallet_action_id': wallet_action_id,
           'amount': amount,
+          'currency_id':currencyId
           //'device_token': device_token
         };
         Map withdrawData = {
@@ -318,12 +500,14 @@ class ApiDataProvider extends ChangeNotifier {
           'acc_owner_name': name,
           'acc_number': accountNumber,
           'amount': amount,
+          'currency_id':currencyId
           //'device_token': device_token
         };
         Map walletToWalletTransferData = {
           'wallet_action_id': wallet_action_id,
           'amount': amount,
-          'to_user_id': to_user_id
+          'to_user_id': to_user_id,
+          'currency_id':currencyId
           //'device_token': device_token
         };
         var body = jsonEncode(
@@ -338,6 +522,38 @@ class ApiDataProvider extends ChangeNotifier {
 
           bool status = apiResponse['status'];
           if (status) {
+            SharedPreferences pref = await SharedPreferences.getInstance();
+            String? token = await pref.getString(SharedPreference.bearerTokenKey);
+            String? wallletList=await pref.getString(SharedPreference.userWalletsKey);
+            List<UserWalletsModel> list=UserWalletsModel.decode(wallletList!);
+
+            list.forEach((element) {
+              if(element.currency_id==selectedCurrencyId){
+                String amount1=element.wallet;
+                List a=amount1.split('.');
+                int amount2=int.parse(a[0]);
+                int amount3=int.parse(amount);
+                int total;
+                if(wallet_action_id==1){
+                   total=amount3+amount2;
+                }else{
+                  total=amount2-amount3;
+                }
+
+                print('balance bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb${element.wallet}');
+                element.wallet=total.toString();
+                print('balance ccccccccccccccccccccccccccccccccc ${element.wallet}');
+                //SharedPreference.saveWalletBalanceSharedPreferences(total.toString());
+                setBalance(total.toString());
+
+              }
+              //Provider.of<ApiDataProvider>(context,listen: false).user
+            });
+
+            await setUserWalletModelList(list);
+            final String encodedData=UserWalletsModel.encode(list);
+            await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
+
             showSnackbar(context, apiResponse['message']);
             // Navigator.pop(context);
           } else {
@@ -356,7 +572,7 @@ class ApiDataProvider extends ChangeNotifier {
     return false;
   }
 
-  Future getMercchantes(BuildContext context, String token,String amount,String countryCode) async {
+  Future getMercchantes(BuildContext context, String token,String amount,String countryCode,int currency_id) async {
     Uri url = Uri.parse(SERVER_URL + 'get-merchants');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
@@ -367,6 +583,7 @@ class ApiDataProvider extends ChangeNotifier {
       Map data = {
         'country_code': countryCode,
         'amount': amount,
+        'currency_id':currency_id
         //'device_token': device_token
       };
       var body=jsonEncode(data);
@@ -421,7 +638,43 @@ class ApiDataProvider extends ChangeNotifier {
     }
   }
 
-  Future requestTransaction(BuildContext context, String amount, int id,String token) async {
+  Future getCurrencies(BuildContext context, String token,) async{
+    Uri url = Uri.parse(SERVER_URL + 'get-currencies');
+    //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
+    try {
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token",
+      };
+
+
+      var response=await http.post(url, headers: header);
+      if(response.statusCode==200){
+        print(jsonDecode(response.body));
+        Map<String,dynamic> apiResponse=jsonDecode(response.body);
+        bool status=apiResponse['status'];
+        if(status){
+          getCurrenciesList.clear();
+          List<dynamic> data=apiResponse['currencies'];
+          for( int i=0;i<data.length;i++){
+            getCurrenciesList.add(GetCurrenciesModel.fromJson(data[i]));
+          }
+        }else{
+          showSnackbar(context, 'Status false');
+        }
+
+      }else{
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        showSnackbar(context, apiResponse['message']);
+      }
+    }catch(e){
+      print('try catch error from getCurrencies ${e}');
+    }
+  }
+
+
+  Future requestTransaction(BuildContext context, String amount, int id,String token, String name,int currency_id) async {
+    Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'request-transaction');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
@@ -432,6 +685,7 @@ class ApiDataProvider extends ChangeNotifier {
       Map data = {
         'to_user_id': id,
         'amount': amount,
+        'currency_id':currency_id
         //'device_token': device_token
       };
       var body = jsonEncode(data);
@@ -440,11 +694,23 @@ class ApiDataProvider extends ChangeNotifier {
         Map<String,dynamic> apiResponse=jsonDecode(response.body);
         bool status=apiResponse['status'];
         if(status){
+          Get.back();
           print(apiResponse['message']);
           showSnackbar(context, apiResponse['message']);
+          pushNewScreen(context,
+              screen: ChatScreen(reciever_id: id,name: name,),
+              withNavBar: false,
+              pageTransitionAnimation:
+              PageTransitionAnimation.cupertino);
+        }else{
+          Get.back();
+          getError(apiResponse['error'], context);
         }
+      }else{
+        Get.back();
       }
     }catch(e){
+      Get.back();
       print('Try Catch Error from request transaction $e');
     }
   }
@@ -665,6 +931,7 @@ class ApiDataProvider extends ChangeNotifier {
   }
 
   Future sendMessage(BuildContext context, String token, int recieverid, String message,String filePath,String name) async{
+
     Uri url=Uri.parse(SERVER_URL + "send-message");
     try {
       var header = {
@@ -713,7 +980,7 @@ class ApiDataProvider extends ChangeNotifier {
         bool status=apiResponse['status'];
         if(status){
           String m=apiResponse['message'];
-          showSnackbar(context, m);
+          //showSnackbar(context, m);
         }else{
           print('status is not true from sendMessage');
         }
@@ -724,6 +991,107 @@ class ApiDataProvider extends ChangeNotifier {
       print('try catch error from sendMessage $e');
     }
     }
+
+    Future updateDefaultCurrency(BuildContext context,String token, int currency_id) async {
+    Get.dialog(CustomLoader());
+      Uri url = Uri.parse(SERVER_URL + "update-default-currency");
+      try {
+        var header = {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        };
+        Map bodyData = {
+          "currency_id": currency_id,
+        };
+        var body=jsonEncode(bodyData);
+        var response=await http.post(url, headers: header,body: body);
+        if(response.statusCode==200){
+          Map<String, dynamic> apiResponse=jsonDecode(response.body);
+          bool status=apiResponse['status'];
+          if(status){
+            Get.back();
+            showSnackbar(context, apiResponse['message']);
+          }else{
+            Get.back();
+            print('status is not true from updateDefaultCurrency');
+            showSnackbar(context, 'Something went wrong');
+          }
+        }else{
+          showSnackbar(context, 'Something went wrong');
+        }
+
+      }catch(e){
+        Get.back();
+        print('try catch error from updateDefaultCurrency $e');
+      }
+    }
+  Future updateProfile(BuildContext context, String token, String first_name, String last_name,String filePath) async{
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL + "update-profile");
+    try {
+      var header = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map bodyData={
+        "first_name":first_name,
+        "last_name":last_name
+      };
+
+      var body;
+      var response;
+      if(first_name != ''){
+        body=jsonEncode(bodyData);
+        response=await http.post(url, headers: header,body: body);
+      }else{
+        var request=await http.MultipartRequest('POST',url);
+        request.headers['Authorization']="Bearer $token";
+        //request.fields['receiver_id']='$recieverid';
+        request.files.add(
+            await http.MultipartFile.fromPath(
+                'photo',
+                filePath
+            )
+        );
+
+        response=await request.send();
+        //print(response.body);
+        print(response.statusCode);
+      }
+
+
+      Map<String, dynamic> apiResponse;
+      if(first_name==''){
+        final res = await http.Response.fromStream(response);
+        apiResponse=jsonDecode(res.body);
+      }else{
+        apiResponse=jsonDecode(response.body);
+      }
+      if(response.statusCode==200){
+
+
+        bool status=apiResponse['status'];
+        if(status){
+          Get.back();
+          if(firstName==''){
+            String m=apiResponse['message'];
+            setPhotoUrl(apiResponse['photo_path']);
+            showSnackbar(context, m);
+          }
+
+        }else{
+          Get.back();
+          print('status is not true from sendMessage');
+        }
+      }else{
+        Get.back();
+        print('status from send message ${apiResponse['error']}');
+      }
+    }catch(e){
+      Get.back();
+      print('try catch error from sendMessage $e');
+    }
+  }
 
   Stream<http.Response> chatMenu(BuildContext context,String token) async* {
     var header={
@@ -759,11 +1127,12 @@ class ApiDataProvider extends ChangeNotifier {
 
 
   Future<void> otpRequest(phoneNumber, BuildContext context) async {
-    otp_check=true;
+    Get.dialog(CustomLoader());
     var auth = FirebaseAuth.instance;
     await auth.verifyPhoneNumber(
       phoneNumber: phoneNumber.toString(),
       verificationCompleted: (PhoneAuthCredential credential) async {
+        Get.back();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -797,6 +1166,7 @@ class ApiDataProvider extends ChangeNotifier {
         // });
       },
       verificationFailed: (FirebaseAuthException exception) {
+        Get.back();
         print('Verification Failed ${exception.message}');
         showSnackbar(context, 'Verification Failed');
 
@@ -804,12 +1174,11 @@ class ApiDataProvider extends ChangeNotifier {
       codeSent: (String verificationId, int? resendToken) async{
         verificationIdRecieved = verificationId;
         print('verification id  is $verificationId');
-        otp_check=false;
-
       },
       timeout: Duration(seconds: 60),
       codeAutoRetrievalTimeout: (String verificatioId) {
         verificationIdRecieved = verificatioId;
+        Get.back();
       },
     );
   }
@@ -822,7 +1191,7 @@ class ApiDataProvider extends ChangeNotifier {
         backgroundColor: Colors.orange,
         content: Text(text),
         action: SnackBarAction(
-          label: 'Action',
+          label: '',
           onPressed: () {
             // Code to execute.
           },
@@ -830,6 +1199,22 @@ class ApiDataProvider extends ChangeNotifier {
       ),
     );
   }
+
+   getError(Map<String, dynamic> error,context){
+    Map<String, dynamic> errorResponse = error;
+    errorResponse.forEach((key, value) {
+      List<dynamic> message =  errorResponse[key];
+      if(message.isNotEmpty) {
+        showSnackbar(context, message[0]);
+      }
+    });
+  }
+
+  getImageFromGallery(){
+
+  }
+
+
 
 
 
@@ -844,6 +1229,7 @@ class ApiDataProvider extends ChangeNotifier {
   String get countryCode => _countryCode!;
   String get deviceToken => _deviceToken!;
   String get balance => _balance!;
+  int get id => _id!;
   List<String> get countryNameForTopFiveMerchantes =>
       _countryNameForTopFiveMerchantes;
   String get bearerToken => _bearerToken!;
@@ -851,4 +1237,11 @@ class ApiDataProvider extends ChangeNotifier {
   String get default_currency => _default_currency!;
   String get photoUrl => _photoUrl!;
   String get rating => _rating!;
+  int get defaultCurrencyId => _defaultCurrencyId!;
+  String get defaultCurrencyName => _defaultCurrencyName!;
+  String get defaultCurrencySymbol => _defaultCurrencySymbol!;
+  List<UserWalletsModel> get userWalletModelList => _userWalletModelList;
+  int get selectedCurrencyId => _selectedCurrencyId!;
+  String get selectedWalletBalance => _selectedWalletBalance!;
+  String get selectedCurrencySymbol => _selectedCurrencySymbol!;
 }

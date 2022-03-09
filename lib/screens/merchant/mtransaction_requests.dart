@@ -15,13 +15,19 @@ class MTransactionRequests extends StatefulWidget {
 
 class _MTransactionRequestsState extends State<MTransactionRequests> {
 
+  getData() async{
+    await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
+        Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+    setState(() {
+
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-
-    });
+    getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -29,7 +35,7 @@ class _MTransactionRequestsState extends State<MTransactionRequests> {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(size: size,onPress: (){},text: 'Transaction Requests',)),
+          child: appbar(size: size,onPress: (){},text: 'Transaction Requests',check: false,)),
       body: Padding(
         padding: EdgeInsets.only(left: 15,right: 15,top: 15),
       child: ListView.builder(

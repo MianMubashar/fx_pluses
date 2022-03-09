@@ -1,3 +1,4 @@
+import 'package:fx_pluses/model/user_wallets_model.dart';
 import 'package:fx_pluses/shared_preferences.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class SharedPreference{
@@ -15,17 +16,26 @@ class SharedPreference{
   static String roleIdKey='Role_Id_Key';
   static String countryCodeKey='Country_Code_Key';
   static String ratingKey='Rating_Key';
-  static String defaultCurrencyKey='Default_Currency_Key';
+
   static String photoUrlKey='Photo_Url_Key';
   static String bearerTokenKey='Bearer_Token_Key';
   static String userLoggedInKey = 'IS_LOGGED_IN';
   static String isSeenKey= 'IS_SEEN_KEY';
+  static String defaultCurrencyIdKey='Default_Currency_Id_Key';
+  static String defaultCurrencyNameKey='Default_Currency_Name_Key';
+  static String defaultCurrencySymbolKey='Default_Currency_Symbol_Key';
+  static String userWalletsKey='User_Wallets_Key';
 
 
 
-  static saveUserIdSharedPreferences(String userid) async{
+  static saveUserWalletsSharedPreferences(String list) async{
     SharedPreferences preferences=await SharedPreferences.getInstance();
-    await preferences.setString(userIdKey, userid);
+    preferences.remove(userWalletsKey);
+    await preferences.setString(userWalletsKey, list);
+  }
+  static saveUserIdSharedPreferences(int userid) async{
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    await preferences.setInt(userIdKey, userid);
   }
   static saveFirstNameSharedPreferences(String name)async{
     SharedPreferences preferences=await SharedPreferences.getInstance();
@@ -55,10 +65,7 @@ class SharedPreference{
     SharedPreferences preferences=await SharedPreferences.getInstance();
     await preferences.setString(ratingKey,rating );
   }
-  static saveDefaultCurrencySharedPreferences(String currency) async{
-    SharedPreferences preferences=await SharedPreferences.getInstance();
-    await preferences.setString(defaultCurrencyKey,currency );
-  }
+
   static savePhotoUrlSharedPreferences(String url) async{
     SharedPreferences preferences=await SharedPreferences.getInstance();
     await preferences.setString(photoUrlKey,url );
@@ -74,6 +81,18 @@ class SharedPreference{
   static Future<bool> saveIsSeenSharedPreference(int isSeen)async{
     SharedPreferences prefs=await SharedPreferences.getInstance();
     return prefs.setInt(isSeenKey, isSeen);
+  }
+  static saveDefaultCurrencyIdSharedPreferences(int id) async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    await prefs.setInt(defaultCurrencyIdKey, id);
+  }
+  static saveDefaultCurrencyNameSharedPreferences(String currencyName) async{
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    await preferences.setString(defaultCurrencyNameKey,currencyName );
+  }
+  static saveDefaultCurrencySymbolSharedPreferences(String currencySymbol) async{
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    await preferences.setString(defaultCurrencySymbolKey,currencySymbol );
   }
 
 

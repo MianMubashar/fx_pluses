@@ -16,7 +16,7 @@ class FAQ extends StatelessWidget {
         preferredSize: Size.fromHeight(60),
         child: appbar(size: size, onPress: () {
           Navigator.pop(context);
-        }, text: 'FAQ'),
+        }, text: 'FAQ',check: true,),
       ),
       body: Padding(
         padding: EdgeInsets.only(left: 15, right: 15, top: 15),

@@ -164,6 +164,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: InternationalPhoneNumberInput(
+                  countries: ['PK'],
                   //formatInput: true,
                   initialValue: phoneNumber,
                   errorMessage: 'Invalid Phone Nummber',

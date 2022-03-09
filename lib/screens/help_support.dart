@@ -17,7 +17,7 @@ class HelpSupport extends StatelessWidget {
           preferredSize: Size.fromHeight(60),
           child: appbar(size: size,onPress: (){
             Navigator.pop(context);
-          },text: 'Help and Support',)),
+          },text: 'Help and Support',check: true,)),
       body: Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Column(

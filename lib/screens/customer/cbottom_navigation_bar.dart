@@ -115,11 +115,13 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
         ],
         selectedIndex: _controller.index,
         onItemSelected: (index) {
-          setState(() {
          //   getData();
+          setState(() {
+
+          });
             _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
             print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${_controller.index}');
-          });
+
         },
       ),
     );

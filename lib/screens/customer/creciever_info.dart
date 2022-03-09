@@ -25,6 +25,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
             size: size,
             onPress: () {},
             text: 'John Snow',
+            check: true,
           )),
       body: Padding(
         padding: EdgeInsets.only(left: 15,right: 15,top: 15),

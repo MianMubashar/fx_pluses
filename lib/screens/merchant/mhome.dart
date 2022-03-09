@@ -19,6 +19,7 @@ class MHome extends StatefulWidget {
 class _MHomeState extends State<MHome> {
 
   String? balance;
+  String? profilePhoto;
   getData()async{
     SharedPreferences preferences=await SharedPreferences.getInstance();
     balance=await preferences.getString(SharedPreference.walletKey);
@@ -31,7 +32,8 @@ class _MHomeState extends State<MHome> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    //getData();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -60,8 +62,11 @@ class _MHomeState extends State<MHome> {
                     Navigator.push(context,MaterialPageRoute(builder: (context)=>MProfile()));
                   },
                   child: CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Colors.black,
+                    radius: 30,
+                    backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("https") ||
+                        Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("http")) ?
+                    Provider.of<ApiDataProvider>(context,listen: true).photoUrl :
+                    (profile_url + Provider.of<ApiDataProvider>(context,listen: true).photoUrl)),
                   ),
                 ),
               )
@@ -73,9 +78,10 @@ class _MHomeState extends State<MHome> {
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: size.height * 0.15,
+                height: size.height * 0.13,
                 width: size.width,
                 padding: EdgeInsets.only(left: 10, right: 10),
                 margin: EdgeInsets.only(bottom: 20),
@@ -84,16 +90,17 @@ class _MHomeState extends State<MHome> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Align(
-                        alignment: Alignment.topRight,
-                        heightFactor: 0.4,
-                        child: IconButton(
-                            onPressed: () {},
-                            icon: Image.asset(
-                              'assets/images/cancelicon.png',
-                              height: size.height * 0.02,
-                            ))),
+                    // Align(
+                    //     alignment: Alignment.topRight,
+                    //     heightFactor: 0.4,
+                    //     child: IconButton(
+                    //         onPressed: () {},
+                    //         icon: Image.asset(
+                    //           'assets/images/cancelicon.png',
+                    //           height: size.height * 0.02,
+                    //         ))),
                     Row(
                       children: [
                         Stack(
@@ -117,14 +124,18 @@ class _MHomeState extends State<MHome> {
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              'Welcome Baig!!',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  color: textWhiteColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600),
+                          children: [
+                            SizedBox(
+                              width: size.width * 0.6,
+                              child: Text(
+                                'Welcome ${Provider.of<ApiDataProvider>(context,listen: false).firstName==null ?"":
+                                Provider.of<ApiDataProvider>(context,listen: false).firstName}',
+                                textAlign: TextAlign.start,overflow: TextOverflow.fade,maxLines: 2,softWrap: false,
+                                style: TextStyle(
+                                    color: textWhiteColor,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600),
+                              ),
                             ),
                             Text(
                               'Please Process you payments.',
@@ -173,7 +184,7 @@ class _MHomeState extends State<MHome> {
                             ),
                             children: [
                               TextSpan(
-                                  text: 'USD',
+                                  text: Provider.of<ApiDataProvider>(context,listen: false).defaultCurrencyName,
                                   style: TextStyle(
                                       color: whiteColor,
                                       fontSize: 10
@@ -192,18 +203,18 @@ class _MHomeState extends State<MHome> {
                               fontSize: 15
                           ),maxLines: 2,),
                         ),
-                        SizedBox(width: 10,),
-                        InkWell(
-                          onTap: (){
-                            print('add balance clicked');
-                            print(Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length);
-                          },
-                          child: Text('Add Balance +',style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500
-                          ),),
-                        )
+                        // SizedBox(width: 10,),
+                        // InkWell(
+                        //   onTap: (){
+                        //     print('add balance clicked');
+                        //     print(Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length);
+                        //   },
+                        //   child: Text('Add Balance +',style: TextStyle(
+                        //       color: whiteColor,
+                        //       fontSize: 15,
+                        //       fontWeight: FontWeight.w500
+                        //   ),),
+                        // )
                       ],
                     ),
 

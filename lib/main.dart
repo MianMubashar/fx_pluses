@@ -37,6 +37,7 @@ import 'package:fx_pluses/screens/splash_screen.dart';
 import 'package:fx_pluses/screens/terms_conditions.dart';
 import 'package:fx_pluses/screens/test.dart';
 import 'package:fx_pluses/screens/transaction_history.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       localizationsDelegates: [
         // delegate from flutter_localization

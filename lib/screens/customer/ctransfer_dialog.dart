@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
+import 'package:fx_pluses/reuseable_widgets/customloader.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
@@ -7,7 +9,8 @@ import '../../constants.dart';
 class CTransferDialog extends StatelessWidget {
   var size;
   int index;
-  CTransferDialog({required this.size,required this.index});
+  int currency_id;
+  CTransferDialog({required this.size,required this.index,required this.currency_id});
 
   TextEditingController amountController=TextEditingController();
 
@@ -47,8 +50,11 @@ class CTransferDialog extends StatelessWidget {
                 child: TextField(
                   controller: amountController,
                   decoration: InputDecoration(
-                      hintText: '400',
-
+                      hintText: 'amount',
+                      prefixIcon: Padding(
+                        padding:  EdgeInsets.only(left: 20.0,top: 15),
+                        child: Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol,),
+                      ),
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,
@@ -63,12 +69,21 @@ class CTransferDialog extends StatelessWidget {
               ),
               InkWell(
                 onTap: () async{
-                  await Provider.of<ApiDataProvider>(context,listen: false).updateWallet(context,
-                      Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                      3, amountController.text,
-                      Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['id'],
-                      '', '');
-                  Navigator.pop(context);
+                  if(amountController.text.isEmpty){
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount');
+                  }else{
+                    Navigator.pop(context);
+                    Get.dialog(CustomLoader());
+                    await Provider.of<ApiDataProvider>(context,listen: false).updateWallet(context,
+                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                        3, amountController.text,
+                        Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['id'],
+                        '', '',currency_id);
+                    Get.back();
+
+                  }
+
+
                 },
                 child: Align(
                   alignment: Alignment.center,

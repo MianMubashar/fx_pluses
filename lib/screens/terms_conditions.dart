@@ -17,7 +17,7 @@ class TermsConditions extends StatelessWidget {
         preferredSize: Size.fromHeight(60),
         child: appbar(size: size, onPress: (){
           Navigator.pop(context);
-        }, text: 'Terms and Conditions'),
+        }, text: 'Terms and Conditions',check: true,),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 15),

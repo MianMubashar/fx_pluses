@@ -20,6 +20,7 @@ class TransactionHistory extends StatelessWidget {
               Navigator.pop(context);
             },
             text: 'Transactions History',
+            check: true,
           )),
       body: Padding(
         padding: EdgeInsets.only(left: 15, right: 15,),

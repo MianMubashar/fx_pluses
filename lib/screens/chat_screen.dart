@@ -11,8 +11,9 @@ import 'package:provider/provider.dart';
 
 class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
-   ChatScreen({Key? key,required this.reciever_id}) : super(key: key);
+   ChatScreen({Key? key,required this.reciever_id,required this.name}) : super(key: key);
   int reciever_id;
+  String name;
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -31,7 +32,8 @@ class _ChatScreenState extends State<ChatScreen> {
             onPress: () {
               Navigator.pop(context);
             },
-            text: 'John Snow',
+            text: widget.name,
+            check: true,
           )),
       body: Column(
         children: [
@@ -157,7 +159,7 @@ class Stream_Builder extends StatelessWidget {
                     Provider.of<ApiDataProvider>(context,listen: false).showChatList.add(ShowChatModel.fromJson(data[i]));
                     String? message=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].message;
                     String? filePath=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].file;
-                    final isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).userId?true:false;
+                    final isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;
                     final listWidget=TextBubble(message: message,isMe:isMe,filePath: filePath,);
                     list.add(listWidget);
                   }
@@ -168,7 +170,7 @@ class Stream_Builder extends StatelessWidget {
                 for(int i=0;i<data.length;i++) {
                   String? message=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].message;
                   String? filePath=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].file;
-                  final isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).userId?true:false;
+                  final isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;
                   final listWidget=TextBubble(message: message,isMe: isMe,filePath: filePath,);
                   list.add(listWidget);
                 }

@@ -47,9 +47,6 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
     // TODO: implement initState
     super.initState();
     //getData();
-    setState(() {
-
-    });
   }
 
   // List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -108,10 +105,11 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
         ],
         selectedIndex: _controller.index,
         onItemSelected: (index) {
-          setState(() {
+
             _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
             //getData();
             print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${_controller.index}');
+            setState(() {
           });
         },
       ),

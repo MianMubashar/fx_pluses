@@ -160,7 +160,9 @@ class _SignupState extends State<Signup> {
               SizedBox(
                 height: size.height * 0.02,
               ),
-              MainButton(text: 'Log in', onPress: () {})
+              MainButton(text: 'Log in', onPress: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+              })
             ],
           ),
         ),

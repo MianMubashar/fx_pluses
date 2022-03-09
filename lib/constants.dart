@@ -25,3 +25,4 @@ LinearGradient gradient=LinearGradient(
   stops: [0.0, 1.0],
   tileMode: TileMode.clamp,
 );
+String profile_url="http://192.168.18.17/FX_Pluses/FX_Pluses/public/";

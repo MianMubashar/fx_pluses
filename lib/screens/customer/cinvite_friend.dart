@@ -20,6 +20,7 @@ class CInviteFriend extends StatelessWidget {
               Navigator.pop(context);
             },
             text: 'Invite a friend',
+            check: true,
           )),
       body: Padding(
         padding: const EdgeInsets.only(left: 20.0,right: 20),

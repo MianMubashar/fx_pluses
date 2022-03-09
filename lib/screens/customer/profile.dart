@@ -1,8 +1,10 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/main.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
+import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/profile_card.dart';
 import 'package:fx_pluses/screens/about.dart';
 import 'package:fx_pluses/screens/customer/cinvite_friend.dart';
@@ -20,18 +22,23 @@ import '../../constants.dart';
 
 class CProfile extends StatelessWidget {
   static final String id='CProfile_Screen';
-  const CProfile({Key? key}) : super(key: key);
+   CProfile({Key? key}) : super(key: key);
+
+  TextEditingController firstNameController=TextEditingController();
+  TextEditingController lastNameController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
           child: appbar(
             size: size,
             onPress: () {},
             text: 'Profile',
+            check: false,
           )),
       body: Padding(
         padding: const EdgeInsets.only(left: 15, right: 15, top: 30),
@@ -67,9 +74,25 @@ class CProfile extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.black12,
+                          InkWell(
+                            onTap:() async{
+                              FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
+                              if (result == null) {
+                                print("No file selected");
+                              }else{
+                                Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
+                                    Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                                    '', '', result.files.single.path.toString());
+                              }
+                            },
+                            child: CircleAvatar(
+                              radius: 25,
+                             // backgroundColor: Colors.black12,
+                              backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("https") ||
+                                  Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("http")) ?
+                              Provider.of<ApiDataProvider>(context,listen: true).photoUrl :
+                              (profile_url + Provider.of<ApiDataProvider>(context,listen: true).photoUrl)),
+                            ),
                           ),
                           Container(
                             padding: EdgeInsets.only(left: 10, top: 5),
@@ -79,19 +102,80 @@ class CProfile extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      'John Snow',
-                                      style: TextStyle(
-                                          color: textBlackColor,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
+                                    SizedBox(
+                                      width:MediaQuery.of(context).size.width * 0.45,
+                                      child: Text(
+                                        Provider.of<ApiDataProvider>(context,listen: false).firstName + Provider.of<ApiDataProvider>(context,listen: false).lastName,
+                                        softWrap: false,overflow: TextOverflow.fade,style: TextStyle(
+                                            color: textBlackColor,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500),
+                                      ),
                                     ),
                                     SizedBox(width: 10,),
                                     IconButton(
                                       constraints: BoxConstraints(
                                       ),
                                         padding: EdgeInsets.zero,
-                                        onPressed: () {},
+                                        onPressed: () {
+
+                                          showDialog(context: context, builder: (context){
+                                            return Dialog(
+                                              child: Container(
+                                                padding: EdgeInsets.only(left: 10,right: 10,top: 10),
+                                                height: size.height * 0.3,
+                                                width:  size.width * 0.3,
+                                                decoration: BoxDecoration(
+                                                    color: whiteColor,
+                                                    borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                  children: [
+                                                    TextField(
+                                                controller:firstNameController,
+                                                      decoration: InputDecoration(
+                                                          hintText: 'First name',
+                                                          helperStyle: TextStyle(color: blackColor),
+                                                          isDense: true,
+                                                          filled: true,
+                                                          border: OutlineInputBorder(
+                                                            borderSide: BorderSide.none,
+                                                            borderRadius: BorderRadius.circular(20),
+                                                          )),
+
+                                                    ),
+                                                    TextField(
+                                                        controller:lastNameController,
+                                                      decoration: InputDecoration(
+
+                                                          hintText: 'Last name',
+                                                          helperStyle: TextStyle(color: blackColor),
+                                                          isDense: true,
+                                                          filled: true,
+                                                          border: OutlineInputBorder(
+                                                            borderSide: BorderSide.none,
+                                                            borderRadius: BorderRadius.circular(20),
+                                                          )),
+
+                                                    ),
+                                                    MainButton(text: 'Update', onPress: (){
+                                                      if(firstNameController.text.isEmpty || lastNameController.text.isEmpty){
+                                                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data');
+                                                      }else{
+                                                        Navigator.pop(context);
+                                                        Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
+                                                            Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                                                            firstNameController.text, lastNameController.text, '');
+                                                      }
+                                                    })
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          );
+                                        },
                                         icon: Image.asset(
                                           'assets/icons/editicon.png',
                                           width: size.width * 0.03,
@@ -99,7 +183,7 @@ class CProfile extends StatelessWidget {
                                   ],
                                 ),
                                 Text(
-                                  'example@gmail.com',
+                                  Provider.of<ApiDataProvider>(context,listen: false).email,
                                   style: TextStyle(
                                       color: greyColor,
                                       fontSize: 12,
@@ -115,14 +199,6 @@ class CProfile extends StatelessWidget {
                 ),
                 Divider(
                   color: greyColor,
-                ),
-                ProfileCard(
-                  iconData: 'assets/icons/walleticon.png',
-                  size: size,
-                  text: 'My Wallet',
-                  onPress: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>CWallet()));
-                  },
                 ),
                 ProfileCard(
                   iconData: 'assets/icons/transaction_historyicon.png',
@@ -179,6 +255,7 @@ class CProfile extends StatelessWidget {
                 await pref.remove(SharedPreference.isSeenKey);
                 await pref.remove(SharedPreference.firstNameKey);
                 await pref.remove(SharedPreference.lastNameKey);
+                await pref.remove(SharedPreference.userWalletsKey);
                 await Provider.of<ApiDataProvider>(context,listen: false).setBearerToken('');
                 Navigator.of(context,rootNavigator: true).pushReplacement(MaterialPageRoute(builder: (context)=>Login()));
               },

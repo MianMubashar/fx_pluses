@@ -4,18 +4,19 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../constants.dart';
 class ListOfUsersHavingChat extends StatelessWidget {
-  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId}) : super(key: key);
+  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId,required this.profile_url}) : super(key: key);
   final String firstName;
   final String lastName;
    String? message;
   final int recieverId;
+  String? profile_url;
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
     return InkWell(
       onTap: () async{
         pushNewScreen(context,
-            screen: ChatScreen(reciever_id: recieverId,),
+            screen: ChatScreen(reciever_id: recieverId,name: firstName+" "+lastName,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);
@@ -24,7 +25,7 @@ class ListOfUsersHavingChat extends StatelessWidget {
         height: size.height * 0.13,
         width: size.width,
         margin: EdgeInsets.only(
-            bottom: 1, left: 10, right: 10, top: 10),
+            bottom: 1, right: 10, top: 10),
         padding: EdgeInsets.only(left: 10, right: 10),
         decoration: BoxDecoration(
           //color: Colors.white,
@@ -61,9 +62,8 @@ class ListOfUsersHavingChat extends StatelessWidget {
                               child: Container(
                                 height: size.height * 0.08,
                                 width: size.width * 0.18,
-                                //color: Colors.black,
-                                child: Image.asset(
-                                    'assets/svgs/jon.jpg'),
+                                color: Colors.black,
+                                child: Image.network('https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg',fit: BoxFit.fill,),
                               ),
                             ),
                           ],

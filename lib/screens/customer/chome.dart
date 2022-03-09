@@ -3,12 +3,15 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
+import 'package:fx_pluses/model/user_wallets_model.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:fx_pluses/screens/customer/cmerchant_profile.dart';
+import 'package:fx_pluses/screens/customer/profile.dart';
 import 'package:fx_pluses/shared_preferences.dart';
+import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,8 +24,13 @@ class CHome extends StatefulWidget {
   _CHomeState createState() => _CHomeState();
 }
 
-class _CHomeState extends State<CHome> {
+class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
   TextEditingController amount = TextEditingController();
+  String? amountWritten;
   final List<String> genderItems = [
     'England',
     'Pakistan',
@@ -49,6 +57,7 @@ class _CHomeState extends State<CHome> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: PreferredSize(
@@ -72,9 +81,17 @@ class _CHomeState extends State<CHome> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.black,
+              child: InkWell(
+                onTap: (){
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CProfile()));
+                },
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("https") ||
+                      Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("http")) ?
+                  Provider.of<ApiDataProvider>(context,listen: true).photoUrl :
+                  (profile_url + Provider.of<ApiDataProvider>(context,listen: true).photoUrl)),
+                ),
               ),
             )
           ],
@@ -97,15 +114,15 @@ class _CHomeState extends State<CHome> {
                 ),
                 child: Column(
                   children: [
-                    Align(
-                        alignment: Alignment.topRight,
-                        heightFactor: 0.4,
-                        child: IconButton(
-                            onPressed: () {},
-                            icon: Image.asset(
-                              'assets/images/cancelicon.png',
-                              height: size.height * 0.02,
-                            ))),
+                    // Align(
+                    //     alignment: Alignment.topRight,
+                    //     heightFactor: 0.4,
+                    //     child: IconButton(
+                    //         onPressed: () {},
+                    //         icon: Image.asset(
+                    //           'assets/images/cancelicon.png',
+                    //           height: size.height * 0.02,
+                    //         ))),
                     Row(
                       children: [
                         Stack(
@@ -131,7 +148,7 @@ class _CHomeState extends State<CHome> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children:  [
                             Text(
-                              'Welcome !!',
+                              'Welcome ${Provider.of<ApiDataProvider>(context,listen: false).firstName}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: textWhiteColor,
@@ -225,7 +242,11 @@ class _CHomeState extends State<CHome> {
                 child: TextField(
                   controller: amount,
                   decoration: InputDecoration(
-                      hintText: '400',
+                    prefixIcon: Padding(
+                      padding:  EdgeInsets.only(left: 20.0,top: 15),
+                      child: Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol,),
+                    ),
+                      hintText: 'amount',
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,
@@ -234,6 +255,7 @@ class _CHomeState extends State<CHome> {
                         borderRadius: BorderRadius.circular(20),
                       )),
                   onChanged: (value) {
+                    amountWritten=value;
                    setState(() {
                      check=false;
                    });
@@ -242,38 +264,50 @@ class _CHomeState extends State<CHome> {
               ),
               InkWell(
                 onTap: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  String? amount1 =
-                      await prefs.getString(SharedPreference.walletKey);
-                  token =
-                      await prefs.getString(SharedPreference.bearerTokenKey);
-                  List a = amount1!.split('.');
-                  int amount2 = int.parse(a[0]);
-                  int amount3 = int.parse(amount.text);
-                  if (amount2 < amount3) {
-                    Provider.of<ApiDataProvider>(context, listen: false)
-                        .showSnackbar(
-                            context, 'Your Wallet balance is insufficient');
-                  } else {
-                    print('aaaaaaaaaaaaaaaaaaaaaaa $country');
-                    Provider.of<ApiDataProvider>(context, listen: false)
-                        .getCountriesForMerchants
-                        .forEach((element) async {
-                      //await Provider.of<ApiDataProvider>(context,listen: false).setCountryName(CountryPickerUtils.getCountryByIsoCode(element.country_code).name.toString());
-                      if (element.country == country) {
-                        print(element.country);
-                        countryCode = element.country_code;
-                        await Provider.of<ApiDataProvider>(context,
-                                listen: false)
-                            .getMercchantes(context, token!, amount.text,
-                                element.country_code);
+                  if(amount.text.isNotEmpty || country !='') {
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
 
-                        setState(() {
-                          check = true;
-                        });
-                      }
-                    });
+                    String amount1 =
+                    await Provider
+                        .of<ApiDataProvider>(context, listen: false)
+                        .selectedWalletBalance;
+                    token =
+                    await prefs.getString(SharedPreference.bearerTokenKey);
+                    List a = amount1.split('.');
+                    int amount2 = int.parse(a[0]);
+                    int amount3 = int.parse(amount.text);
+                    if (amount2 < amount3) {
+                      Provider.of<ApiDataProvider>(context, listen: false)
+                          .showSnackbar(
+                          context, 'Your Wallet balance is insufficient');
+                    } else {
+                      print('aaaaaaaaaaaaaaaaaaaaaaa $country');
+                      Provider
+                          .of<ApiDataProvider>(context, listen: false)
+                          .getCountriesForMerchants
+                          .forEach((element) async {
+                        //await Provider.of<ApiDataProvider>(context,listen: false).setCountryName(CountryPickerUtils.getCountryByIsoCode(element.country_code).name.toString());
+                        if (element.country == country) {
+                          print(element.country);
+                          countryCode = element.country_code;
+                          await Provider.of<ApiDataProvider>(context,
+                              listen: false)
+                              .getMercchantes(context, token!, amount.text,
+                              element.country_code,
+                              Provider
+                                  .of<ApiDataProvider>(context,
+                                  listen: false)
+                                  .selectedCurrencyId);
+
+                          setState(() {
+                            check = true;
+                          });
+                        }
+                      });
+                    }
+                  }else{
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please select valid values');
                   }
                 },
                 child: Container(
@@ -426,31 +460,27 @@ class _CHomeState extends State<CHome> {
                                     onTap: () async {
                                       SharedPreferences prefs =
                                           await SharedPreferences.getInstance();
-                                      String? amount1 = await prefs.getString(
-                                          SharedPreference.walletKey);
+                                      String amount1 = Provider.of<ApiDataProvider>(context,listen: false).balance;
                                       //String? token=await prefs.getString(SharedPreference.bearerTokenKey);
-                                      List a = amount1!.split('.');
+                                      List a = amount1.split('.');
                                       int amount2 = int.parse(a[0]);
-                                      int amount3 = int.parse(amount.text);
+                                      int amount3 = int.parse(amountWritten!);
                                       if (amount2 < amount3) {
                                         Provider.of<ApiDataProvider>(context,
                                                 listen: false)
                                             .showSnackbar(context,
                                                 'Account balance is insuffcient');
                                       } else {
+
                                         await Provider.of<ApiDataProvider>(
-                                                context,
+                                                Get.context!,
                                                 listen: false)
-                                            .requestTransaction(
-                                                context,
-                                                amount.text,
-                                                Provider.of<ApiDataProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .top_five_merchant_list[
-                                                        index]
-                                                    .id,
-                                                token!);
+                                            .requestTransaction(Get.context!, amountWritten!,
+                                                Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].id,
+                                                token!,
+                                            Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].first_name +
+                                               " "+ Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].last_name,
+                                            Provider.of<ApiDataProvider>(Get.context!, listen: false).selectedCurrencyId);
                                         // pushNewScreen(
                                         //   context,
                                         //   screen: ChatScreen(),
@@ -502,4 +532,6 @@ class _CHomeState extends State<CHome> {
       ),
     );
   }
+
+
 }

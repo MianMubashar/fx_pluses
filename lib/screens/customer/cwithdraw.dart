@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import '../../constants.dart';
 
 class CWithdraw extends StatefulWidget {
-  const CWithdraw({Key? key}) : super(key: key);
+  int currency_id;
+   CWithdraw({Key? key,required this.currency_id}) : super(key: key);
 
   @override
   _CWithdrawState createState() => _CWithdrawState();
@@ -31,6 +32,7 @@ class _CWithdrawState extends State<CWithdraw> {
               Navigator.pop(context);
             },
             text: 'Withdraw',
+            check: true,
           )),
       body: Padding(
         padding: EdgeInsets.only(left: 15,right: 15,top: 30),
@@ -144,7 +146,7 @@ class _CWithdrawState extends State<CWithdraw> {
                 amount.text,
                 0,
                 accountNumber.text,
-                accountHolderName.text);
+                accountHolderName.text,widget.currency_id);
           } else {
             Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
                 context, 'Please enter valid data to proceed');
