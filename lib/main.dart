@@ -98,7 +98,7 @@ class MyApp extends StatelessWidget {
         CCreateAccount.id: (context) => CCreateAccount(),
         CHome.id: (context) => CHome(),
         CInviteFriend.id: (context) => CInviteFriend(),
-        CInviteFriend2.id: (context) => CInviteFriend2(),
+        //CInviteFriend2.id: (context) => CInviteFriend2(),
         CMerchantProfile.id: (context) => CMerchantProfile(),
         CMessages.id: (context) => CMessages(),
         CRecieverInfo.id: (context) => CRecieverInfo(),

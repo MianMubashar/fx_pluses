@@ -4,12 +4,12 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../constants.dart';
 class ListOfUsersHavingChat extends StatelessWidget {
-  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId,required this.profile_url}) : super(key: key);
+  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId,required this.profile}) : super(key: key);
   final String firstName;
   final String lastName;
    String? message;
   final int recieverId;
-  String? profile_url;
+  String? profile;
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
@@ -49,37 +49,43 @@ class ListOfUsersHavingChat extends StatelessWidget {
               children: [
                 Stack(
                   children: [
-                    Container(
-                      height: size.height * 0.1,
-                      width: size.width * 0.22,
-                      // color:Colors.blue,
-                      child: Center(
-                        child: Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius:
-                              BorderRadius.circular(15.0),
-                              child: Container(
-                                height: size.height * 0.08,
-                                width: size.width * 0.18,
-                                color: Colors.black,
-                                child: Image.network('https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg',fit: BoxFit.fill,),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      //bottom: 10,
-                      top: 2,
-                      left: 55,
-                      child: Image.asset(
-                        'assets/icons/statusicon.png',
-                        height: 20,
-                        width: 20,
-                      ),
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: NetworkImage((profile!.contains('http') || profile!.contains('https'))?profile!:
+                      profile_url+profile!,),
                     )
+                    // Container(
+                    //   height: size.height * 0.1,
+                    //   width: size.width * 0.22,
+                    //   // color:Colors.blue,
+                    //   child: Center(
+                    //     child: Stack(
+                    //       children: [
+                    //         ClipRRect(
+                    //           borderRadius:
+                    //           BorderRadius.circular(15.0),
+                    //           child: Container(
+                    //             height: size.height * 0.08,
+                    //             width: size.width * 0.18,
+                    //             color: Colors.black,
+                    //             child: Image.network((profile!.contains('http') || profile!.contains('https'))?profile!:
+                    //             profile_url+profile!,fit: BoxFit.fill,),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // Positioned(
+                    //   //bottom: 10,
+                    //   top: 2,
+                    //   left: 55,
+                    //   child: Image.asset(
+                    //     'assets/icons/statusicon.png',
+                    //     height: 20,
+                    //     width: 20,
+                    //   ),
+                    // )
                   ],
                 ),
                 Container(

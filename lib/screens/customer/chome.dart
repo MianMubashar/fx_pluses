@@ -83,7 +83,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
               padding: const EdgeInsets.only(right: 8.0),
               child: InkWell(
                 onTap: (){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CProfile()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>CProfile()));
                 },
                 child: CircleAvatar(
                   radius: 20,
@@ -113,6 +113,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Align(
                     //     alignment: Alignment.topRight,
@@ -386,7 +387,11 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                         },
                                         child: CircleAvatar(
                                           radius: 30,
-                                          backgroundColor: Colors.black12,
+                                          backgroundImage: NetworkImage(
+                                              (Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile.contains('http') ||
+                                                  Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile.contains('https'))?
+                                              Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile :
+                                          profile_url+Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile),
                                         ),
                                       ),
                                       InkWell(

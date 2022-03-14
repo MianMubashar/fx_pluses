@@ -108,6 +108,7 @@ class _MWithdrawState extends State<MWithdraw> {
                 margin: EdgeInsets.only(bottom: 30),
                 child: TextField(
                   controller: amount,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       hintText: 'Amount',
                       helperStyle: TextStyle(color: blackColor),

@@ -66,6 +66,7 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
     return PersistentTabView.custom(
       context,
       controller: _controller,
+
       itemCount: 4, // This is required in case of custom style! Pass the number of items for the nav bar.
       screens: _buildScreens(),
       confineInSafeArea: false,

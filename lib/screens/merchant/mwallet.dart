@@ -105,7 +105,7 @@ class _MWalletState extends State<MWallet> with AutomaticKeepAliveClientMixin{
                     items: Provider.of<ApiDataProvider>(context, listen: false)
                         .getCurrenciesList
                         .map((e) => DropdownMenuItem<GetCurrenciesModel>(
-                        value: e, child: Text(".   "+e.name + " "+e.symbol)))
+                        value: e, child: Text("   "+e.name + " "+e.symbol)))
                         .toList(),
                     dropdownDecoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),

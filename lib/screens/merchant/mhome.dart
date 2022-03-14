@@ -61,13 +61,13 @@ class _MHomeState extends State<MHome> {
                   onTap: (){
                     Navigator.push(context,MaterialPageRoute(builder: (context)=>MProfile()));
                   },
-                  child: CircleAvatar(
+                  child: Provider.of<ApiDataProvider>(context,listen: true).photoUrl !=null ?CircleAvatar(
                     radius: 30,
                     backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("https") ||
                         Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("http")) ?
                     Provider.of<ApiDataProvider>(context,listen: true).photoUrl :
                     (profile_url + Provider.of<ApiDataProvider>(context,listen: true).photoUrl)),
-                  ),
+                  ):CircularProgressIndicator(color: buttonColor,)
                 ),
               )
             ],

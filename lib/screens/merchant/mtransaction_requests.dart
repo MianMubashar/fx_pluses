@@ -27,7 +27,7 @@ class _MTransactionRequestsState extends State<MTransactionRequests> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    //getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,11 @@ class _MTransactionRequestsState extends State<MTransactionRequests> {
           child: appbar(size: size,onPress: (){},text: 'Transaction Requests',check: false,)),
       body: Padding(
         padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-      child: ListView.builder(
+      child: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length==0?
+          Center(
+            child:Text('No request recieved')
+          )
+          :ListView.builder(
           itemCount: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length,
           itemBuilder: (context, index) {
             return transactionRequestWidget(size: size,index: index,);

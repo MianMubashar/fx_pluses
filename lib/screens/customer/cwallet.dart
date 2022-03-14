@@ -101,7 +101,7 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
                     items: Provider.of<ApiDataProvider>(context, listen: false)
                         .getCurrenciesList
                         .map((e) => DropdownMenuItem<GetCurrenciesModel>(
-                        value: e, child: Text(e.id.toString() +".   "+e.name + " "+e.symbol)))
+                        value: e, child: Text("   "+e.name + " "+e.symbol)))
                         .toList(),
                     dropdownDecoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15),
@@ -191,7 +191,7 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
                         ),
                         RichText(
                             text: TextSpan(
-                                text:  Provider.of<ApiDataProvider>(context,listen: false).balance==null ?'0.00':Provider.of<ApiDataProvider>(context,listen: false).balance,
+                                text:  Provider.of<ApiDataProvider>(context,listen: true).balance==null ?'0.00':Provider.of<ApiDataProvider>(context,listen: true).balance,
                                 style: TextStyle(
                                     color: whiteColor,
                                     fontSize: 20,

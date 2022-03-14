@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/accepted_request_merchants_model.dart';
 import 'package:fx_pluses/model/chat_menu_model.dart';
 import 'package:fx_pluses/model/customer_transaction_history_model.dart';
@@ -66,7 +67,7 @@ class ApiDataProvider extends ChangeNotifier {
   String? _bearerToken;
   String? _rating;
   String? _default_currency;
-  String? _photoUrl;
+  String _photoUrl='';
   int? _id;
   int? _selectedCurrencyId;
   String? _selectedWalletBalance;
@@ -106,10 +107,12 @@ class ApiDataProvider extends ChangeNotifier {
 
   setFirstName(String firstName) {
     this._firstName = firstName;
+    notifyListeners();
   }
 
   setLastName(String lastName) {
     this._lastName = lastName;
+    notifyListeners();
   }
 
   setEmail(String email) {
@@ -588,10 +591,11 @@ class ApiDataProvider extends ChangeNotifier {
       };
       var body=jsonEncode(data);
       var response=await http.post(url, body: body,headers: header);
+      Map<String, dynamic> apiResponse=jsonDecode(response.body);
       if(response.statusCode==200){
         top_five_merchant_list.clear();
         print(jsonDecode(response.body));
-        Map<String, dynamic> apiResponse=jsonDecode(response.body);
+
         bool status=apiResponse['status'];
         if(status){
           List<dynamic> data=apiResponse['merchants'];
@@ -600,6 +604,8 @@ class ApiDataProvider extends ChangeNotifier {
           }
 
         }
+      }else{
+        showSnackbar(context, apiResponse['error']);
       }
     }catch(e){
       showSnackbar(context, 'Something is wrong');
@@ -1073,10 +1079,14 @@ class ApiDataProvider extends ChangeNotifier {
         bool status=apiResponse['status'];
         if(status){
           Get.back();
-          if(firstName==''){
+          if(first_name==''){
             String m=apiResponse['message'];
-            setPhotoUrl(apiResponse['photo_path']);
+            String p=apiResponse['photo_path'];
+            setPhotoUrl(p);
             showSnackbar(context, m);
+          }else{
+            setFirstName(first_name);
+            setLastName(last_name);
           }
 
         }else{
@@ -1090,6 +1100,44 @@ class ApiDataProvider extends ChangeNotifier {
     }catch(e){
       Get.back();
       print('try catch error from sendMessage $e');
+    }
+  }
+
+  Future validateVoucher(BuildContext context, String token, String code) async{
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL + 'validate-voucher');
+    try{
+      var header={
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $token"
+      };
+
+      Map bodyData={
+        'code':code
+      };
+      var body=jsonEncode(bodyData);
+      var response=await http.post(url,headers: header,body: body);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      if(response.statusCode==200){
+
+        bool status=apiResponse['status'];
+        if(status){
+          Get.back();
+          showSnackbar(context, apiResponse['message']);
+        }else{
+          Get.back();
+          print('status is not true from validateVoucher ');
+          showSnackbar(context, apiResponse['message']);
+        }
+      }else{
+        Get.back();
+        print('status code is not 200 from validateVoucher ');
+        showSnackbar(context, apiResponse['error']);
+      }
+
+    }catch(e){
+      Get.back();
+      print('try catch error from validateVoucher $e');
     }
   }
 
@@ -1188,7 +1236,7 @@ class ApiDataProvider extends ChangeNotifier {
   void showSnackbar(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: Colors.orange,
+        backgroundColor: buttonColor,
         content: Text(text),
         action: SnackBarAction(
           label: '',
@@ -1235,7 +1283,7 @@ class ApiDataProvider extends ChangeNotifier {
   String get bearerToken => _bearerToken!;
 
   String get default_currency => _default_currency!;
-  String get photoUrl => _photoUrl!;
+  String get photoUrl => _photoUrl;
   String get rating => _rating!;
   int get defaultCurrencyId => _defaultCurrencyId!;
   String get defaultCurrencyName => _defaultCurrencyName!;

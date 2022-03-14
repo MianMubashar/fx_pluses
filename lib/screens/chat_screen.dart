@@ -9,11 +9,14 @@ import 'package:fx_pluses/reuseable_widgets/text_bubble.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../constants.dart';
+
 class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
    ChatScreen({Key? key,required this.reciever_id,required this.name}) : super(key: key);
   int reciever_id;
   String name;
+
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -21,6 +24,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageText=TextEditingController();
+  bool messageSentCheck=false;
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
@@ -86,10 +90,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 IconButton(
                   onPressed: () async {
                     if(messageText.text.isNotEmpty){
+                      messageSentCheck=true;
                       await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                           Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                           widget.reciever_id, messageText.text,'','' );
                       messageText.clear();
+                      messageSentCheck=false;
                     }else{
 
                     }
@@ -108,7 +114,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     // //         .getMessageData();
                     // textEditingController.clear();
                   },
-                  icon: Image.asset('assets/icons/sendicon.png',height: size.height * 0.03,),
+                  icon: messageSentCheck?CircularProgressIndicator(color: buttonColor,):Image.asset('assets/icons/sendicon.png',height: size.height * 0.03,),
                 )
               ],
             ),
@@ -159,8 +165,12 @@ class Stream_Builder extends StatelessWidget {
                     Provider.of<ApiDataProvider>(context,listen: false).showChatList.add(ShowChatModel.fromJson(data[i]));
                     String? message=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].message;
                     String? filePath=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].file;
-                    final isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;
-                    final listWidget=TextBubble(message: message,isMe:isMe,filePath: filePath,);
+                    String? isAdmin=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].isAdmin;
+                    String? firstName=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender['first_name'];
+                    final isMe;
+                    isAdmin=='1'? isMe=false:
+                    isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;
+                    final listWidget=TextBubble(message: message,isMe:isMe,filePath: filePath,isAdmin: isAdmin,firstName: firstName,);
                     list.add(listWidget);
                   }
                 }
@@ -170,8 +180,12 @@ class Stream_Builder extends StatelessWidget {
                 for(int i=0;i<data.length;i++) {
                   String? message=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].message;
                   String? filePath=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].file;
-                  final isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;
-                  final listWidget=TextBubble(message: message,isMe: isMe,filePath: filePath,);
+                  String? isAdmin=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].isAdmin;
+                  String? firstName=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender['first_name'];
+                  final isMe;
+                  isAdmin=='1'? isMe=false:
+                  isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;
+                  final listWidget=TextBubble(message: message,isMe: isMe,filePath: filePath,isAdmin: isAdmin,firstName: firstName,);
                   list.add(listWidget);
                 }
               }

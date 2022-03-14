@@ -136,16 +136,16 @@ class Stream_Builder extends StatelessWidget {
                       final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
                       final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender_id;
 
-                      final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_url'];
-                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile_url: profile_url,);
+                      final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
+                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
                       list.add(listWidget);
                     }else{
                       final firstName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['first_name'];
                       final lastName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['last_name'];
                       final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
                       final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver_id;
-                      final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_url'];
-                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile_url: profile_url,);
+                      final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
+                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
                       list.add(listWidget);
                     }
 
@@ -160,16 +160,16 @@ class Stream_Builder extends StatelessWidget {
                     final lastName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender['last_name'];
                     final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
                     final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender_id;
-                    final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_url'];
-                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile_url: profile_url,);
+                    final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
+                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
                     list.add(listWidget);
                   }else{
                     final firstName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['first_name'];
                     final lastName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['last_name'];
                     final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
                     final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver_id;
-                    final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_url'];
-                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile_url: profile_url,);
+                    final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
+                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
                     list.add(listWidget);
                   }
 

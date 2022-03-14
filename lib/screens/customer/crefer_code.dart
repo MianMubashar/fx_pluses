@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 
 class CReferCode extends StatelessWidget {
   static final String id='CReferCode_Screen';
-  const CReferCode({Key? key}) : super(key: key);
+  CReferCode({Key? key}) : super(key: key);
+  TextEditingController codeController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,9 @@ class CReferCode extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(size: size,onPress: (){},text: 'Refer Code',check: true,)),
+          child: appbar(size: size,onPress: (){
+            Navigator.pop(context);
+          },text: 'Refer Code',check: true,)),
       body: Padding(
         padding: const EdgeInsets.only(left: 15.0,right: 15,top: 24),
         child: Column(
@@ -31,6 +36,7 @@ class CReferCode extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(bottom: 10),
               child: TextField(
+                controller:codeController,
                 decoration: InputDecoration(
                     hintText: 'xxxxx-xxxxx',
                     helperStyle: TextStyle(color: blackColor),
@@ -56,7 +62,16 @@ class CReferCode extends StatelessWidget {
             SizedBox(
               height: 40,
             ),
-            MainButton(text: 'Submit', onPress: (){})
+            MainButton(text: 'Submit', onPress: (){
+              FocusScope.of(context).requestFocus(new FocusNode());
+              if(codeController.text.isNotEmpty){
+                Provider.of<ApiDataProvider>(context,listen: false).validateVoucher(context,
+                    Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                    codeController.text);
+              }else{
+                Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data');
+              }
+            })
 
             
           ],

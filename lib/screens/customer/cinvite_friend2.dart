@@ -1,5 +1,9 @@
+import 'dart:io';
+
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants.dart';
 
@@ -7,6 +11,8 @@ class CInviteFriend2 extends StatelessWidget {
   static final String id='CInviteFriend2_Screen';
   int check=0;
   final items=['Select All','Deselect All'];
+  List<Contact> contacts=[];
+  CInviteFriend2({required this.contacts });
 
   @override
   Widget build(BuildContext context) {
@@ -33,30 +39,30 @@ class CInviteFriend2 extends StatelessWidget {
               },
             ),
             actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10.0),
-                child: DropdownButton(
-                  borderRadius: BorderRadius.circular(10),
-                  //value: dropdownvalue,
-                  icon: Image.asset(
-                    'assets/icons/actionicon.png',
-                    height: size.height * 0.08,
-                    width: size.width * 0.08,
-                  ),
-                  items:items.map((String items) {
-                    return DropdownMenuItem(
-                        value: items,
-                        child: Text(items)
-                    );
-                  }
-                  ).toList(),
-                  underline: Container(color: Colors.transparent,),
-                  onChanged: (newValue){
-
-                  },
-
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.only(right: 10.0),
+              //   child: DropdownButton(
+              //     borderRadius: BorderRadius.circular(10),
+              //     //value: dropdownvalue,
+              //     icon: Image.asset(
+              //       'assets/icons/actionicon.png',
+              //       height: size.height * 0.08,
+              //       width: size.width * 0.08,
+              //     ),
+              //     items:items.map((String items) {
+              //       return DropdownMenuItem(
+              //           value: items,
+              //           child: Text(items)
+              //       );
+              //     }
+              //     ).toList(),
+              //     underline: Container(color: Colors.transparent,),
+              //     onChanged: (newValue){
+              //
+              //     },
+              //
+              //   ),
+              // ),
             ],
           ),),
       body: Padding(
@@ -65,10 +71,10 @@ class CInviteFriend2 extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                  itemCount: 8,
+                  itemCount: contacts.length,
                   itemBuilder: (context, index) {
                     return InkWell(
-                      onTap: (){
+                      onTap: () async{
                       },
                       child: Container(
                         height: size.height * 0.13,
@@ -106,18 +112,21 @@ class CInviteFriend2 extends StatelessWidget {
                                     children: [
                                       Row(
                                         children: [
-                                          Text(
-                                            'John Snow',
-                                            style: TextStyle(
-                                                color: textBlackColor,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w600),
+                                          SizedBox(
+                                            width:size.width * 0.45,
+                                            child: Text(
+                                              contacts[index].displayName!,softWrap: false,overflow:TextOverflow.ellipsis,maxLines: 2,
+                                              style: TextStyle(
+                                                  color: textBlackColor,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
                                           ),
                                         ],
                                       ),
                                       SizedBox(height: 10,),
                                       Text(
-                                        '03xx-xxx-xxx',
+                                        contacts[index].phones![0].value.toString(),
                                         style: TextStyle(
                                             color: greyColor,
                                             fontSize: 15,
@@ -128,27 +137,33 @@ class CInviteFriend2 extends StatelessWidget {
                                 )
                               ],
                             ),
-                            Container(
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              height: size.height * 0.05,
-                              width: size.width * 0.28,
-                              decoration: BoxDecoration(
-                                  color: index%2==0? Color(0xFF0FC0FF) : Color(0xFF4BC75A),
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Image.asset(
-                                      index%2==0 ?'assets/icons/smsicon.png': 'assets/icons/whatsappicon.png',
-                                      height: size.height * 0.03,
-                                    ),
-                                    Text(
-                                      index%2==0 ? 'Via SMS' : 'watsapp',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 13),
-                                    )
-                                  ]),
+                            InkWell(
+                              onTap:() async{
+                                var whatsappUrl =Uri.encodeFull("https://api.whatsapp.com/send?phone=+92${contacts[index].phones![0].value}&text='hi'");
+                                if (!await launch(whatsappUrl)) throw 'Could not launch $whatsappUrl';
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                height: size.height * 0.05,
+                                width: size.width * 0.28,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFF4BC75A),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Image.asset(
+                                         'assets/icons/whatsappicon.png',
+                                        height: size.height * 0.03,
+                                      ),
+                                      Text(
+                                         'watsapp',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 13),
+                                      )
+                                    ]),
+                              ),
                             )
                           ],
                         ),
