@@ -41,7 +41,7 @@ class _ContactUsState extends State<ContactUs> {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(bottom: 54),
+                margin: EdgeInsets.only(bottom: 20),
 
                 child: ConstrainedBox(
                   constraints:  BoxConstraints(
@@ -78,12 +78,17 @@ class _ContactUsState extends State<ContactUs> {
                 color: greyColor
               ),),
 
-              SizedBox(height: size.height * 0.202,),
+              SizedBox(height: size.height * 0.08,),
               MainButton(text: 'Submit', onPress: () async{
                 print('aaaaaaaaaaaaaaaaaaaaa${valuee}');
-                await Provider.of<ApiDataProvider>(context,listen: false).contactUs(context,
-                    Provider.of<ApiDataProvider>(context,listen: false).bearerToken ,
-                messageController.text);
+                if(messageController.text.isNotEmpty){
+                  await Provider.of<ApiDataProvider>(context,listen: false).contactUs(context,
+                      Provider.of<ApiDataProvider>(context,listen: false).bearerToken ,
+                      messageController.text);
+                }else{
+                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data');
+                }
+
               })
             ],
           ),

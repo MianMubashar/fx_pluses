@@ -49,15 +49,15 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
     await Provider.of<ApiDataProvider>(context, listen: false)
         .getCountries(context, bearerToken!);
   }
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    //getData();
-    setState(() {
-
-    });
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   //getData();
+  //   setState(() {
+  //
+  //   });
+  // }
 
   // List<PersistentBottomNavBarItem> _navBarsItems() {
   @override
@@ -71,6 +71,18 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
       screens: _buildScreens(),
       confineInSafeArea: false,
       handleAndroidBackButtonPress: true,
+
+
+      //stateManagement: false,
+      // onWillPop: (value) async{
+      //   Provider.of<ApiDataProvider>(context,listen: false).chatMenu(
+      //     context,
+      //     Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+      //   ).listen((event) {}).cancel();
+      //   return true;
+      // },
+
+
 
 
       // onItemSelected: (int) {
@@ -116,7 +128,7 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
         ],
         selectedIndex: _controller.index,
         onItemSelected: (index) {
-         //   getData();
+
           setState(() {
 
           });

@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
         CHome.id: (context) => CHome(),
         CInviteFriend.id: (context) => CInviteFriend(),
         //CInviteFriend2.id: (context) => CInviteFriend2(),
-        CMerchantProfile.id: (context) => CMerchantProfile(),
+        //CMerchantProfile.id: (context) => CMerchantProfile(),
         CMessages.id: (context) => CMessages(),
         CRecieverInfo.id: (context) => CRecieverInfo(),
         CReferCode.id: (context) => CReferCode(),

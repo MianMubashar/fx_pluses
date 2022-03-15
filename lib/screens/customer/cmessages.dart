@@ -37,6 +37,7 @@ class _CMessagesState extends State<CMessages> with AutomaticKeepAliveClientMixi
     super.initState();
     //getData();
   }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -82,7 +83,7 @@ class _CMessagesState extends State<CMessages> with AutomaticKeepAliveClientMixi
                 onChanged: (value) {},
               ),
             ),
-            Stream_Builder(size: size)
+            Stream_Builder(size: size,)
           ],
         ),
       ),
@@ -90,9 +91,9 @@ class _CMessagesState extends State<CMessages> with AutomaticKeepAliveClientMixi
   }
 }
 class Stream_Builder extends StatelessWidget {
-  const Stream_Builder({Key? key,
-  required this.size}) : super(key: key);
-  final Size size;
+   Stream_Builder({Key? key,required this.size
+  }) : super(key: key);
+var size;
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +110,7 @@ class Stream_Builder extends StatelessWidget {
                   height: 40,width: 40,
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: Colors.black,
+                      color: buttonColor,
                     ),
                   ),
                 ),

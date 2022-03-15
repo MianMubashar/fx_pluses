@@ -30,13 +30,8 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
   }
 
   getData() async{
-    SharedPreferences preferences=await SharedPreferences.getInstance();
-    bearerToken=await preferences.getString(SharedPreference.bearerTokenKey);
-    balance=await preferences.getString(SharedPreference.walletKey);
-    await Provider.of<ApiDataProvider>(context,listen: false).setBearerToken(bearerToken!);
-    print(bearerToken);
-    await Provider.of<ApiDataProvider>(context,listen: false).setBalance(balance!);
-    await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context, bearerToken!);
+    await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
+        Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
     setState(() {
 
     });
@@ -104,13 +99,12 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
 
         ],
         selectedIndex: _controller.index,
-        onItemSelected: (index) {
+        onItemSelected: (index) async{
 
+
+            await getData();
             _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
-            //getData();
-            print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${_controller.index}');
-            setState(() {
-          });
+
         },
       ),
     );

@@ -109,7 +109,7 @@ class Stream_Builder extends StatelessWidget {
                   height: 40,width: 40,
                   child: Center(
                     child: CircularProgressIndicator(
-                      color: Colors.black,
+                      color: buttonColor,
                     ),
                   ),
                 ),

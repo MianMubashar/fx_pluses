@@ -7,7 +7,12 @@ import '../../constants.dart';
 
 class CMerchantProfile extends StatelessWidget {
   static final String id='CMerchantProfile_Screen';
-  const CMerchantProfile({Key? key}) : super(key: key);
+   CMerchantProfile({Key? key,required this.name,required this.profilePhoto,required this.country}) : super(key: key);
+
+   String name;
+   String profilePhoto;
+   String country;
+
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,7 @@ class CMerchantProfile extends StatelessWidget {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
-        child: appbar(size: size, onPress: () {}, text: 'John Snow',check: true,),
+        child: appbar(size: size, onPress: () {}, text: name,check: true,),
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 15.0,right: 15,bottom: 5,top: 15),
@@ -50,7 +55,8 @@ class CMerchantProfile extends StatelessWidget {
                       height: size.height * 0.08,
                       width: size.width * 0.18,
                       //color: Colors.black,
-                      child: Image.asset('assets/svgs/jon.jpg'),
+                      child: Image.network((profilePhoto.contains('http') || profilePhoto.contains('https'))?
+                      profilePhoto : profile_url+profilePhoto ),
                     ),
                   ),
                   SizedBox(width: 10,),
@@ -64,7 +70,7 @@ class CMerchantProfile extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'John Snow',
+                              name,
                               style: TextStyle(
                                   color: textBlackColor,
                                   fontSize: 17,
@@ -89,7 +95,7 @@ class CMerchantProfile extends StatelessWidget {
                           mainAxisAlignment:MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'United State',
+                              country,
                               style: TextStyle(
                                   color: greyColor,
                                   fontSize: 12,

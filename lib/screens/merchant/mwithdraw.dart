@@ -152,6 +152,9 @@ class _MWithdrawState extends State<MWithdraw> {
                             0,
                             accountNumber.text,
                             accountHolderName.text,widget.currency_id);
+                        amount.clear();
+                        accountNumber.clear();
+                        accountHolderName.clear();
                         Get.back();
                       } else {
                         Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(

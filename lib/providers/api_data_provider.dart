@@ -36,7 +36,7 @@ class ApiDataProvider extends ChangeNotifier {
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 //setters
-  String? _firstName;
+  String? _firstName='';
   String? _lastName;
   String? _email;
   String? _password;
@@ -608,7 +608,12 @@ class ApiDataProvider extends ChangeNotifier {
         showSnackbar(context, apiResponse['error']);
       }
     }catch(e){
-      showSnackbar(context, 'Something is wrong');
+      Get.showSnackbar(GetSnackBar(
+        backgroundColor: Colors.red,
+        message: 'Something went wrong',
+        duration: Duration(seconds: 1),
+        animationDuration: Duration(milliseconds: 500),
+      ));;
     }
   }
 
@@ -702,7 +707,14 @@ class ApiDataProvider extends ChangeNotifier {
         if(status){
           Get.back();
           print(apiResponse['message']);
-          showSnackbar(context, apiResponse['message']);
+
+          Get.showSnackbar(GetSnackBar(
+            backgroundColor: buttonColor,
+            message: apiResponse['message'],
+            duration: Duration(seconds: 3),
+            animationDuration: Duration(milliseconds: 500),
+          ));
+
           pushNewScreen(context,
               screen: ChatScreen(reciever_id: id,name: name,),
               withNavBar: false,
@@ -732,7 +744,7 @@ class ApiDataProvider extends ChangeNotifier {
       var response=await http.post(url,headers: header);
       if(response.statusCode==200){
         Map<String,dynamic> apiResponse=jsonDecode(response.body);
-        print(apiResponse.values);
+        //print(apiResponse.values);
         bool status=apiResponse['status'];
         if(status){
           merchantTransactionRequestsList.clear();
@@ -740,10 +752,14 @@ class ApiDataProvider extends ChangeNotifier {
           for(int i=0; i<data.length;i++){
              merchantTransactionRequestsList.add(MerchantTransactionRequestsModel.fromJson(data[i]));
           }
+        }else{
+          showSnackbar(context, apiResponse['message']);
         }
+      }else{
+
       }
     }catch(e){
-
+      showSnackbar(context, 'Something went wrong');
     }
   }
 
@@ -1234,18 +1250,12 @@ class ApiDataProvider extends ChangeNotifier {
 
 
   void showSnackbar(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: buttonColor,
-        content: Text(text),
-        action: SnackBarAction(
-          label: '',
-          onPressed: () {
-            // Code to execute.
-          },
-        ),
-      ),
-    );
+    Get.showSnackbar(GetSnackBar(
+      backgroundColor: buttonColor,
+      message: text,
+      duration: Duration(seconds: 2),
+      animationDuration: Duration(milliseconds: 500),
+    ));
   }
 
    getError(Map<String, dynamic> error,context){
@@ -1253,7 +1263,12 @@ class ApiDataProvider extends ChangeNotifier {
     errorResponse.forEach((key, value) {
       List<dynamic> message =  errorResponse[key];
       if(message.isNotEmpty) {
-        showSnackbar(context, message[0]);
+        Get.showSnackbar(GetSnackBar(
+          backgroundColor: Colors.red,
+          message: message[0],
+          duration: Duration(seconds: 2),
+          animationDuration: Duration(milliseconds: 500),
+        ));
       }
     });
   }

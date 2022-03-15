@@ -27,7 +27,7 @@ class _MTransactionRequestsState extends State<MTransactionRequests> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //getData();
+    getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -70,6 +70,13 @@ class _transactionRequestWidgetState extends State<transactionRequestWidget> {
   bool isAccepted=false;
 
   bool isDeclined=false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isDeclined=false;
+    isAccepted=false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +109,23 @@ class _transactionRequestWidgetState extends State<transactionRequestWidget> {
               CircleAvatar(
                 radius: 30,
                 backgroundColor: Colors.black12,
-                backgroundImage: AssetImage('assets/svgs/jon.jpg'),
+
+                backgroundImage: Provider.of<ApiDataProvider>(context,listen: false).
+                merchantTransactionRequestsList[widget.index]==null?
+                NetworkImage('https://img.freepik.com/free-vector/modern-dark-texture-background_1035-11632.jpg?t=st=1647339303~exp=1647339903~hmac=2d2fa81f16ba6f4b37e6fc9953915a1ac7ab6512f7a4cd718beb408efa4c3793&w=1380'):
+                NetworkImage((
+                    Provider.of<ApiDataProvider>(context,listen: false).
+                    merchantTransactionRequestsList[widget.index].from_user['profile_photo_path'].contains('http') ||
+
+                        Provider.of<ApiDataProvider>(context,listen: false).
+                        merchantTransactionRequestsList[widget.index].from_user['profile_photo_path'].contains('https'))?
+
+                Provider.of<ApiDataProvider>(context,listen: false).
+                merchantTransactionRequestsList[widget.index].from_user['profile_photo_path'] :
+
+                profile_url + Provider.of<ApiDataProvider>(context,listen: false).
+                merchantTransactionRequestsList[widget.index].from_user['profile_photo_path']
+                ),
               ),
               Container(
                 padding: EdgeInsets.only(left: 10),

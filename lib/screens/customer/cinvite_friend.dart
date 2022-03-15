@@ -69,7 +69,7 @@ class CInviteFriend extends StatelessWidget {
               Get.dialog(CustomLoader());
               await getData();
               Get.back();
-              //print('bbbbbbbbbbbbbbbbbbbbbb${contacts[0].displayName}');
+              print('bbbbbbbbbbbbbbbbbbbbbb${contacts.length}');
               Navigator.push(context, MaterialPageRoute(builder: (context)=>CInviteFriend2(contacts: contacts,)));
             },)
           ],

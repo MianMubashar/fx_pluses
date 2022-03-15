@@ -149,7 +149,8 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children:  [
                             Text(
-                              'Welcome ${Provider.of<ApiDataProvider>(context,listen: false).firstName}',
+                              'Welcome ${Provider.of<ApiDataProvider>(context,listen: false).firstName==null?'':
+                              Provider.of<ApiDataProvider>(context,listen: false).firstName}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: textWhiteColor,
@@ -279,9 +280,13 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                     int amount2 = int.parse(a[0]);
                     int amount3 = int.parse(amount.text);
                     if (amount2 < amount3) {
-                      Provider.of<ApiDataProvider>(context, listen: false)
-                          .showSnackbar(
-                          context, 'Your Wallet balance is insufficient');
+                      Get.showSnackbar(GetSnackBar(
+                        backgroundColor: Colors.red,
+                        message: 'Your wallet balance is insufficient',
+                        duration: Duration(seconds: 3),
+                        animationDuration: Duration(milliseconds: 500),
+                      ));
+                      //Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Your wallet balance is insufficient');
                     } else {
                       print('aaaaaaaaaaaaaaaaaaaaaaa $country');
                       Provider
@@ -292,6 +297,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                         if (element.country == country) {
                           print(element.country);
                           countryCode = element.country_code;
+                          FocusScope.of(context).requestFocus(FocusNode());
                           await Provider.of<ApiDataProvider>(context,
                               listen: false)
                               .getMercchantes(context, token!, amount.text,
@@ -301,6 +307,9 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                   listen: false)
                                   .selectedCurrencyId);
 
+                          amount.clear();
+
+
                           setState(() {
                             check = true;
                           });
@@ -308,7 +317,13 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                       });
                     }
                   }else{
-                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please select valid values');
+                    Get.showSnackbar(GetSnackBar(
+                      backgroundColor: Colors.red,
+                      message: 'Please select valid values',
+                      animationDuration: Duration(milliseconds: 500),
+                      duration: Duration(seconds: 3),
+                    ));
+                    //Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please select valid values');
                   }
                 },
                 child: Container(
@@ -330,6 +345,8 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                   )),
                 ),
               ),
+
+
               Visibility(
                 visible: check,
                 child: Column(
@@ -383,7 +400,20 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      CMerchantProfile()));
+                                                      CMerchantProfile(name:  Provider.of<ApiDataProvider>(
+                                                          context,
+                                                          listen: false)
+                                                          .top_five_merchant_list[
+                                                      index]
+                                                          .first_name +
+                                                          Provider.of<ApiDataProvider>(
+                                                              context,
+                                                              listen: false)
+                                                              .top_five_merchant_list[
+                                                          index]
+                                                              .last_name,
+                                                        country: country,
+                                                        profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
                                         },
                                         child: CircleAvatar(
                                           radius: 30,
@@ -400,7 +430,20 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      CMerchantProfile()));
+                                                      CMerchantProfile(name:  Provider.of<ApiDataProvider>(
+                                                          context,
+                                                          listen: false)
+                                                          .top_five_merchant_list[
+                                                      index]
+                                                          .first_name +
+                                                          Provider.of<ApiDataProvider>(
+                                                              context,
+                                                              listen: false)
+                                                              .top_five_merchant_list[
+                                                          index]
+                                                              .last_name,
+                                                        country: country,
+                                                        profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
                                         },
                                         child: Container(
                                           padding: EdgeInsets.only(left: 10),

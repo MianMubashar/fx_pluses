@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
-import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:fx_pluses/screens/merchant/mprofile.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../constants.dart';
-import '../../shared_preferences.dart';
 import 'mtransaction_requests.dart';
+
+
 class MHome extends StatefulWidget {
   static final String id='MHome_Screen';
   const MHome({Key? key}) : super(key: key);
@@ -20,10 +18,9 @@ class _MHomeState extends State<MHome> {
 
   String? balance;
   String? profilePhoto;
-  getData()async{
-    SharedPreferences preferences=await SharedPreferences.getInstance();
-    balance=await preferences.getString(SharedPreference.walletKey);
-    await Provider.of<ApiDataProvider>(context,listen: false).setBalance(balance!);
+  getData() async{
+    await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
+        Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
     setState(() {
 
     });
@@ -32,7 +29,7 @@ class _MHomeState extends State<MHome> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //getData();
+    getData();
 
   }
   @override
@@ -241,7 +238,7 @@ class _MHomeState extends State<MHome> {
               ):Container(
                 height: size.height * 0.4,
                 child: ListView.builder(
-                    itemCount: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length,
+                    itemCount: 5,
                     itemBuilder: (context, index) {
                       return transactionRequestWidget(size: size,index: index,);
                     }),

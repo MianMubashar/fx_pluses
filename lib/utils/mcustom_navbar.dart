@@ -61,28 +61,10 @@ class CustomNavBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 120,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        //color: Colors.black12.withOpacity(0.03),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 0.5,
-            spreadRadius: 0.5,
-            offset: Offset(
-              1,
-              0,
-            ),
-          ),
-        ],
-      ),
-      child: Container(
-        width: double.infinity,
+    return Scaffold(
+      body: Container(
         height: 120,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           //color: Colors.black12.withOpacity(0.03),
           borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
@@ -93,26 +75,46 @@ class CustomNavBarWidget extends StatelessWidget {
               blurRadius: 0.5,
               spreadRadius: 0.5,
               offset: Offset(
-                0,
                 1,
+                0,
               ),
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: items.map((item) {
-            int index = items.indexOf(item);
-            return Flexible(
-              child: GestureDetector(
-                onTap: () {
-                  this.onItemSelected(index);
-                },
-                child: _buildItem(
-                    item, selectedIndex == index),
+        child: Container(
+          width: double.infinity,
+          height: 120,
+          decoration: BoxDecoration(
+            //color: Colors.black12.withOpacity(0.03),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 0.5,
+                spreadRadius: 0.5,
+                offset: Offset(
+                  0,
+                  1,
+                ),
               ),
-            );
-          }).toList(),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items.map((item) {
+              int index = items.indexOf(item);
+              return Flexible(
+                child: InkWell(
+                  onTap: () {
+                    this.onItemSelected(index);
+                  },
+                  child: _buildItem(
+                      item, selectedIndex == index),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );

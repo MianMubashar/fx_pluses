@@ -28,7 +28,7 @@ class TransactionHistory extends StatelessWidget {
             itemCount: Provider.of<ApiDataProvider>(context,listen: false).customerTransactionHistoryList.length,
             itemBuilder: (context,index){
           return Container(
-            height: size.height * 0.25,
+            height: size.height * 0.17,
             width: size.width,
             margin: EdgeInsets.only(top: 15),
             decoration: BoxDecoration(
@@ -51,7 +51,7 @@ class TransactionHistory extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: size.height * 0.18,
+                  height: size.height * 0.1,
                   padding: EdgeInsets.only(left: 15, right: 15, top: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

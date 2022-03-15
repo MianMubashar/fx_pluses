@@ -208,7 +208,8 @@ class MProfile extends StatelessWidget {
                       iconData: 'assets/icons/transaction_historyicon.png',
                       size: size,
                       text: 'Transactions History',
-                      onPress: () {
+                      onPress: () async{
+                        await Provider.of<ApiDataProvider>(context,listen: false).customerTrancationHistory(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>TransactionHistory()));
                       },
                     ),
@@ -224,7 +225,8 @@ class MProfile extends StatelessWidget {
                       iconData: 'assets/icons/helpicon.png',
                       size: size,
                       text: 'Help and support ',
-                      onPress: () {
+                      onPress: () async{
+                        await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupport()));
                       },
                     ),
@@ -232,7 +234,8 @@ class MProfile extends StatelessWidget {
                       iconData: 'assets/icons/abouticon.png',
                       size: size,
                       text: 'About ',
-                      onPress: () {
+                      onPress: () async{
+                        await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>About()));
                       },
                     ),
