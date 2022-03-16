@@ -63,6 +63,7 @@ dependencies:
   flutter_spinkit: ^5.1.0
   contacts_service: ^0.6.3
   url_launcher: ^6.0.20
+  flutter_rating_bar: ^4.0.0
 
 dev_dependencies:
   flutter_test:

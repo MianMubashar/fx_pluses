@@ -14,6 +14,7 @@ const greyColor=Color(0xFF666666);
 const newColor=Color(0xFF5861FF);
 const green=Color(0xFF07B574);
 const profileColor=Color(0xFF8F38FF);
+const redColor=Colors.red;
 
 LinearGradient gradient=LinearGradient(
   colors: [

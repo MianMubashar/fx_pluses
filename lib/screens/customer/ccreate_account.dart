@@ -7,6 +7,7 @@ import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/top_container.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
 import 'package:fx_pluses/screens/merchant/otp.dart';
+import 'package:fx_pluses/screens/terms_conditions.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:email_validator/email_validator.dart';
@@ -253,7 +254,9 @@ class _CCreateAccountState extends State<CCreateAccount> {
                               decoration: TextDecoration.underline,
                               color: newColor),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
+                            ..onTap = () async{
+
+                              await Provider.of<ApiDataProvider>(context,listen: false).privacyPolicy(context);
                               print('Terms and Conditions clicked');
                             }),
                       TextSpan(
@@ -266,7 +269,8 @@ class _CCreateAccountState extends State<CCreateAccount> {
                               decoration: TextDecoration.underline,
                               color: newColor),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
+                            ..onTap = () async{
+                              await Provider.of<ApiDataProvider>(context,listen: false).privacyPolicy(context);
                               print('Privacy and Policy clicked');
                             }),
                     ])),
@@ -279,26 +283,26 @@ class _CCreateAccountState extends State<CCreateAccount> {
                   onPress: () async{
                     print('continue presses');
                     if(firstName==''){
-                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter first name');
+                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter first name',redColor);
                     }else{
                       if(lastName==''){
-                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter last name');
+                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter last name',redColor);
                       }else{
                         if(email==''){
-                          Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter email');
+                          Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter email',redColor);
                         }else{
                           final bool isValid = EmailValidator.validate(email);
                           if(!isValid){
-                            Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid email address');
+                            Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid email address',redColor);
                           }else{
                             if(password==''){
-                              Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter password');
+                              Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter password',redColor);
                             }else{
                               if(phoneNumber.toString().length<=countryCode.toString().length){
-                                Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter phone number');
+                                Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter phone number',redColor);
                               }else{
                                 if(!numberValid){
-                                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid phone number');
+                                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid phone number',redColor);
                                 }else{
                                   if(deviceToken==''){ CircularProgressIndicator(
                                     color: newColor,

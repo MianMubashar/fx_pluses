@@ -86,7 +86,7 @@ class _ContactUsState extends State<ContactUs> {
                       Provider.of<ApiDataProvider>(context,listen: false).bearerToken ,
                       messageController.text);
                 }else{
-                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data');
+                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data',redColor);
                 }
 
               })

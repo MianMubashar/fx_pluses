@@ -126,29 +126,32 @@ var size;
                 if(status){
                   Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList.clear();
                   List<dynamic> data=apiResponse['chats'];
-
+                  ApiDataProvider provider=Provider.of<ApiDataProvider>(context,listen: false);
                   for(int i=0;i<data.length;i++) {
 
-                    Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList.add(ChatMenuModel.fromJson(data[i]));
-                    ChatMenuModel menuModel = Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i];
-                    if(menuModel.receiver_id == Provider.of<ApiDataProvider>(context,listen: false).id){
-                      final firstName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender['first_name'];
-                      final lastName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender['last_name'];
-                      final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
-                      final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender_id;
+                    provider.usersHavingChatList.add(ChatMenuModel.fromJson(data[i]));
+                    ChatMenuModel menuModel = provider.usersHavingChatList[i];
+                    if(menuModel.receiver_id == provider.id && (provider.usersHavingChatList[i].transaction==null || provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 )){
+                      final firstName=provider.usersHavingChatList[i].sender['first_name'];
+                      final lastName=provider.usersHavingChatList[i].sender['last_name'];
+                      final message=provider.usersHavingChatList[i].message;
+                      final recieverId=provider.usersHavingChatList[i].sender_id;
+                      final transactionId=provider.usersHavingChatList[i].transaction?['id'];
 
-                      final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
-                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
+                      final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
+                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
                       list.add(listWidget);
                     }else{
-    final firstName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['first_name'];
-    final lastName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['last_name'];
-    final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
-    final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver_id;
-    final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
-    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
+                      if(provider.usersHavingChatList[i].transaction == null || provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 ){
+    final firstName=provider.usersHavingChatList[i].receiver['first_name'];
+    final lastName=provider.usersHavingChatList[i].receiver['last_name'];
+    final message=provider.usersHavingChatList[i].message;
+    final recieverId=provider.usersHavingChatList[i].receiver_id;
+    final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
+    final transactionId=provider.usersHavingChatList[i].transaction?['id'];
+    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
     list.add(listWidget);
-                    }
+                    }}
 
                   }
                 }
@@ -156,23 +159,27 @@ var size;
                 List<dynamic> data=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList;
                 for(int i=0;i<data.length;i++) {
                   ChatMenuModel menuModel = Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i];
-                  if(menuModel.receiver_id == Provider.of<ApiDataProvider>(context,listen: false).id){
+                  if(menuModel.receiver_id == Provider.of<ApiDataProvider>(context,listen: false).id && (Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].transaction==null || Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].transaction!['transaction_status_id'] != 4) ){
                     final firstName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender['first_name'];
                     final lastName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender['last_name'];
                     final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
                     final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].sender_id;
                     final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
-                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
+                    final transactionId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].transaction?['id'];
+                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
                     list.add(listWidget);
                   }else{
+
+    if(Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].transaction == null || Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].transaction!['transaction_status_id'] != 4 ){
                     final firstName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['first_name'];
                     final lastName=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['last_name'];
                     final message=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].message;
                     final recieverId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver_id;
                     final profile_url=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].receiver['profile_photo_path'];
-                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,);
+                    final transactionId=Provider.of<ApiDataProvider>(context,listen: false).usersHavingChatList[i].transaction?['id'];
+                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
                     list.add(listWidget);
-                  }
+                  }}
 
                 }
               }

@@ -23,6 +23,7 @@ import 'package:fx_pluses/screens/login_signup/login.dart';
 import 'package:fx_pluses/screens/merchant/mbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/merchant/mhome.dart';
 import 'package:fx_pluses/screens/merchant/otp.dart';
+import 'package:fx_pluses/screens/terms_conditions.dart';
 import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -47,7 +48,7 @@ class ApiDataProvider extends ChangeNotifier {
   String? _deviceToken;
   String verificationIdRecieved='';
   bool check=false;
-  String? _balance;
+  String? _balance='';
   int? _defaultCurrencyId;
   String? _defaultCurrencyName;
   String? _defaultCurrencySymbol;
@@ -64,14 +65,14 @@ class ApiDataProvider extends ChangeNotifier {
   List<UserWalletsModel> _userWalletModelList=[];
   Map? appSetting;
   Map? aboutUs;
-  String? _bearerToken;
+  String? _bearerToken='';
   String? _rating;
   String? _default_currency;
   String _photoUrl='';
   int? _id;
   int? _selectedCurrencyId;
   String? _selectedWalletBalance;
-  String? _selectedCurrencySymbol;
+  String? _selectedCurrencySymbol='';
 
 
 
@@ -234,7 +235,7 @@ class ApiDataProvider extends ChangeNotifier {
         } else {
           Get.back();
           print('status is $status');
-          showSnackbar(context, apiResponse['error']);
+          showSnackbar(context, apiResponse['error'],redColor);
           return false;
         }
       } else {
@@ -373,7 +374,7 @@ class ApiDataProvider extends ChangeNotifier {
           return false;
         } else {
           Get.back();
-          showSnackbar(context, apiResponse['message']);
+          showSnackbar(context, apiResponse['message'],redColor);
           print('status is $status');
           return false;
         }
@@ -382,7 +383,7 @@ class ApiDataProvider extends ChangeNotifier {
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
         print(
             "status code is ${response.statusCode} and ${apiResponse['error']}");
-        showSnackbar(context, 'Email or Password is incorrect');
+        showSnackbar(context, 'Email or Password is incorrect',redColor);
         return false;
       }
     } catch (e) {
@@ -482,6 +483,7 @@ class ApiDataProvider extends ChangeNotifier {
   }
 
   Future<bool> updateWallet(BuildContext context, String token,int wallet_action_id,String amount,int to_user_id,String accountNumber,String name,int currencyId) async{
+    Get.dialog(CustomLoader());
     Uri url=Uri.parse(SERVER_URL + 'update-wallet');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try{
@@ -525,6 +527,7 @@ class ApiDataProvider extends ChangeNotifier {
 
           bool status = apiResponse['status'];
           if (status) {
+
             SharedPreferences pref = await SharedPreferences.getInstance();
             String? token = await pref.getString(SharedPreference.bearerTokenKey);
             String? wallletList=await pref.getString(SharedPreference.userWalletsKey);
@@ -556,20 +559,24 @@ class ApiDataProvider extends ChangeNotifier {
             await setUserWalletModelList(list);
             final String encodedData=UserWalletsModel.encode(list);
             await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
-
-            showSnackbar(context, apiResponse['message']);
+            Get.back();
+            showSnackbar(context, apiResponse['message'],buttonColor);
             // Navigator.pop(context);
           } else {
+            Get.back();
             //showSnackbar(context, '')
           }
         } else {
-          showSnackbar(context, apiResponse['error']['acc_number'][0]);
+          Get.back();
+          showSnackbar(context, apiResponse['error']['acc_number'][0],redColor);
         }
       }else{
+        Get.back();
         print('token is null');
       }
 
     }catch(e){
+      Get.back();
       print('try catch error in update wallet $e');
     }
     return false;
@@ -605,11 +612,11 @@ class ApiDataProvider extends ChangeNotifier {
 
         }
       }else{
-        showSnackbar(context, apiResponse['error']);
+        showSnackbar(context, apiResponse['error'],redColor);
       }
     }catch(e){
       Get.showSnackbar(GetSnackBar(
-        backgroundColor: Colors.red,
+        backgroundColor: redColor,
         message: 'Something went wrong',
         duration: Duration(seconds: 1),
         animationDuration: Duration(milliseconds: 500),
@@ -640,12 +647,15 @@ class ApiDataProvider extends ChangeNotifier {
 
           }
         }else{
-          showSnackbar(context, 'Status false');
+          showSnackbar(context, apiResponse['message'],redColor);
         }
 
+      }else{
+        showSnackbar(context, 'Get countries error',redColor);
       }
     }catch(e){
-      print('try catch error is ${e}');
+
+      print('try catch error from getCountries is ${e}');
     }
   }
 
@@ -671,12 +681,12 @@ class ApiDataProvider extends ChangeNotifier {
             getCurrenciesList.add(GetCurrenciesModel.fromJson(data[i]));
           }
         }else{
-          showSnackbar(context, 'Status false');
+          showSnackbar(context, apiResponse['message'],redColor);
         }
 
       }else{
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
-        showSnackbar(context, apiResponse['message']);
+        showSnackbar(context, apiResponse['error'][0],redColor);
       }
     }catch(e){
       print('try catch error from getCurrencies ${e}');
@@ -707,6 +717,7 @@ class ApiDataProvider extends ChangeNotifier {
         if(status){
           Get.back();
           print(apiResponse['message']);
+          Map transaction=apiResponse['transaction'];
 
           Get.showSnackbar(GetSnackBar(
             backgroundColor: buttonColor,
@@ -716,7 +727,7 @@ class ApiDataProvider extends ChangeNotifier {
           ));
 
           pushNewScreen(context,
-              screen: ChatScreen(reciever_id: id,name: name,),
+              screen: ChatScreen(reciever_id: id,name: name,transactionId: transaction['id'],),
               withNavBar: false,
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);
@@ -753,13 +764,13 @@ class ApiDataProvider extends ChangeNotifier {
              merchantTransactionRequestsList.add(MerchantTransactionRequestsModel.fromJson(data[i]));
           }
         }else{
-          showSnackbar(context, apiResponse['message']);
+          showSnackbar(context, apiResponse['message'],redColor);
         }
       }else{
-
+        showSnackbar(context, 'Something went wrong',redColor);
       }
     }catch(e){
-      showSnackbar(context, 'Something went wrong');
+      showSnackbar(context, 'Something went wrong',redColor);
     }
   }
 
@@ -782,7 +793,7 @@ class ApiDataProvider extends ChangeNotifier {
         bool status=apiResponse['status'];
         if(status){
           print(apiResponse['message']);
-          showSnackbar(context, apiResponse['message']);
+          showSnackbar(context, apiResponse['message'],buttonColor);
           //merchantTransactionRequestsList.removeAt(index);
         }
       }
@@ -808,10 +819,12 @@ class ApiDataProvider extends ChangeNotifier {
           for(int i=0;i<data.length;i++){
             acceptedRequestMerchantsList.add(AcceptedRequestMerchantsModel.fromJson(data[i]));
           }
+        }else{
+          showSnackbar(context, apiResponse['message'],redColor);
         }
       }else{
         print('status code is not 200');
-        showSnackbar(context, 'Something went wrong');
+        showSnackbar(context, 'Something went wrong',redColor);
       }
     }catch(e){
       print('try catch error from acceptedRequests $e');
@@ -944,7 +957,7 @@ class ApiDataProvider extends ChangeNotifier {
         bool status=apiResponse['status'];
         if(status){
           String m=apiResponse['message'];
-          showSnackbar(context, m);
+          showSnackbar(context, m,buttonColor);
         }
       }
     }catch(e){
@@ -952,7 +965,7 @@ class ApiDataProvider extends ChangeNotifier {
     }
   }
 
-  Future sendMessage(BuildContext context, String token, int recieverid, String message,String filePath,String name) async{
+  Future sendMessage(BuildContext context, String token, int recieverid, String message,String filePath,String name,int? transacion_id) async{
 
     Uri url=Uri.parse(SERVER_URL + "send-message");
     try {
@@ -962,7 +975,8 @@ class ApiDataProvider extends ChangeNotifier {
       };
       Map bodyData={
         "receiver_id":recieverid,
-        "message":message
+        "message":message,
+        "transaction_id":transacion_id
       };
       Map bodyData2={
         "receiver_id":recieverid,
@@ -1032,14 +1046,14 @@ class ApiDataProvider extends ChangeNotifier {
           bool status=apiResponse['status'];
           if(status){
             Get.back();
-            showSnackbar(context, apiResponse['message']);
+            showSnackbar(context, apiResponse['message'],buttonColor);
           }else{
             Get.back();
             print('status is not true from updateDefaultCurrency');
-            showSnackbar(context, 'Something went wrong');
+            showSnackbar(context, apiResponse['message'],redColor);
           }
         }else{
-          showSnackbar(context, 'Something went wrong');
+          showSnackbar(context, 'Something went wrong',redColor);
         }
 
       }catch(e){
@@ -1099,10 +1113,11 @@ class ApiDataProvider extends ChangeNotifier {
             String m=apiResponse['message'];
             String p=apiResponse['photo_path'];
             setPhotoUrl(p);
-            showSnackbar(context, m);
+            showSnackbar(context, m,buttonColor);
           }else{
             setFirstName(first_name);
             setLastName(last_name);
+            showSnackbar(context, apiResponse['message'], buttonColor);
           }
 
         }else{
@@ -1139,21 +1154,76 @@ class ApiDataProvider extends ChangeNotifier {
         bool status=apiResponse['status'];
         if(status){
           Get.back();
-          showSnackbar(context, apiResponse['message']);
+          showSnackbar(context, apiResponse['message'],buttonColor);
         }else{
           Get.back();
           print('status is not true from validateVoucher ');
-          showSnackbar(context, apiResponse['message']);
+          showSnackbar(context, apiResponse['message'],redColor);
         }
       }else{
         Get.back();
         print('status code is not 200 from validateVoucher ');
-        showSnackbar(context, apiResponse['error']);
+        showSnackbar(context, apiResponse['error'][0],redColor);
       }
 
     }catch(e){
       Get.back();
       print('try catch error from validateVoucher $e');
+    }
+  }
+
+  Future privacyPolicy(BuildContext context) async{
+    Uri url=Uri.parse(SERVER_URL+'privacypolicy-termsconditions');
+    try{
+      var header={
+        'Content-Type':'application/json',
+      };
+      var response=await http.post(url,headers: header);
+      if(response.statusCode==200){
+        Map<String,dynamic> apiResponse=jsonDecode(response.body);
+        bool status=apiResponse['status'];
+        if(status){
+          appSetting=apiResponse['app_settings'];
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>TermsConditions()));
+        }else{
+          showSnackbar(context, apiResponse['message'], redColor);
+        }
+      }
+    }catch(e){
+      print('try catch error from privacyPolicy $e');
+    }
+  }
+  Future<bool> completeTransaction(BuildContext context,String token,int? transactionId,String status) async{
+    Uri url=Uri.parse(SERVER_URL+'complete-transaction');
+    try{
+      var header={
+        'Content-Type':'application/json',
+        "Authorization": "Bearer $token"
+      };
+      Map bodyData={
+        'transaction_id':transactionId,
+        'status':status
+      };
+      var body=jsonEncode(bodyData);
+      var response=await http.post(url,headers: header,body: body);
+      if(response.statusCode==200){
+        Map<String,dynamic> apiResponse=jsonDecode(response.body);
+        bool status=apiResponse['status'];
+        if(status){
+          showSnackbar(context, apiResponse['message'], buttonColor);
+          return true;
+        }else{
+          getError(apiResponse['error'], context);
+          return false;
+        }
+      }else{
+
+        showSnackbar(context, 'Something went wrong', redColor);
+        return false;
+      }
+    }catch(e){
+      print('try catch error from privacyPolicy $e');
+      return false;
     }
   }
 
@@ -1172,13 +1242,14 @@ class ApiDataProvider extends ChangeNotifier {
     });
   }
 
-  Stream<http.Response> showChat(BuildContext context,String token,int recieverId) async* {
+  Stream<http.Response> showChat(BuildContext context,String token,int recieverId,int? transactionId) async* {
     var header={
       'Content-Type':'application/json',
       'Authorization':'Bearer $token'
     };
     Map bodyData={
-      'receiver_id':recieverId
+      'receiver_id':recieverId,
+      'transaction_id':transactionId
     };
     var body=jsonEncode(bodyData);
     //print('stream builder 4');
@@ -1232,7 +1303,7 @@ class ApiDataProvider extends ChangeNotifier {
       verificationFailed: (FirebaseAuthException exception) {
         Get.back();
         print('Verification Failed ${exception.message}');
-        showSnackbar(context, 'Verification Failed');
+        showSnackbar(context, 'Verification Failed',redColor);
 
       },
       codeSent: (String verificationId, int? resendToken) async{
@@ -1249,9 +1320,9 @@ class ApiDataProvider extends ChangeNotifier {
 
 
 
-  void showSnackbar(BuildContext context, String text) {
+  void showSnackbar(BuildContext context, String text,Color color) {
     Get.showSnackbar(GetSnackBar(
-      backgroundColor: buttonColor,
+      backgroundColor: color,
       message: text,
       duration: Duration(seconds: 2),
       animationDuration: Duration(milliseconds: 500),

@@ -69,7 +69,7 @@ class CReferCode extends StatelessWidget {
                     Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                     codeController.text);
               }else{
-                Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data');
+                Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data',redColor);
               }
             })
 

@@ -151,10 +151,10 @@ class _LoginState extends State<Login> {
                 MainButton(text: 'Log in', onPress: () {
                   print('login clicked');
                   if(email==''){
-                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter email');
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter email',redColor);
                   }else{
                     if(password==''){
-                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter password');
+                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter password',redColor);
                     }else{
                       final bool isValid = EmailValidator.validate(email);
                       if(isValid){
@@ -169,7 +169,7 @@ class _LoginState extends State<Login> {
                          Provider.of<ApiDataProvider>(context,listen: false).check=false;
                        });
                       }else{
-                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid email address');
+                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid email address',redColor);
                       }
 
                     }

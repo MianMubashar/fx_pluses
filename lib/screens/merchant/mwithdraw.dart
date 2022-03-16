@@ -136,11 +136,11 @@ class _MWithdrawState extends State<MWithdraw> {
                   if (balance2 >= balance) {
                     if (balance2 == 0) {
                       Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
-                          context, 'Add balance in your wallet for withdraw');
+                          context, 'Add balance in your wallet for withdraw',redColor);
                     } else {
                       if (accountHolderName.text.isNotEmpty &&
                           accountNumber.text.isNotEmpty && amount.text.isNotEmpty) {
-                        Get.dialog(CustomLoader());
+
                         await Provider.of<ApiDataProvider>(context, listen: false)
                             .updateWallet(
                             context,
@@ -155,20 +155,20 @@ class _MWithdrawState extends State<MWithdraw> {
                         amount.clear();
                         accountNumber.clear();
                         accountHolderName.clear();
-                        Get.back();
+
                       } else {
                         Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
-                            context, 'Please enter valid data to proceed');
+                            context, 'Please enter valid data to proceed',redColor);
                       }
                     }
                   } else {
                     Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
-                        context, 'Your wallet balance is insufficient');
+                        context, 'Your wallet balance is insufficient',redColor);
                   }
                 }else{
                   Provider.of<ApiDataProvider>(context, listen: false)
                       .showSnackbar(
-                      context, 'Please enter valid data to proceed');
+                      context, 'Please enter valid data to proceed',redColor);
                 }
               })
             ],

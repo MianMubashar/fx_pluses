@@ -67,10 +67,10 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
       context,
       controller: _controller,
 
-      itemCount: 4, // This is required in case of custom style! Pass the number of items for the nav bar.
+      itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
       screens: _buildScreens(),
       confineInSafeArea: false,
-      handleAndroidBackButtonPress: true,
+      handleAndroidBackButtonPress: false,
 
 
       //stateManagement: false,
@@ -129,11 +129,11 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
         selectedIndex: _controller.index,
         onItemSelected: (index) {
 
-          setState(() {
 
-          });
             _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
-            print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${_controller.index}');
+            setState(() {
+
+            });
 
         },
       ),

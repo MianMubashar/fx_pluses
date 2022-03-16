@@ -150,7 +150,7 @@ class _MWalletState extends State<MWallet> with AutomaticKeepAliveClientMixin{
                           Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
                           Provider.of<ApiDataProvider>(context, listen: false).selectedCurrencyId);
                     }else{
-                      Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(context, 'Please select currency');
+                      Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(context, 'Please select currency',redColor);
                     }
                   },
                   child: Container(

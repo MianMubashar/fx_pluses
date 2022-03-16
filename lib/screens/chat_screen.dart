@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fx_pluses/model/show_chat_model.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
+import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/text_bubble.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -13,9 +15,11 @@ import '../constants.dart';
 
 class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
-   ChatScreen({Key? key,required this.reciever_id,required this.name}) : super(key: key);
+   ChatScreen({Key? key,required this.reciever_id,required this.name,required this.transactionId}) : super(key: key);
   int reciever_id;
   String name;
+  int? transactionId;
+
 
 
   @override
@@ -25,23 +29,106 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageText=TextEditingController();
   bool messageSentCheck=false;
+  double ratingBar=0;
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(
-            size: size,
-            onPress: () {
-              Navigator.pop(context);
-            },
-            text: widget.name,
-            check: true,
-          )),
+          child: AppBar(
+            centerTitle: true,
+            backgroundColor: buttonColor,
+            title: Text(
+              widget.name,
+              style: TextStyle(
+                  color: whiteColor, fontSize: 23, fontWeight: FontWeight.w600),
+            ),
+            leading: IconButton(
+              icon: Image.asset(
+                'assets/images/backbutton.png',
+                height: size.height * 0.08,
+                width: size.width * 0.08,
+              ),
+              onPressed: (){
+                Navigator.pop(context);
+              },
+            ),
+            actions: [
+              Provider.of<ApiDataProvider>(context,listen: false).id != 4?
+              IconButton(
+                icon: Icon(Icons.check,color: whiteColor,),
+                onPressed: () async{
+                  bool checkStatus=await Provider.of<ApiDataProvider>(context,listen: false).completeTransaction(context,
+                      Provider.of<ApiDataProvider>(context,listen: false).bearerToken , widget.transactionId, 'completed');
+                  if(checkStatus==true){
+                  showDialog(context: context, builder: (context){
+                    return Dialog(
+                      child: Container(
+                        height: size.height * 0.2,
+                        width:  size.width * 0.3,
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text('Rating',style: TextStyle(
+                              color: blackColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15
+                            ),),
+                            Center(
+                              child: RatingBar.builder(
+                                initialRating: ratingBar,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (rating) {
+                                  ratingBar=rating;
+                                  setState(() {
+
+                                  });
+                                  print(rating);
+                                },
+                              ),
+                            ),
+                        InkWell(
+                          onTap: (){},
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.04,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            //margin: EdgeInsets.only(bottom: bottomMargin==null ? 2 : bottomMargin!),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient: gradient,
+                            ),
+                            child: Center(child: Text('Rate',style: TextStyle(
+                                color: Colors.white
+                            ),)),
+                          ),
+                        ),
+                          ],
+                        ),
+                      ),
+                    );
+                  });
+                  }
+                },
+              ):Container()
+            ],
+          ),
+      ),
       body: Column(
         children: [
-          Stream_Builder(recieverId: widget.reciever_id),
+          Stream_Builder(recieverId: widget.reciever_id,transactionId: widget.transactionId,),
           Container(
             padding: EdgeInsets.only(left: 10,right: 10),
             decoration: BoxDecoration(
@@ -60,7 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       } else {
                         Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                             Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                            widget.reciever_id, '',result.files.single.path.toString(),'image' );
+                            widget.reciever_id, '',result.files.single.path.toString(),'image',widget.transactionId );
                         print(result.files.single.name);
                         print(result.files.single.path);
                       }
@@ -91,11 +178,17 @@ class _ChatScreenState extends State<ChatScreen> {
                   onPressed: () async {
                     if(messageText.text.isNotEmpty){
                       messageSentCheck=true;
+                      setState(() {
+
+                      });
                       await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                           Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                          widget.reciever_id, messageText.text,'','' );
+                          widget.reciever_id, messageText.text,'','',widget.transactionId );
                       messageText.clear();
                       messageSentCheck=false;
+                      setState(() {
+
+                      });
                     }else{
 
                     }
@@ -126,8 +219,9 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class Stream_Builder extends StatelessWidget {
-   Stream_Builder({Key? key,required this.recieverId}) : super(key: key);
+   Stream_Builder({Key? key,required this.recieverId,required this.transactionId}) : super(key: key);
   final int recieverId;
+  final int? transactionId;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -135,7 +229,8 @@ class Stream_Builder extends StatelessWidget {
           stream: Provider.of<ApiDataProvider>(context,listen: false).showChat(
             context,
             Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-            recieverId
+            recieverId,
+            transactionId
           ),
           builder: (context, snapshot) {
             if(!snapshot.hasData){

@@ -361,7 +361,8 @@ class _MCreateAccountState extends State<MCreateAccount> {
                               decoration: TextDecoration.underline,
                               color: newColor),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
+                            ..onTap = () async{
+                              await Provider.of<ApiDataProvider>(context,listen: false).privacyPolicy(context);
                               print('Terms and Conditions clicked');
                             }),
                       TextSpan(
@@ -374,7 +375,8 @@ class _MCreateAccountState extends State<MCreateAccount> {
                               decoration: TextDecoration.underline,
                               color: newColor),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
+                            ..onTap = () async{
+                              await Provider.of<ApiDataProvider>(context,listen: false).privacyPolicy(context);
                               print('Privacy and Policy clicked');
                             }),
                     ])),
@@ -388,40 +390,40 @@ class _MCreateAccountState extends State<MCreateAccount> {
                     print('continue presses');
                     if (firstName == '') {
                       Provider.of<ApiDataProvider>(context, listen: false)
-                          .showSnackbar(context, 'Please enter first name');
+                          .showSnackbar(context, 'Please enter first name',redColor);
                     } else {
                       if (lastName == '') {
                         Provider.of<ApiDataProvider>(context, listen: false)
-                            .showSnackbar(context, 'Please enter last name');
+                            .showSnackbar(context, 'Please enter last name',redColor);
                       } else {
                         if (email == '') {
                           Provider.of<ApiDataProvider>(context, listen: false)
-                              .showSnackbar(context, 'Please enter email');
+                              .showSnackbar(context, 'Please enter email',redColor);
                         } else {
                           final bool isValid = EmailValidator.validate(email);
                           if (!isValid) {
                             Provider.of<ApiDataProvider>(context, listen: false)
                                 .showSnackbar(context,
-                                    'Please enter valid email address');
+                                    'Please enter valid email address',redColor);
                           } else {
                             if (password == '') {
                               Provider.of<ApiDataProvider>(context,
                                       listen: false)
                                   .showSnackbar(
-                                      context, 'Please enter password');
+                                      context, 'Please enter password',redColor);
                             } else {
                               if (phoneNumber.toString().length <=
                                   countryCode.toString().length) {
                                 Provider.of<ApiDataProvider>(context,
                                         listen: false)
                                     .showSnackbar(
-                                        context, 'Please enter phone number');
+                                        context, 'Please enter phone number',redColor);
                               } else {
                                 if (!numberValid) {
                                   Provider.of<ApiDataProvider>(context,
                                           listen: false)
                                       .showSnackbar(context,
-                                          'Please enter valid phone number');
+                                          'Please enter valid phone number',redColor);
                                 } else {
                                   if (deviceToken == '') {
                                     const CircularProgressIndicator(

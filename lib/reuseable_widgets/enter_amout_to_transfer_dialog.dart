@@ -83,7 +83,7 @@ class EnterAmountToTransferDialog extends StatelessWidget {
                 InkWell(
                   onTap: () async{
                     if(amountController.text.isEmpty){
-                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount');
+                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount',redColor);
                     }else {
                       Navigator.pop(context);
                       await makePayment(

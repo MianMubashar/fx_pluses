@@ -70,16 +70,16 @@ class CTransferDialog extends StatelessWidget {
               InkWell(
                 onTap: () async{
                   if(amountController.text.isEmpty){
-                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount');
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount',redColor);
                   }else{
                     Navigator.pop(context);
-                    Get.dialog(CustomLoader());
+
                     await Provider.of<ApiDataProvider>(context,listen: false).updateWallet(context,
                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                         3, amountController.text,
                         Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['id'],
                         '', '',currency_id);
-                    Get.back();
+
 
                   }
 

@@ -15,9 +15,12 @@ class _MExchangeRatesState extends State<MExchangeRates> {
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(size: size,onPress: (){},text: 'Exchange Rates',check: true,)),
+          child: appbar(size: size,onPress: (){
+            Navigator.pop(context);
+          },text: 'Exchange Rates',check: true,)),
       body: Padding(
         padding: EdgeInsets.only(left: 15,right: 15,top: 15),
         child: Column(

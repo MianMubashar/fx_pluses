@@ -165,7 +165,7 @@ class MProfile extends StatelessWidget {
                                                         ),
                                                         MainButton(text: 'Update', onPress: (){
                                                           if(firstNameController.text.isEmpty || lastNameController.text.isEmpty){
-                                                            Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data');
+                                                            Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid data',redColor);
                                                           }else{
                                                             Navigator.pop(context);
                                                             Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,

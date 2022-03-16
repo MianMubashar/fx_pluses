@@ -108,7 +108,7 @@ class _OTPState extends State<OTP> {
 
                 MainButton(text: 'Verify', onPress: () async{
                   if(smsCode.length < 6){
-                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid code');
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid code',redColor);
                   }else{
                     await verifyOtpCode();
                   }

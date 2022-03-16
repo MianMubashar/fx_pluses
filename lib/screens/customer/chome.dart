@@ -1,14 +1,9 @@
-import 'package:country_currency_pickers/country_pickers.dart';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
-import 'package:fx_pluses/model/user_wallets_model.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
-import 'package:fx_pluses/reuseable_widgets/appbar.dart';
-import 'package:fx_pluses/reuseable_widgets/main_button.dart';
-import 'package:fx_pluses/screens/chat_screen.dart';
-import 'package:fx_pluses/screens/customer/cmerchant_profile.dart';
 import 'package:fx_pluses/screens/customer/profile.dart';
 import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
@@ -396,24 +391,24 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CMerchantProfile(name:  Provider.of<ApiDataProvider>(
-                                                          context,
-                                                          listen: false)
-                                                          .top_five_merchant_list[
-                                                      index]
-                                                          .first_name +
-                                                          Provider.of<ApiDataProvider>(
-                                                              context,
-                                                              listen: false)
-                                                              .top_five_merchant_list[
-                                                          index]
-                                                              .last_name,
-                                                        country: country,
-                                                        profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             CMerchantProfile(name:  Provider.of<ApiDataProvider>(
+                                          //                 context,
+                                          //                 listen: false)
+                                          //                 .top_five_merchant_list[
+                                          //             index]
+                                          //                 .first_name +
+                                          //                 Provider.of<ApiDataProvider>(
+                                          //                     context,
+                                          //                     listen: false)
+                                          //                     .top_five_merchant_list[
+                                          //                 index]
+                                          //                     .last_name,
+                                          //               country: country,
+                                          //               profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
                                         },
                                         child: CircleAvatar(
                                           radius: 30,
@@ -426,24 +421,24 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                       ),
                                       InkWell(
                                         onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      CMerchantProfile(name:  Provider.of<ApiDataProvider>(
-                                                          context,
-                                                          listen: false)
-                                                          .top_five_merchant_list[
-                                                      index]
-                                                          .first_name +
-                                                          Provider.of<ApiDataProvider>(
-                                                              context,
-                                                              listen: false)
-                                                              .top_five_merchant_list[
-                                                          index]
-                                                              .last_name,
-                                                        country: country,
-                                                        profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             CMerchantProfile(name:  Provider.of<ApiDataProvider>(
+                                          //                 context,
+                                          //                 listen: false)
+                                          //                 .top_five_merchant_list[
+                                          //             index]
+                                          //                 .first_name +
+                                          //                 Provider.of<ApiDataProvider>(
+                                          //                     context,
+                                          //                     listen: false)
+                                          //                     .top_five_merchant_list[
+                                          //                 index]
+                                          //                     .last_name,
+                                          //               country: country,
+                                          //               profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
                                         },
                                         child: Container(
                                           padding: EdgeInsets.only(left: 10),
@@ -517,7 +512,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                         Provider.of<ApiDataProvider>(context,
                                                 listen: false)
                                             .showSnackbar(context,
-                                                'Account balance is insuffcient');
+                                                'Account balance is insuffcient',redColor);
                                       } else {
 
                                         await Provider.of<ApiDataProvider>(
