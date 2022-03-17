@@ -430,19 +430,44 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                       color: newColor,
                                     );
                                   } else {
-                                    Provider.of<ApiDataProvider>(context, listen: false).setContact(phoneNumbercontroller.text);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setFirstName(firstName);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setLastName(lastName);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setEmail(email);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setPassword(password);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setToken(deviceToken);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setCountryCode(countryCode);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setRoleId(4);
-                                    Provider.of<ApiDataProvider>(context, listen: false).setUserId(usernameController.text);
-                                     // Provider.of<ApiDataProvider>(context, listen: false).otp_check==false
-                                     Provider.of<ApiDataProvider>(context, listen: false)
-                                         .otpRequest(phoneNumber, context);
-                                  }
+                                    if(usernameController.text.length < 5){
+                                      Provider.of<ApiDataProvider>(context,
+                                          listen: false)
+                                          .showSnackbar(context,
+                                          'Username should be atleast 5 characters long',redColor);
+                                    }else {
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setContact(
+                                          phoneNumbercontroller.text);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setFirstName(
+                                          firstName);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setLastName(
+                                          lastName);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setEmail(
+                                          email);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setPassword(
+                                          password);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setToken(
+                                          deviceToken);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false)
+                                          .setCountryCode(countryCode);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setRoleId(4);
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false).setUserId(
+                                          usernameController.text);
+                                      // Provider.of<ApiDataProvider>(context, listen: false).otp_check==false
+                                      Provider.of<ApiDataProvider>(
+                                          context, listen: false)
+                                          .otpRequest(phoneNumber, context);
+                                    }
+                                    }
                                 }
                               }
                             }

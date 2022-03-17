@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 
 class CRecieverInfo extends StatefulWidget {
   static final String id='CRecieverInfo_Screen';
-  const CRecieverInfo({Key? key}) : super(key: key);
+  CRecieverInfo({Key? key,required this.reciever_id,required this.transaction_id}) : super(key: key);
+  int reciever_id;
+  int  transaction_id;
 
   @override
   _CRecieverInfoState createState() => _CRecieverInfoState();
 }
 
 class _CRecieverInfoState extends State<CRecieverInfo> {
+  TextEditingController firstNameController=TextEditingController();
+  TextEditingController lastNameController=TextEditingController();
+  TextEditingController accountNumberController=TextEditingController();
+  TextEditingController swiftCodeController=TextEditingController();
+  TextEditingController amountController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +32,10 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
           preferredSize: Size.fromHeight(60),
           child: appbar(
             size: size,
-            onPress: () {},
-            text: 'John Snow',
+            onPress: () {
+              Navigator.pop(context);
+            },
+            text: 'Enter reciever information',
             check: true,
           )),
       body: Padding(
@@ -48,6 +59,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  controller: firstNameController,
                   decoration: InputDecoration(
                       hintText: 'First Name',
                       helperStyle: TextStyle(color: blackColor),
@@ -73,6 +85,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  controller: lastNameController,
                   decoration: InputDecoration(
                       hintText: 'Last Name',
                       helperStyle: TextStyle(color: blackColor),
@@ -98,6 +111,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  controller: accountNumberController,
                   decoration: InputDecoration(
                       hintText: 'Account/IBAN Number',
                       helperStyle: TextStyle(color: blackColor),
@@ -123,6 +137,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  controller: swiftCodeController,
                   decoration: InputDecoration(
                       hintText: 'Swift Code',
                       helperStyle: TextStyle(color: blackColor),
@@ -148,6 +163,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
               Container(
                 margin: EdgeInsets.only(bottom: 30),
                 child: TextField(
+                  controller: amountController,
                   decoration: InputDecoration(
                       hintText: 'Amount',
                       helperStyle: TextStyle(color: blackColor),
@@ -163,7 +179,24 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                 ),
               ),
 
-              MainButton(text: "Request", onPress: (){})
+              MainButton(text: "Send", onPress: () async{
+                if(firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty && accountNumberController.text.isNotEmpty
+                    && swiftCodeController.text.isNotEmpty && amountController.text.isNotEmpty){
+                 await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
+                      Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                      widget.reciever_id,
+                      "Name: "+firstNameController.text +lastNameController.text +'\n'+
+                      "Account Number: "+accountNumberController.text + "\n"+
+                      "Swift Code: "+swiftCodeController.text + "\n"+
+                      "Amount: "+amountController.text,
+                      '',
+                      '',
+                      widget.transaction_id);
+                 Navigator.pop(context);
+                }else{
+
+                }
+              })
             ],
           ),
         ),

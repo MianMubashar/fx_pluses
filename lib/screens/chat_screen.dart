@@ -8,6 +8,7 @@ import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/text_bubble.dart';
+import 'package:fx_pluses/screens/customer/creciever_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -59,75 +60,151 @@ class _ChatScreenState extends State<ChatScreen> {
               IconButton(
                 icon: Icon(Icons.check,color: whiteColor,),
                 onPressed: () async{
-                  bool checkStatus=await Provider.of<ApiDataProvider>(context,listen: false).completeTransaction(context,
-                      Provider.of<ApiDataProvider>(context,listen: false).bearerToken , widget.transactionId, 'completed');
-                  if(checkStatus==true){
-                  showDialog(context: context, builder: (context){
-                    return Dialog(
-                      child: Container(
-                        height: size.height * 0.2,
-                        width:  size.width * 0.3,
-                        decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadius.circular(10)
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text('Rating',style: TextStyle(
-                              color: blackColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15
-                            ),),
-                            Center(
-                              child: RatingBar.builder(
-                                initialRating: ratingBar,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                onRatingUpdate: (rating) {
-                                  ratingBar=rating;
-                                  setState(() {
 
-                                  });
-                                  print(rating);
-                                },
+                    showDialog(context: context,barrierDismissible: false, builder: (context){
+                      return Dialog(
+                        child: Container(
+                          height: size.height * 0.2,
+                          width: size.width * 0.5,
+                          padding: EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(15)
+
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(height: 15,),
+                              Text('Are you sure you want to complete this transaction?',textAlign: TextAlign.center,style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold
+                              ),),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width:size.width * 0.3,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        primary: buttonColor
+                                      ),
+                                        onPressed: () async{
+                                      bool checkStatus=await Provider.of<ApiDataProvider>(context,listen: false).completeTransaction(context,
+                                          Provider.of<ApiDataProvider>(context,listen: false).bearerToken , widget.transactionId, 'completed');
+                                      if(!checkStatus){
+                                          return;
+                                      }
+                                      Navigator.pop(context);
+                                      showDialog(context: context,barrierDismissible: false, builder: (context){
+                                        return Dialog(
+                                          child: Container(
+                                            height: size.height * 0.2,
+                                            width:  size.width * 0.3,
+                                            decoration: BoxDecoration(
+                                                color: whiteColor,
+                                                borderRadius: BorderRadius.circular(15)
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text('Rating',style: TextStyle(
+                                                    color: blackColor,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15
+                                                ),),
+                                                Center(
+                                                  child: RatingBar.builder(
+                                                    initialRating: ratingBar,
+                                                    minRating: 1,
+                                                    direction: Axis.horizontal,
+                                                    allowHalfRating: false,
+                                                    itemCount: 5,
+                                                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                                                    itemBuilder: (context, _) => Icon(
+                                                      Icons.star,
+                                                      color: Colors.amber,
+                                                    ),
+                                                    onRatingUpdate: (rating) {
+                                                      ratingBar=rating;
+                                                      setState(() {
+
+                                                      });
+                                                      print(rating);
+                                                    },
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: (){
+                                                    Provider.of<ApiDataProvider>(context,listen: false).rateMerchant(context,
+                                                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken ,
+                                                        widget.reciever_id, ratingBar);
+                                                  },
+                                                  child: Container(
+                                                    height: MediaQuery.of(context).size.height * 0.04,
+                                                    width: MediaQuery.of(context).size.width * 0.5,
+                                                    //margin: EdgeInsets.only(bottom: bottomMargin==null ? 2 : bottomMargin!),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(20),
+                                                      gradient: gradient,
+                                                    ),
+                                                    child: Center(child: Text('Rate',style: TextStyle(
+                                                        color: Colors.white
+                                                    ),)),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    }, child:Text('Yes') ),
+                                  ),
+                                  SizedBox(width: 5,),
+                                  SizedBox(
+                                    width: size.width * 0.3,
+                                    child: ElevatedButton(style: ElevatedButton.styleFrom(
+                                        primary: buttonColor
+                                    ),
+                                        onPressed: (){
+                                      Navigator.pop(context);
+                                    }, child:Text('No') ),
+                                  ),
+
+                                ],
                               ),
-                            ),
-                        InkWell(
-                          onTap: (){},
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.04,
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            //margin: EdgeInsets.only(bottom: bottomMargin==null ? 2 : bottomMargin!),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: gradient,
-                            ),
-                            child: Center(child: Text('Rate',style: TextStyle(
-                                color: Colors.white
-                            ),)),
+                            ],
                           ),
                         ),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
-                  }
+                      );
+                    });
+
+
                 },
               ):Container()
             ],
           ),
       ),
       body: Column(
+
         children: [
+          InkWell(
+            onTap: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo(transaction_id: widget.transactionId!,reciever_id: widget.reciever_id,)));
+            },
+            child: Container(
+              height: size.height * 0.05,
+              width: size.width,
+              decoration: BoxDecoration(
+                color: buttonColor
+              ),
+              child: Center(child: Text('Enter reciever details',style: TextStyle(
+                color: whiteColor,
+
+              ),)),
+            ),
+          ),
           Stream_Builder(recieverId: widget.reciever_id,transactionId: widget.transactionId,),
           Container(
             padding: EdgeInsets.only(left: 10,right: 10),

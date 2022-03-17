@@ -84,7 +84,6 @@ class _OTPState extends State<OTP> {
                     showFieldAsBox: true,
                     margin: EdgeInsets.only(bottom: 40,left: 10),
                     borderRadius: BorderRadius.circular(10),
-
                     fieldWidth: size.width * 0.1,
                     //runs when a code is typed in
                     onCodeChanged: (String code) {

@@ -292,22 +292,29 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                         if (element.country == country) {
                           print(element.country);
                           countryCode = element.country_code;
-                          FocusScope.of(context).requestFocus(FocusNode());
-                          await Provider.of<ApiDataProvider>(context,
-                              listen: false)
-                              .getMercchantes(context, token!, amount.text,
-                              element.country_code,
-                              Provider
-                                  .of<ApiDataProvider>(context,
-                                  listen: false)
-                                  .selectedCurrencyId);
+                          if(amountWritten !='0' ){
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            await Provider.of<ApiDataProvider>(context,
+                                listen: false)
+                                .getMercchantes(context, token!, amount.text,
+                                element.country_code,
+                                Provider
+                                    .of<ApiDataProvider>(context,
+                                    listen: false)
+                                    .selectedCurrencyId);
 
-                          amount.clear();
+                            amount.clear();
 
 
-                          setState(() {
-                            check = true;
-                          });
+                            setState(() {
+                              check = true;
+                            });
+                          }else{
+                            Provider
+                                .of<ApiDataProvider>(context,
+                                listen: false).showSnackbar(context, 'Please enter amount more then 0', redColor);
+                          }
+
                         }
                       });
                     }
@@ -492,7 +499,13 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                                     fontSize: 12,
                                                     fontWeight:
                                                         FontWeight.w500),
-                                              )
+                                              ),
+                                              Text(Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].rating,
+                                              style: TextStyle(
+                                                  color: greyColor,
+                                                  fontSize: 12,
+                                                  fontWeight:
+                                                  FontWeight.bold),),
                                             ],
                                           ),
                                         ),

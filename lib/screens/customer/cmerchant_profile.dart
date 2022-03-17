@@ -120,7 +120,7 @@ class CMerchantProfile extends StatelessWidget {
 
             SizedBox(height: 56,),
             MainButton(text: 'Add Payment', onPress: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo()));
+              //Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo()));
             })
 
           ],

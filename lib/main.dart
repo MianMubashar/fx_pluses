@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -46,11 +48,13 @@ void main() async {
   await Firebase.initializeApp();
   Stripe.publishableKey =
       'pk_test_51KUTspLzsnFu9r8sQ875Kw4dt72c3zSKZSIWf8MuNTp1tZSAY8kLTZWEqoNt3OeZ7P2h1eay3PkIpLedJ2aDGN5000lPap05Pc';
+  HttpOverrides.global=MyHttpOverrides();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => ApiDataProvider()),
       ChangeNotifierProvider(create: (context) => LanguageProvider())
     ],
+
     child: MyApp(),
   ));
 }
@@ -101,7 +105,7 @@ class MyApp extends StatelessWidget {
         //CInviteFriend2.id: (context) => CInviteFriend2(),
         //CMerchantProfile.id: (context) => CMerchantProfile(),
         CMessages.id: (context) => CMessages(),
-        CRecieverInfo.id: (context) => CRecieverInfo(),
+        //CRecieverInfo.id: (context) => CRecieverInfo(),
         CReferCode.id: (context) => CReferCode(),
         CWallet.id: (context) => CWallet(),
         CWalletToWalletTransfer.id: (context) => CWalletToWalletTransfer(),
@@ -120,5 +124,12 @@ class MyApp extends StatelessWidget {
       },
       home: SplashScreen(),
     );
+  }
+}
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }

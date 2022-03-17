@@ -188,6 +188,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                       hintText: 'example@gmail.com',
                       helperStyle: TextStyle(color: blackColor),

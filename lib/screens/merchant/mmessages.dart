@@ -183,7 +183,7 @@ class Stream_Builder extends StatelessWidget {
               }
               print('stream builder 3');
 
-              return ListView(
+              return list.isEmpty?Center(child: Text('No Active Transaction Chat Exists'),):ListView(
                 children: list,
               );
             }

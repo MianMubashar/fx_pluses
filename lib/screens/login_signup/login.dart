@@ -131,8 +131,19 @@ class _LoginState extends State<Login> {
                 ),
                 InkWell(
                   onTap: () {
-                    print('forgot password clicked');
-                  },
+                    if(email==''){
+                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter email', redColor);
+                    }else{
+                      final bool isValid = EmailValidator.validate(email);
+                      if(!isValid){
+                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid email', redColor);
+                      }else{
+                    Provider.of<ApiDataProvider>(context,listen: false).forgotPassword(context,
+                         email);
+                    //print('forgot password clicked');
+                  }
+                    }
+                    },
                   child: const Align(
                     alignment: Alignment.centerRight,
                     child: Text(

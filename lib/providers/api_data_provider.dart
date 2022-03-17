@@ -18,6 +18,7 @@ import 'package:fx_pluses/reuseable_widgets/customloader.dart';
 import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:fx_pluses/screens/customer/cbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/customer/chome.dart';
+import 'package:fx_pluses/screens/customer/cmessages.dart';
 import 'package:fx_pluses/screens/customer/cwallet_to_wallet_transfer.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
 import 'package:fx_pluses/screens/merchant/mbottom_navigation_bar.dart';
@@ -33,25 +34,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiDataProvider extends ChangeNotifier {
   static const String BASE_URL =
-      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+      'http://console.fxpluses.com/';
+   // static const String BASE_URL =
+   //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 //setters
   String? _firstName='';
-  String? _lastName;
-  String? _email;
-  String? _password;
-  String? _contact;
-  String? _countryCode;
-  String? _userId;
-  int? _roleId;
-  String? _deviceToken;
+  String? _lastName='';
+  String? _email='';
+  String? _password='';
+  String? _contact='';
+  String? _countryCode='';
+  String? _userId='';
+  int? _roleId=0;
+  String? _deviceToken='';
   String verificationIdRecieved='';
   bool check=false;
   String? _balance='';
   int? _defaultCurrencyId;
-  String? _defaultCurrencyName;
-  String? _defaultCurrencySymbol;
+  String? _defaultCurrencyName='';
+  String? _defaultCurrencySymbol='';
   List<TopFiveMerchants> top_five_merchant_list=[];
   List<GetCountriesForMerchants> getCountriesForMerchants=[];
   List<String> _countryNameForTopFiveMerchantes=[];
@@ -66,12 +69,12 @@ class ApiDataProvider extends ChangeNotifier {
   Map? appSetting;
   Map? aboutUs;
   String? _bearerToken='';
-  String? _rating;
-  String? _default_currency;
+  String? _rating='';
+  String? _default_currency='';
   String _photoUrl='';
   int? _id;
   int? _selectedCurrencyId;
-  String? _selectedWalletBalance;
+  String? _selectedWalletBalance='';
   String? _selectedCurrencySymbol='';
 
 
@@ -182,6 +185,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
       };
 
       Map customerData = {
@@ -247,7 +251,7 @@ class ApiDataProvider extends ChangeNotifier {
       }
     } catch (e) {
       Get.back();
-      // print('try catch error ${e}');
+       print('try catch error ${e}');
       // showSnackbar(context, e.toString());
       //Map<String, dynamic> apiResponse = jsonDecode(response.body);
       //getError(apiResponse['error'], context);
@@ -265,6 +269,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
       };
       Map customerData = {
         'email': email,
@@ -398,6 +403,7 @@ class ApiDataProvider extends ChangeNotifier {
     try{
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token",
       };
       var response= await http.post(url,headers: header);
@@ -475,10 +481,28 @@ class ApiDataProvider extends ChangeNotifier {
           await merchantTransactionRequests(context, token);
           await getCurrencies(context, token);
 
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          //int? initScreen = 0;
+          int? role;
+          bool? isLoggedIn;
+          //initScreen = await preferences.getInt('initScreen');
+          role=await preferences.getInt(SharedPreference.roleIdKey);
+          isLoggedIn=await preferences.getBool(SharedPreference.userLoggedInKey);
+
+          print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${isLoggedIn} and ${roleId}');
+           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> role==5 ?CBottomNavigationBar():MBottomNavigationBar()));
+
+        }else{
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
+
         }
+      }else{
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
       }
     }catch(e){
-      print('try catch error from validateToken');
+      print('try catch error from validateToken $e');
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
+
     }
   }
 
@@ -490,6 +514,7 @@ class ApiDataProvider extends ChangeNotifier {
       if(token!=null) {
         var header = {
           "Content-Type": "application/json",
+          "Accept" : "application/json",
           "Authorization": "Bearer $token",
         };
 
@@ -551,7 +576,7 @@ class ApiDataProvider extends ChangeNotifier {
                 print('balance ccccccccccccccccccccccccccccccccc ${element.wallet}');
                 //SharedPreference.saveWalletBalanceSharedPreferences(total.toString());
                 setBalance(total.toString());
-
+                setSelectedWalletBalance(total.toString());
               }
               //Provider.of<ApiDataProvider>(context,listen: false).user
             });
@@ -583,11 +608,13 @@ class ApiDataProvider extends ChangeNotifier {
   }
 
   Future getMercchantes(BuildContext context, String token,String amount,String countryCode,int currency_id) async {
+Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'get-merchants');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token",
       };
       Map data = {
@@ -605,16 +632,22 @@ class ApiDataProvider extends ChangeNotifier {
 
         bool status=apiResponse['status'];
         if(status){
+          Get.back();
           List<dynamic> data=apiResponse['merchants'];
           for(int i=0; i<data.length;i++){
             top_five_merchant_list.add(TopFiveMerchants.fromJson(data[i]));
           }
 
+        }else{
+          Get.back();
+          showSnackbar(context, apiResponse['message'],redColor);
         }
       }else{
+        Get.back();
         showSnackbar(context, apiResponse['error'],redColor);
       }
     }catch(e){
+      Get.back();
       Get.showSnackbar(GetSnackBar(
         backgroundColor: redColor,
         message: 'Something went wrong',
@@ -630,6 +663,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token",
       };
 
@@ -665,6 +699,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token",
       };
 
@@ -701,6 +736,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token",
       };
       Map data = {
@@ -711,8 +747,9 @@ class ApiDataProvider extends ChangeNotifier {
       };
       var body = jsonEncode(data);
       var response = await http.post(url, body: body, headers: header);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
       if(response.statusCode==200){
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
+
         bool status=apiResponse['status'];
         if(status){
           Get.back();
@@ -733,10 +770,11 @@ class ApiDataProvider extends ChangeNotifier {
               PageTransitionAnimation.cupertino);
         }else{
           Get.back();
-          getError(apiResponse['error'], context);
+          showSnackbar(context, apiResponse['message'], redColor);
         }
       }else{
         Get.back();
+        getError(apiResponse['error'], context);
       }
     }catch(e){
       Get.back();
@@ -750,6 +788,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token",
       };
       var response=await http.post(url,headers: header);
@@ -780,6 +819,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token",
       };
       Map data = {
@@ -807,6 +847,7 @@ class ApiDataProvider extends ChangeNotifier {
     try{
       var header={
         "Content-Type":"application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
       var response=await http.post(url,headers: header);
@@ -863,6 +904,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
       var response = await http.post(url, headers: header);
@@ -890,6 +932,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
       var response = await http.post(url, headers: header);
@@ -945,6 +988,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
       Map bodyData={
@@ -971,6 +1015,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
       Map bodyData={
@@ -998,7 +1043,7 @@ class ApiDataProvider extends ChangeNotifier {
         );
 
         response=await request.send();
-        //print(response.body);
+        // print(response);
         print(response.statusCode);
       }
 
@@ -1034,6 +1079,7 @@ class ApiDataProvider extends ChangeNotifier {
       try {
         var header = {
           "Content-Type": "application/json",
+          "Accept" : "application/json",
           "Authorization": "Bearer $token"
         };
         Map bodyData = {
@@ -1067,6 +1113,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
       Map bodyData={
@@ -1140,6 +1187,7 @@ class ApiDataProvider extends ChangeNotifier {
     try{
       var header={
         "Content-Type": "application/json",
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
 
@@ -1177,6 +1225,7 @@ class ApiDataProvider extends ChangeNotifier {
     try{
       var header={
         'Content-Type':'application/json',
+        "Accept" : "application/json",
       };
       var response=await http.post(url,headers: header);
       if(response.statusCode==200){
@@ -1198,6 +1247,7 @@ class ApiDataProvider extends ChangeNotifier {
     try{
       var header={
         'Content-Type':'application/json',
+        "Accept" : "application/json",
         "Authorization": "Bearer $token"
       };
       Map bodyData={
@@ -1227,9 +1277,80 @@ class ApiDataProvider extends ChangeNotifier {
     }
   }
 
+  Future rateMerchant(BuildContext context,String token, int merchant_id,double rate) async {
+    Uri url=Uri.parse(SERVER_URL+'rate-merchant');
+    try{
+      var  header={
+        "Content-Type":"application/json",
+        "Accept" : "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map  bodyData={
+        'merchant_id':merchant_id,
+        'rating':rate
+      };
+      var body=jsonEncode(bodyData);
+      var response=await http.post(url,headers: header,body: body);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      if(response.statusCode==200){
+
+        bool status=apiResponse['status'];
+        if(status){
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CBottomNavigationBar()));
+          showSnackbar(context, apiResponse['message'], buttonColor);
+        }else{
+          Navigator.pop(context);
+          showSnackbar(context, apiResponse['message'], redColor);
+        }
+      }else{
+        Navigator.pop(context);
+        getError(apiResponse['error'], context);
+      }
+    }catch(e){
+      print('try catch error from rateMerchant $e');
+      showSnackbar(context, e.toString(), redColor);
+    }
+  }
+  Future forgotPassword(BuildContext context, String email_id) async {
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL+'password-reset-email');
+    try{
+      var  header={
+        "Content-Type":"application/json",
+        "Accept" : "application/json",
+      };
+      Map  bodyData={
+        'email':email_id
+      };
+      var body=jsonEncode(bodyData);
+      var response=await http.post(url,headers: header,body: body);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      if(response.statusCode==200){
+
+        bool status=apiResponse['status'];
+        if(status){
+          Get.back();
+          showSnackbar(context, apiResponse['message'], buttonColor);
+        }else{
+          Get.back();
+          print('status is not true from forgot password');
+          showSnackbar(context, apiResponse['message'], redColor);
+        }
+      }else{
+        Get.back();
+        getError(apiResponse['error'], context);
+      }
+    }catch(e){
+      Get.back();
+      print('try catch error from rateMerchant $e');
+      showSnackbar(context, e.toString(), redColor);
+    }
+  }
+
   Stream<http.Response> chatMenu(BuildContext context,String token) async* {
     var header={
       'Content-Type':'application/json',
+      "Accept" : "application/json",
       'Authorization':'Bearer $token'
     };
     //print('stream builder 4');
@@ -1245,6 +1366,7 @@ class ApiDataProvider extends ChangeNotifier {
   Stream<http.Response> showChat(BuildContext context,String token,int recieverId,int? transactionId) async* {
     var header={
       'Content-Type':'application/json',
+      "Accept" : "application/json",
       'Authorization':'Bearer $token'
     };
     Map bodyData={
@@ -1267,15 +1389,7 @@ class ApiDataProvider extends ChangeNotifier {
     await auth.verifyPhoneNumber(
       phoneNumber: phoneNumber.toString(),
       verificationCompleted: (PhoneAuthCredential credential) async {
-        Get.back();
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OTP(
-              verificationIdRecieved: verificationIdRecieved,
-            ),
-          ),
-        );
+
         // auth.signInWithCredential(credential).then((value) {
         //   print('You are signed in succefully');
         //   registerRequest(
@@ -1309,6 +1423,15 @@ class ApiDataProvider extends ChangeNotifier {
       codeSent: (String verificationId, int? resendToken) async{
         verificationIdRecieved = verificationId;
         print('verification id  is $verificationId');
+        Get.back();
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OTP(
+              verificationIdRecieved: verificationId,
+            ),
+          ),
+        );
       },
       timeout: Duration(seconds: 60),
       codeAutoRetrievalTimeout: (String verificatioId) {

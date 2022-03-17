@@ -5,13 +5,15 @@ class TopFiveMerchants {
   String email;
   String profile;
   String countryCode;
+  String rating;
   TopFiveMerchants(
       {required this.id,
       required this.first_name,
       required this.last_name,
       required this.email,
       required this.profile,
-        required this.countryCode});
+        required this.countryCode,
+        required this.rating});
 
   factory TopFiveMerchants.fromJson(Map<String, dynamic> data) {
     return TopFiveMerchants(
@@ -20,6 +22,7 @@ class TopFiveMerchants {
         last_name: data['last_name'],
         email: data['email'],
         profile: data['profile_photo_path'],
-      countryCode: data['country_code'],);
+      countryCode: data['country_code'],
+    rating: data['rating']);
   }
 }

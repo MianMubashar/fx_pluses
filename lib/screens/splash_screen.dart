@@ -24,19 +24,19 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  int? initScreen = 0;
+
 
   int? userId;
   String? firstName;
   String? lastName;
   String? email;
   String? balance;
-  int? roleId;
+
   String? countryCode;
   String? rating;
   String? photoUrl;
   String? bearerToken;
-  bool? isLoggedIn;
+
   int? defaultCurrenceyId;
   String? defaultCurrenceyName;
   String? defaultCurrenceySymbol;
@@ -49,15 +49,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    initScreen = await preferences.getInt('initScreen');
-    roleId=await preferences.getInt(SharedPreference.roleIdKey);
-    isLoggedIn=await preferences.getBool(SharedPreference.userLoggedInKey);
+    // initScreen = await preferences.getInt('initScreen');
+    // roleId=await preferences.getInt(SharedPreference.roleIdKey);
 
-    if(isLoggedIn==true){
+
+
       print('get data');
-      SharedPreferences preferences=await SharedPreferences.getInstance();
+      //SharedPreferences preferences=await SharedPreferences.getInstance();
       bearerToken=await preferences.getString(SharedPreference.bearerTokenKey);
-      Provider.of<ApiDataProvider>(context,listen: false).validateToken(context, bearerToken!);
+      await Provider.of<ApiDataProvider>(context,listen: false).validateToken(context, bearerToken!);
       // userId=await preferences.getInt(SharedPreference.userIdKey);
       // firstName=await preferences.getString(SharedPreference.firstNameKey);
       // lastName=await preferences.getString(SharedPreference.lastNameKey);
@@ -104,25 +104,11 @@ class _SplashScreenState extends State<SplashScreen> {
       // await Provider.of<ApiDataProvider>(context, listen: false).getCountries(context, bearerToken!);
       // await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context, bearerToken!);
       // await Provider.of<ApiDataProvider>(context,listen: false).getCurrencies(context, bearerToken!);
-    }
 
 
-    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${isLoggedIn} and ${roleId}');
-    Timer(
-      Duration(seconds: 3),
-          () => Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => initScreen == null || initScreen==0
-              ? Home()
-              : isLoggedIn==true ?
-          roleId==5?
-          CBottomNavigationBar():
-          MBottomNavigationBar():
-          Login(),
-        ),
-      ),
-    );
+
+
+
   }
 
   @override
