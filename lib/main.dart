@@ -65,64 +65,68 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: [
-        // delegate from flutter_localization
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: L10n.all,
-      locale: Provider.of<LanguageProvider>(context, listen: true).locale,
-      localeResolutionCallback: (locale, supportedLocales) {
-        if (supportedLocales.contains(locale)) {
-          return locale;
-        }
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: GetMaterialApp(
 
-        // define pt_BR as default when de language code is 'pt'
-        if (locale?.languageCode == 'pt') {
-          return Locale('pt', 'BR');
-        }
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: [
+          // delegate from flutter_localization
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: L10n.all,
+        locale: Provider.of<LanguageProvider>(context, listen: true).locale,
+        localeResolutionCallback: (locale, supportedLocales) {
+          if (supportedLocales.contains(locale)) {
+            return locale;
+          }
 
-        // default language
-        return Locale('en', 'US');
-      },
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+          // define pt_BR as default when de language code is 'pt'
+          if (locale?.languageCode == 'pt') {
+            return Locale('pt', 'BR');
+          }
+
+          // default language
+          return Locale('en', 'US');
+        },
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+       // initialRoute: SplashScreen.id,
+        routes: {
+          SplashScreen.id: (context) => SplashScreen(),
+          Home.id: (context) => Home(),
+          Login.id: (context) => Login(),
+          CBottomNavigationBar.id: (context)=>CBottomNavigationBar(),
+          CCreateAccount.id: (context) => CCreateAccount(),
+          CHome.id: (context) => CHome(),
+          CInviteFriend.id: (context) => CInviteFriend(),
+          //CInviteFriend2.id: (context) => CInviteFriend2(),
+          //CMerchantProfile.id: (context) => CMerchantProfile(),
+          CMessages.id: (context) => CMessages(),
+          //CRecieverInfo.id: (context) => CRecieverInfo(),
+          CReferCode.id: (context) => CReferCode(),
+          CWallet.id: (context) => CWallet(),
+          CWalletToWalletTransfer.id: (context) => CWalletToWalletTransfer(),
+          CProfile.id: (context) => CProfile(),
+          Signup.id: (context) => Signup(),
+          MCreateAccount.id: (context) => MCreateAccount(),
+          MHome.id: (context) => MHome(),
+          MTransactionRequests.id: (context) => MTransactionRequests(),
+          About.id: (context) => About(),
+          // ChatScreen.id: (context) => ChatScreen(),
+          ContactUs.id: (context) => ContactUs(),
+          FAQ.id: (context) => FAQ(),
+          HelpSupport.id: (context) => HelpSupport(),
+          TermsConditions.id: (context) => TermsConditions(),
+          TransactionHistory.id: (context) => TransactionHistory()
+        },
+        home: SplashScreen(),
       ),
-     // initialRoute: SplashScreen.id,
-      routes: {
-        SplashScreen.id: (context) => SplashScreen(),
-        Home.id: (context) => Home(),
-        Login.id: (context) => Login(),
-        CBottomNavigationBar.id: (context)=>CBottomNavigationBar(),
-        CCreateAccount.id: (context) => CCreateAccount(),
-        CHome.id: (context) => CHome(),
-        CInviteFriend.id: (context) => CInviteFriend(),
-        //CInviteFriend2.id: (context) => CInviteFriend2(),
-        //CMerchantProfile.id: (context) => CMerchantProfile(),
-        CMessages.id: (context) => CMessages(),
-        //CRecieverInfo.id: (context) => CRecieverInfo(),
-        CReferCode.id: (context) => CReferCode(),
-        CWallet.id: (context) => CWallet(),
-        CWalletToWalletTransfer.id: (context) => CWalletToWalletTransfer(),
-        CProfile.id: (context) => CProfile(),
-        Signup.id: (context) => Signup(),
-        MCreateAccount.id: (context) => MCreateAccount(),
-        MHome.id: (context) => MHome(),
-        MTransactionRequests.id: (context) => MTransactionRequests(),
-        About.id: (context) => About(),
-        // ChatScreen.id: (context) => ChatScreen(),
-        ContactUs.id: (context) => ContactUs(),
-        FAQ.id: (context) => FAQ(),
-        HelpSupport.id: (context) => HelpSupport(),
-        TermsConditions.id: (context) => TermsConditions(),
-        TransactionHistory.id: (context) => TransactionHistory()
-      },
-      home: SplashScreen(),
     );
   }
 }

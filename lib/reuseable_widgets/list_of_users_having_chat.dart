@@ -52,7 +52,7 @@ class ListOfUsersHavingChat extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: NetworkImage((profile!.contains('http') || profile!.contains('https'))?profile!:
+                      backgroundImage: NetworkImage((profile!.contains('http') || profile!.contains('https'))? profile!:
                       profile_url+profile!,),
                     )
                     // Container(

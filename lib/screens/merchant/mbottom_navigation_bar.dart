@@ -32,9 +32,7 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
   getData() async{
     await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
         Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
-    setState(() {
 
-    });
   }
 
   @override
@@ -100,10 +98,15 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
         ],
         selectedIndex: _controller.index,
         onItemSelected: (index) async{
+          _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
 
-
+          if(index==0 || index == 1){
             await getData();
-            _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
+          }
+          setState(() {
+
+          });
+
 
         },
       ),

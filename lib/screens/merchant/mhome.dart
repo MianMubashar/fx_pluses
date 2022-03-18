@@ -53,13 +53,13 @@ class _MHomeState extends State<MHome> {
             ),
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 15.0),
+                padding: const EdgeInsets.only(right: 15.0,top: 5),
                 child: InkWell(
                   onTap: (){
                     Navigator.push(context,MaterialPageRoute(builder: (context)=>MProfile()));
                   },
                   child: Provider.of<ApiDataProvider>(context,listen: true).photoUrl !=null ?CircleAvatar(
-                    radius: 30,
+                    radius: 25,
                     backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("https") ||
                         Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("http")) ?
                     Provider.of<ApiDataProvider>(context,listen: true).photoUrl :

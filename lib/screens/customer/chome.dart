@@ -82,10 +82,11 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                 },
                 child: CircleAvatar(
                   radius: 20,
-                  backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("https") ||
+                  backgroundImage: NetworkImage(
+                      (Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("https") ||
                       Provider.of<ApiDataProvider>(context,listen: true).photoUrl.contains("http")) ?
-                  Provider.of<ApiDataProvider>(context,listen: true).photoUrl :
-                  (profile_url + Provider.of<ApiDataProvider>(context,listen: true).photoUrl)),
+                  Uri.encodeFull(Provider.of<ApiDataProvider>(context,listen: true).photoUrl) :
+                  profile_url + Provider.of<ApiDataProvider>(context,listen: true).photoUrl),
                 ),
               ),
             )

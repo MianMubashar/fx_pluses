@@ -1,3 +1,4 @@
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/constants.dart';
@@ -6,14 +7,37 @@ import 'package:fx_pluses/reuseable_widgets/customloader.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/screens/customer/cinvite_friend2.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 class CInviteFriend extends StatelessWidget {
   static final String id='CInviteFriend_Screen';
    CInviteFriend({Key? key}) : super(key: key);
 
   List<Contact> contacts=[];
-  Future getData() async{
-    contacts=await ContactsService.getContacts(withThumbnails: false);
+  Future getData(BuildContext context) async{
+    Get.dialog(CustomLoader());
+  var serviceStatus= await Permission.contacts.status;
+  if(serviceStatus==PermissionStatus.granted) {
+
+    contacts = await ContactsService.getContacts(withThumbnails: false);
+    Get.back();
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>CInviteFriend2(contacts: contacts,)));
+  }else{
+    Get.back();
+    Permission.contacts.request().then((value) async{
+      if(value.isGranted){
+        Get.dialog(CustomLoader());
+        contacts = await ContactsService.getContacts(withThumbnails: false);
+        Get.back();
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>CInviteFriend2(contacts: contacts,)));
+      }else{
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CInviteFriend()));
+      }
+    });
+   // serviceStatus=await Permission.contacts.status;
+
+  }
   }
 
   @override
@@ -66,11 +90,11 @@ class CInviteFriend extends StatelessWidget {
             ),
 
             MainButton(text: 'Invite', onPress: () async{
-              Get.dialog(CustomLoader());
-              await getData();
-              Get.back();
+
+              await getData(context);
+
               print('bbbbbbbbbbbbbbbbbbbbbb${contacts.length}');
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>CInviteFriend2(contacts: contacts,)));
+
             },)
           ],
         ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/onboarding_content.dart';
 import 'package:fx_pluses/model/user_wallets_model.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
@@ -35,13 +36,14 @@ class _SplashScreenState extends State<SplashScreen> {
   String? countryCode;
   String? rating;
   String? photoUrl;
-  String? bearerToken;
+  String bearerToken='';
 
   int? defaultCurrenceyId;
   String? defaultCurrenceyName;
   String? defaultCurrenceySymbol;
   String? listData;
   List<UserWalletsModel>? list;
+
 
 
 
@@ -56,8 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
       print('get data');
       //SharedPreferences preferences=await SharedPreferences.getInstance();
-      bearerToken=await preferences.getString(SharedPreference.bearerTokenKey);
-      await Provider.of<ApiDataProvider>(context,listen: false).validateToken(context, bearerToken!);
+      bearerToken=await preferences.getString(SharedPreference.bearerTokenKey) ?? "";
+      await Provider.of<ApiDataProvider>(context,listen: false).validateToken(context, bearerToken);
       // userId=await preferences.getInt(SharedPreference.userIdKey);
       // firstName=await preferences.getString(SharedPreference.firstNameKey);
       // lastName=await preferences.getString(SharedPreference.lastNameKey);
@@ -125,12 +127,17 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: Color(0xFF8F38FF)),
-      child: Center(
-          child: Image.asset(
-        'assets/images/logo.png',
-        height: MediaQuery.of(context).size.height * 0.5,
-        width: MediaQuery.of(context).size.width * 0.5,
-      )),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+              child: Image.asset(
+            'assets/images/logo.png',
+            height: MediaQuery.of(context).size.height * 0.5,
+            width: MediaQuery.of(context).size.width * 0.5,
+          )),
+          CircularProgressIndicator(color: whiteColor,)
+        ],
+      ),
     );
   }
 }

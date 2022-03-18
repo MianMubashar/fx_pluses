@@ -36,6 +36,12 @@ class _CCreateAccountState extends State<CCreateAccount> {
   String? userId;
   bool numberValid=false;
   final TextEditingController controller = TextEditingController();
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController userNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  //final TextEditingController controller = TextEditingController();
 
 
   @override
@@ -92,7 +98,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: InternationalPhoneNumberInput(
-                  countries: ['PK'],
+                 // countries: ['PK'],
                   //formatInput: true,
                   initialValue: phoneNumber,
                   errorMessage: 'Invalid Phone Nummber',
@@ -108,7 +114,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
                   ),
                   autoValidateMode: AutovalidateMode.disabled,
                   selectorConfig: const SelectorConfig(
-                    selectorType: PhoneInputSelectorType.DROPDOWN,
+                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                     setSelectorButtonAsPrefixIcon: true,
                     leadingPadding: 0,
                     useEmoji: true,
@@ -138,6 +144,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  controller: firstNameController,
                   decoration: InputDecoration(
                       hintText: 'First Name',
                       helperStyle: TextStyle(color: blackColor),
@@ -163,6 +170,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  controller: lastNameController,
                   decoration: InputDecoration(
                       hintText: 'Last Name',
                       helperStyle: TextStyle(color: blackColor),
@@ -188,6 +196,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
               Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                       hintText: 'example@gmail.com',
@@ -214,6 +223,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
               Container(
                 margin: EdgeInsets.only(bottom: 5),
                 child: TextField(
+                  controller: passwordController,
                   obscureText: obscure,
                   autocorrect: false,
                   enableSuggestions: false,
@@ -331,6 +341,11 @@ class _CCreateAccountState extends State<CCreateAccount> {
                                           userId,
                                           5,
                                           deviceToken);
+                                      controller.clear();
+                                      firstNameController.clear();
+                                      lastNameController.clear();
+                                      emailController.clear();
+                                      passwordController.clear();
 
                                   }
                                 }

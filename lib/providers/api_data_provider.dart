@@ -35,8 +35,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiDataProvider extends ChangeNotifier {
   static const String BASE_URL =
       'http://console.fxpluses.com/';
-   // static const String BASE_URL =
-   //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+  //  static const String BASE_URL =
+  //      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 //setters
@@ -71,7 +71,7 @@ class ApiDataProvider extends ChangeNotifier {
   String? _bearerToken='';
   String? _rating='';
   String? _default_currency='';
-  String _photoUrl='';
+  String? _photoUrl;
   int? _id;
   int? _selectedCurrencyId;
   String? _selectedWalletBalance='';
@@ -749,19 +749,22 @@ Get.dialog(CustomLoader());
       var response = await http.post(url, body: body, headers: header);
       Map<String,dynamic> apiResponse=jsonDecode(response.body);
       if(response.statusCode==200){
-
         bool status=apiResponse['status'];
         if(status){
-          Get.back();
+
+          Get.back(closeOverlays: true);
           print(apiResponse['message']);
           Map transaction=apiResponse['transaction'];
 
           Get.showSnackbar(GetSnackBar(
             backgroundColor: buttonColor,
             message: apiResponse['message'],
-            duration: Duration(seconds: 3),
-            animationDuration: Duration(milliseconds: 500),
-          ));
+            duration: Duration(seconds: 2),
+            animationDuration: Duration(milliseconds: 100),
+          ),);
+
+
+
 
           pushNewScreen(context,
               screen: ChatScreen(reciever_id: id,name: name,transactionId: transaction['id'],),
@@ -769,8 +772,10 @@ Get.dialog(CustomLoader());
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);
         }else{
-          Get.back();
+          Get.back(closeOverlays: true);
           showSnackbar(context, apiResponse['message'], redColor);
+
+
         }
       }else{
         Get.back();
@@ -806,7 +811,7 @@ Get.dialog(CustomLoader());
           showSnackbar(context, apiResponse['message'],redColor);
         }
       }else{
-        showSnackbar(context, 'Something went wrong',redColor);
+        // showSnackbar(context, 'Something went wrong',redColor);
       }
     }catch(e){
       showSnackbar(context, 'Something went wrong',redColor);
@@ -899,7 +904,8 @@ Get.dialog(CustomLoader());
   //   }
   // }
 
-  Future customerTrancationHistory(BuildContext context,String token,) async{
+  Future<void> customerTrancationHistory(BuildContext context,String token,) async{
+    Get.dialog(CustomLoader());
     Uri url=Uri.parse(SERVER_URL + "customer-transaction-history");
     try {
       var header = {
@@ -913,17 +919,23 @@ Get.dialog(CustomLoader());
         bool status = apiResponse['status'];
 
         if(status){
-          usersHavingChatList.clear();
+          Get.back();
+          customerTransactionHistoryList.clear();
           List<dynamic> data=apiResponse['transaction_history'];
           for(int i=0;i<data.length;i++){
             customerTransactionHistoryList.add(CustomerTransactionHistoryModel.fromJson(data[i]));
           }
+          // return true;
         }
       }else{
         print('status is not 200');
+        Get.back();
+        // return false;
       }
     }catch(e){
       print('try catch error from customerTrancationHistory $e');
+      Get.back();
+      // return false;
     }
   }
 
@@ -1476,15 +1488,15 @@ Get.dialog(CustomLoader());
 
 
   //getters
-  String get firstName => _firstName!;
-  String get lastName => _lastName!;
-  String get email => _email!;
-  String get password => _password!;
-  String get userId => _userId!;
+  String get firstName => _firstName ?? '';
+  String get lastName => _lastName ?? '';
+  String get email => _email ?? '';
+  String get password => _password ?? '';
+  String get userId => _userId ?? '';
   int get roleId => _roleId!;
-  String get contact => _contact!;
-  String get countryCode => _countryCode!;
-  String get deviceToken => _deviceToken!;
+  String get contact => _contact ?? '';
+  String get countryCode => _countryCode??'';
+  String get deviceToken => _deviceToken??'';
   String get balance => _balance!;
   int get id => _id!;
   List<String> get countryNameForTopFiveMerchantes =>
@@ -1492,7 +1504,7 @@ Get.dialog(CustomLoader());
   String get bearerToken => _bearerToken!;
 
   String get default_currency => _default_currency!;
-  String get photoUrl => _photoUrl;
+  String get photoUrl => _photoUrl??'';
   String get rating => _rating!;
   int get defaultCurrencyId => _defaultCurrencyId!;
   String get defaultCurrencyName => _defaultCurrencyName!;

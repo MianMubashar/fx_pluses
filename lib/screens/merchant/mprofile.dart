@@ -213,14 +213,14 @@ class MProfile extends StatelessWidget {
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>TransactionHistory()));
                       },
                     ),
-                    ProfileCard(
-                      iconData: 'assets/icons/couponicon.png',
-                      size: size,
-                      text: 'Exchange Rates',
-                      onPress: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>MExchangeRates()));
-                      },
-                    ),
+                    // ProfileCard(
+                    //   iconData: 'assets/icons/couponicon.png',
+                    //   size: size,
+                    //   text: 'Exchange Rates',
+                    //   onPress: () {
+                    //     Navigator.push(context, MaterialPageRoute(builder: (context)=>MExchangeRates()));
+                    //   },
+                    // ),
                     ProfileCard(
                       iconData: 'assets/icons/helpicon.png',
                       size: size,

@@ -164,7 +164,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: InternationalPhoneNumberInput(
-                  countries: ['PK'],
+                  //countries: ['PK'],
                   //formatInput: true,
                   initialValue: phoneNumber,
                   errorMessage: 'Invalid Phone Nummber',
@@ -180,7 +180,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
                   ),
                   autoValidateMode: AutovalidateMode.disabled,
                   selectorConfig: const SelectorConfig(
-                    selectorType: PhoneInputSelectorType.DROPDOWN,
+                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
                     setSelectorButtonAsPrefixIcon: true,
                     leadingPadding: 0,
                     useEmoji: true,
@@ -466,6 +466,12 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                       Provider.of<ApiDataProvider>(
                                           context, listen: false)
                                           .otpRequest(phoneNumber, context);
+                                      firstNameController.clear();
+                                      lastNameController.clear();
+                                      emailController.clear();
+                                      passwordController.clear();
+                                      phoneNumbercontroller.clear();
+                                      usernameController.clear();
                                     }
                                     }
                                 }

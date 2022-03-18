@@ -64,6 +64,7 @@ dependencies:
   contacts_service: ^0.6.3
   url_launcher: ^6.0.20
   flutter_rating_bar: ^4.0.0
+  permission_handler: ^9.2.0
 
 dev_dependencies:
   flutter_test:

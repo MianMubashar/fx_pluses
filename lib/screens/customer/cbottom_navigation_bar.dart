@@ -134,7 +134,7 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
             setState(() {
 
             });
-
+            print(Provider.of<ApiDataProvider>(context,listen: false).photoUrl);
         },
       ),
     );

@@ -56,7 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
               },
             ),
             actions: [
-              Provider.of<ApiDataProvider>(context,listen: false).id != 4?
+              Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
               IconButton(
                 icon: Icon(Icons.check,color: whiteColor,),
                 onPressed: () async{
@@ -189,6 +189,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
 
         children: [
+          Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
           InkWell(
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo(transaction_id: widget.transactionId!,reciever_id: widget.reciever_id,)));
@@ -204,7 +205,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
               ),)),
             ),
-          ),
+          ):Container(),
           Stream_Builder(recieverId: widget.reciever_id,transactionId: widget.transactionId,),
           Container(
             padding: EdgeInsets.only(left: 10,right: 10),
