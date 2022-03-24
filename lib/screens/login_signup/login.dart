@@ -175,7 +175,7 @@ class _LoginState extends State<Login> {
 
                         });
 
-                       Provider.of<ApiDataProvider>(context,listen: false).loginRequest(context, email, password, deviceToken);
+                       Provider.of<ApiDataProvider>(context,listen: false).loginRequest(context, email.trim(), password, deviceToken);
                        setState(() {
                          Provider.of<ApiDataProvider>(context,listen: false).check=false;
                        });

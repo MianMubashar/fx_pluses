@@ -22,7 +22,9 @@ import '../../constants.dart';
 
 class CProfile extends StatelessWidget {
   static final String id='CProfile_Screen';
-   CProfile({Key? key}) : super(key: key);
+   CProfile({Key? key,required this.backButtonEnabled}) : super(key: key);
+
+   bool backButtonEnabled=false;
 
   TextEditingController firstNameController=TextEditingController();
   TextEditingController lastNameController=TextEditingController();
@@ -34,12 +36,20 @@ class CProfile extends StatelessWidget {
       resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: appbar(
+          child: backButtonEnabled==true ?appbar(
+            size: size,
+            onPress: () {
+              Navigator.pop(context);
+            },
+            text: 'Profile',
+            check: true,
+          ):appbar(
             size: size,
             onPress: () {},
             text: 'Profile',
             check: false,
-          )),
+          )
+      ),
       body: Padding(
         padding: const EdgeInsets.only(left: 15, right: 15, top: 30),
         child: SingleChildScrollView(
@@ -109,7 +119,7 @@ class CProfile extends StatelessWidget {
                                         SizedBox(
                                           width:MediaQuery.of(context).size.width * 0.45,
                                           child: Text(
-                                            Provider.of<ApiDataProvider>(context,listen: false).firstName + Provider.of<ApiDataProvider>(context,listen: false).lastName,
+                                            Provider.of<ApiDataProvider>(context,listen: false).firstName+" " + Provider.of<ApiDataProvider>(context,listen: false).lastName,
                                             softWrap: false,overflow: TextOverflow.fade,style: TextStyle(
                                                 color: textBlackColor,
                                                 fontSize: 18,

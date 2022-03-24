@@ -200,7 +200,7 @@ class _ChatScreenState extends State<ChatScreen> {
               decoration: BoxDecoration(
                 color: buttonColor
               ),
-              child: Center(child: Text('Enter reciever details',style: TextStyle(
+              child: Center(child: Text('Enter Receiver Detail',style: TextStyle(
                 color: whiteColor,
 
               ),)),

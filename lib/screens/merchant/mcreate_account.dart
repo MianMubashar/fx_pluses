@@ -1,7 +1,4 @@
-import 'package:country_currency_pickers/country.dart';
 import 'package:country_currency_pickers/country_pickers.dart';
-import 'package:country_currency_pickers/currency_picker_dropdown.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -10,12 +7,9 @@ import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/top_container.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
-import 'package:fx_pluses/screens/merchant/otp.dart';
-import 'package:intl/intl.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:provider/provider.dart';
 import 'package:email_validator/email_validator.dart';
-import 'dart:io';
 
 import '../../../constants.dart';
 
@@ -59,68 +53,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
     deviceToken = (await FirebaseMessaging.instance.getToken())!;
   }
 
-  // Future<void> otpRequest(phoneNumber, BuildContext context) async {
-  //   var auth = FirebaseAuth.instance;
-  //   await auth.verifyPhoneNumber(
-  //     phoneNumber: phoneNumber.toString(),
-  //     verificationCompleted: (PhoneAuthCredential credential) async {
-  //       auth.signInWithCredential(credential).then((value) {
-  //         print('You are signed in succefully');
-  //         Provider.of<ApiDataProvider>(context, listen: false).registerRequest(
-  //           context,
-  //           firstName,
-  //           lastName,
-  //           email,
-  //           password,
-  //           phoneNumber.toString(),
-  //           countryCode,
-  //           userId,
-  //           4,
-  //           deviceToken,
-  //         );
-  //       });
-  //
-  //     },
-  //     verificationFailed: (FirebaseAuthException exception) {
-  //       print('Verification Failed ${exception.message}');
-  //       Provider.of<ApiDataProvider>(context, listen: false)
-  //           .showSnackbar(context, 'Verification Failed');
-  //     },
-  //     codeSent: (String verificationId, int? resendToken) async{
-  //       verificationIdRecieved = verificationId;
-  //       print('verification id  is $verificationId');
-  //       await Provider.of<ApiDataProvider>(context, listen: false)
-  //           .setContact(phoneNumber.toString());
-  //       await Provider.of<ApiDataProvider>(context, listen: false)
-  //           .setUserId(userId);
-  //       await Provider.of<ApiDataProvider>(context, listen: false)
-  //           .setFirstName(firstName);
-  //       await Provider.of<ApiDataProvider>(context, listen: false)
-  //           .setLastName(lastName);
-  //       await Provider.of<ApiDataProvider>(context, listen: false).setEmail(email);
-  //       await Provider.of<ApiDataProvider>(context, listen: false)
-  //           .setPassword(password);
-  //       await Provider.of<ApiDataProvider>(context, listen: false)
-  //           .setCountryCode(countryCode);
-  //       await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(4);
-  //       await Provider.of<ApiDataProvider>(context, listen: false)
-  //           .setToken(deviceToken);
-  //
-  //       Navigator.pushReplacement(
-  //         context,
-  //         MaterialPageRoute(
-  //           builder: (context) => OTP(
-  //             verificationIdRecieved: verificationIdRecieved,
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //     timeout: Duration(seconds: 60),
-  //     codeAutoRetrievalTimeout: (String verificatioId) {
-  //       verificationIdRecieved = verificatioId;
-  //     },
-  //   );
-  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -436,34 +369,36 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                           .showSnackbar(context,
                                           'Username should be atleast 5 characters long',redColor);
                                     }else {
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false).setContact(
                                           phoneNumbercontroller.text);
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false).setFirstName(
                                           firstName);
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false).setLastName(
                                           lastName);
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false).setEmail(
                                           email);
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false).setPassword(
                                           password);
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false).setToken(
                                           deviceToken);
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false)
                                           .setCountryCode(countryCode);
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false).setRoleId(4);
-                                      Provider.of<ApiDataProvider>(
+                                     await Provider.of<ApiDataProvider>(
                                           context, listen: false).setUserId(
                                           usernameController.text);
+                                     await Provider.of<ApiDataProvider>(
+                                          context, listen: false).setRegisterUserCountryName(CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
                                       // Provider.of<ApiDataProvider>(context, listen: false).otp_check==false
-                                      Provider.of<ApiDataProvider>(
+                                      await Provider.of<ApiDataProvider>(
                                           context, listen: false)
                                           .otpRequest(phoneNumber, context);
                                       firstNameController.clear();

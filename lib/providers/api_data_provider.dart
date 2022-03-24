@@ -10,6 +10,7 @@ import 'package:fx_pluses/model/customer_transaction_history_model.dart';
 import 'package:fx_pluses/model/faqs_model.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
 import 'package:fx_pluses/model/get_currencies_model.dart';
+import 'package:fx_pluses/model/get_currency_rates_model.dart';
 import 'package:fx_pluses/model/merchant_transaction_requests_model.dart';
 import 'package:fx_pluses/model/show_chat_model.dart';
 import 'package:fx_pluses/model/top_five_merchants.dart';
@@ -35,78 +36,98 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiDataProvider extends ChangeNotifier {
   static const String BASE_URL =
       'http://console.fxpluses.com/';
-  //  static const String BASE_URL =
-  //      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+  // static const String BASE_URL =
+  //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
+
 //setters
-  String? _firstName='';
-  String? _lastName='';
-  String? _email='';
-  String? _password='';
-  String? _contact='';
-  String? _countryCode='';
-  String? _userId='';
-  int? _roleId=0;
-  String? _deviceToken='';
-  String verificationIdRecieved='';
-  bool check=false;
-  String? _balance='';
+  String? _firstName = '';
+  String? _lastName = '';
+  String? _email = '';
+  String? _password = '';
+  String? _contact = '';
+  String? _countryCode = '';
+  String? _userId = '';
+  int? _roleId = 0;
+  String? _deviceToken = '';
+  String verificationIdRecieved = '';
+  bool check = false;
+  String? _balance = '';
   int? _defaultCurrencyId;
-  String? _defaultCurrencyName='';
-  String? _defaultCurrencySymbol='';
-  List<TopFiveMerchants> top_five_merchant_list=[];
-  List<GetCountriesForMerchants> getCountriesForMerchants=[];
-  List<String> _countryNameForTopFiveMerchantes=[];
-  List<MerchantTransactionRequestsModel> merchantTransactionRequestsList=[];
-  List<AcceptedRequestMerchantsModel> acceptedRequestMerchantsList=[];
-  List<ChatMenuModel> usersHavingChatList=[];
-  List<CustomerTransactionHistoryModel> customerTransactionHistoryList=[];
-  List<FaqsModel> faqsList=[];
-  List<ShowChatModel> showChatList=[];
-  List<GetCurrenciesModel> getCurrenciesList=[];
-  List<UserWalletsModel> _userWalletModelList=[];
+  String? _defaultCurrencyName = '';
+  String? _defaultCurrencySymbol = '';
+  List<TopFiveMerchants> top_five_merchant_list = [];
+  List<GetCountriesForMerchants> getCountriesForMerchants = [];
+  List<String> _countryNameForTopFiveMerchantes = [];
+  List<MerchantTransactionRequestsModel> merchantTransactionRequestsList = [];
+  List<AcceptedRequestMerchantsModel> acceptedRequestMerchantsList = [];
+  List<ChatMenuModel> usersHavingChatList = [];
+  List<CustomerTransactionHistoryModel> customerTransactionHistoryList = [];
+  List<FaqsModel> faqsList = [];
+  List<ShowChatModel> showChatList = [];
+  List<GetCurrenciesModel> getCurrenciesList = [];
+  List<UserWalletsModel> _userWalletModelList = [];
+  List<GetCurrencyRatesModel> getCurrencyRateModelList=[];
   Map? appSetting;
   Map? aboutUs;
-  String? _bearerToken='';
-  String? _rating='';
-  String? _default_currency='';
+  String? _bearerToken = '';
+  String? _rating = '';
+  String? _default_currency = '';
   String? _photoUrl;
   int? _id;
   int? _selectedCurrencyId;
-  String? _selectedWalletBalance='';
-  String? _selectedCurrencySymbol='';
+  String? _selectedWalletBalance = '';
+  String? _selectedCurrencySymbol = '';
+  String? _countryName;
+
+
+  String? _currencySymbolForExchangeRateScreen;
 
 
 
-
-  setSelectedCurrencySymbol(String s){
-    _selectedCurrencySymbol=s;
+setRegisterUserCountryName(String n){
+  _countryName=n;
+}
+  setcurrencySymbolForExchangeRateScreen(String s) {
+    _currencySymbolForExchangeRateScreen = s;
+    notifyListeners();
   }
-  setSelectedWalletBalance(String b){
-    _selectedWalletBalance=b;
+  setSelectedCurrencySymbol(String s) {
+    _selectedCurrencySymbol = s;
   }
-  setSelectedCurrencyId(int idd){
-    _selectedCurrencyId=idd;
+
+  setSelectedWalletBalance(String b) {
+    _selectedWalletBalance = b;
   }
+
+  setSelectedCurrencyId(int idd) {
+    _selectedCurrencyId = idd;
+  }
+
   setUserWalletModelList(List<UserWalletsModel> list) {
     _userWalletModelList.clear();
-    _userWalletModelList=list;
+    _userWalletModelList = list;
   }
-  setDefaultCurrencyId(int idd){
-    _defaultCurrencyId=idd;
+
+  setDefaultCurrencyId(int idd) {
+    _defaultCurrencyId = idd;
   }
-  setdefaultCurrencyName(String n){
-    _defaultCurrencyName=n;
+
+  setdefaultCurrencyName(String n) {
+    _defaultCurrencyName = n;
   }
-  setdefaultCurrencySymbol(String s){
-    _defaultCurrencySymbol=s;
+
+  setdefaultCurrencySymbol(String s) {
+    _defaultCurrencySymbol = s;
   }
-  setId(int idd){
-   _id=idd;
- }
-  setBearerToken(String bt){
-    _bearerToken=bt;
+
+  setId(int idd) {
+    _id = idd;
+  }
+
+  setBearerToken(String bt) {
+    _bearerToken = bt;
   }
 
   setFirstName(String firstName) {
@@ -147,45 +168,44 @@ class ApiDataProvider extends ChangeNotifier {
     this._deviceToken = token;
   }
 
-  setBalance(String balance){
-    _balance=balance;
-    notifyListeners();
-  }
-  setCountryName(String name){
-    _countryNameForTopFiveMerchantes.add(name);
-  }
-  setRating(String r){
-    _rating=r;
-  }
-  setDefaultCurrency(String dc){
-    _default_currency=dc;
-  }
-  setPhotoUrl(String photo){
-    _photoUrl=photo;
+  setBalance(String balance) {
+    _balance = balance;
     notifyListeners();
   }
 
 
 
+  setRating(String r) {
+    _rating = r;
+  }
 
-  Future<bool> registerRequest(
-    BuildContext context,
-    String firstName,
-    String lastName,
-    String email,
-    String password,
-    String contact,
-    String countryCode,
-    String? userId,
-    int roleId,
-    String deviceToken,
-  ) async {
+  setDefaultCurrency(String dc) {
+    _default_currency = dc;
+  }
+
+  setPhotoUrl(String photo) {
+    _photoUrl = photo;
+    notifyListeners();
+  }
+
+
+  Future<bool> registerRequest(BuildContext context,
+      String firstName,
+      String lastName,
+      String email,
+      String password,
+      String contact,
+      String countryCode,
+      String? userId,
+      int roleId,
+      String deviceToken,
+      String country_name) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'register');
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
       };
 
       Map customerData = {
@@ -196,7 +216,8 @@ class ApiDataProvider extends ChangeNotifier {
         'contact_no': contact,
         'country_code': countryCode,
         'role_id': roleId,
-        'device_token': deviceToken
+        'device_token': deviceToken,
+        'country_name':country_name
       };
       Map merchantData = {
         'first_name': firstName,
@@ -207,7 +228,8 @@ class ApiDataProvider extends ChangeNotifier {
         'country_code': countryCode,
         'user_id': userId,
         'role_id': roleId,
-        'device_token': deviceToken
+        'device_token': deviceToken,
+        'country_name':country_name
       };
 
       var body = jsonEncode(roleId == 5 ? customerData : merchantData);
@@ -239,20 +261,20 @@ class ApiDataProvider extends ChangeNotifier {
         } else {
           Get.back();
           print('status is $status');
-          showSnackbar(context, apiResponse['error'],redColor);
+          showSnackbar(context, apiResponse['error'], redColor);
           return false;
         }
       } else {
         Get.back();
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
-        Map<String, dynamic> a =apiResponse['error'];
+        Map<String, dynamic> a = apiResponse['error'];
         getError(a, context);
         return false;
       }
     } catch (e) {
       Get.back();
-       print('try catch error ${e}');
-      // showSnackbar(context, e.toString());
+      print('try catch error ${e}');
+       showSnackbar(context, e.toString(),redColor);
       //Map<String, dynamic> apiResponse = jsonDecode(response.body);
       //getError(apiResponse['error'], context);
     }
@@ -269,7 +291,7 @@ class ApiDataProvider extends ChangeNotifier {
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
       };
       Map customerData = {
         'email': email,
@@ -290,33 +312,42 @@ class ApiDataProvider extends ChangeNotifier {
         if (status) {
           _userWalletModelList.clear();
 
-          int user_id=apiResponse['user']['id'];
-          String firstName=apiResponse['user']['first_name'];
-          String lastName=apiResponse['user']['last_name'];
-          String email=apiResponse['user']['email'];
-         // String wallet=apiResponse['user']['wallet'];
-          int role_id=apiResponse['user']['role_id'];
-          String country_code=apiResponse['user']['country_code'];
-          String rating=apiResponse['user']['rating'];
+          int user_id = apiResponse['user']['id'];
+          String firstName = apiResponse['user']['first_name'];
+          String lastName = apiResponse['user']['last_name'];
+          String email = apiResponse['user']['email'];
+          // String wallet=apiResponse['user']['wallet'];
+          int role_id = apiResponse['user']['role_id'];
+          String country_code = apiResponse['user']['country_code'];
+          String rating = apiResponse['user']['rating'];
           //String? default_currency=apiResponse['user']['default_currency'];
-          String photo_url=apiResponse['user']['profile_photo_path'];
-          String token=apiResponse['token'];
-          int currencyId=apiResponse['user']['default_currency_id'];
-          String currencyName=apiResponse['user']['default_currency']['name'];
-          String currencySymbol=apiResponse['user']['default_currency']['symbol'];
-          List<dynamic> user_wallets_data=apiResponse['user']['user_wallet'];
+          String photo_url = apiResponse['user']['profile_photo_path'];
+          String token = apiResponse['token'];
+          int currencyId = apiResponse['user']['default_currency_id'];
+          String currencyName = apiResponse['user']['default_currency']['name'];
+          String currencySymbol = apiResponse['user']['default_currency']['symbol'];
+          List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
 
-          for(int i=0;i<user_wallets_data.length;i++){
-            if(UserWalletsModel.fromJson(user_wallets_data[i]).currency_id==currencyId){
-              await SharedPreference.saveWalletBalanceSharedPreferences(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
-              setBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
-              setSelectedWalletBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+          for (int i = 0; i < user_wallets_data.length; i++) {
+            if (UserWalletsModel
+                .fromJson(user_wallets_data[i])
+                .currency_id == currencyId) {
+              await SharedPreference.saveWalletBalanceSharedPreferences(
+                  UserWalletsModel
+                      .fromJson(user_wallets_data[i])
+                      .wallet);
+              setBalance(UserWalletsModel
+                  .fromJson(user_wallets_data[i])
+                  .wallet);
+              setSelectedWalletBalance(UserWalletsModel
+                  .fromJson(user_wallets_data[i])
+                  .wallet);
             }
-            _userWalletModelList.add(UserWalletsModel.fromJson(user_wallets_data[i]));
+            _userWalletModelList.add(
+                UserWalletsModel.fromJson(user_wallets_data[i]));
           }
-          final String encodedData=UserWalletsModel.encode(_userWalletModelList);
-
-
+          final String encodedData = UserWalletsModel.encode(
+              _userWalletModelList);
 
 
           await SharedPreference.saveUserIdSharedPreferences(user_id);
@@ -330,9 +361,12 @@ class ApiDataProvider extends ChangeNotifier {
           await SharedPreference.savePhotoUrlSharedPreferences(photo_url);
           await SharedPreference.saveBearerTokenSharedPreferences(token);
           await SharedPreference.saveIsLoggedInSharedPreferences(true);
-          await SharedPreference.saveDefaultCurrencyIdSharedPreferences(currencyId);
-          await SharedPreference.saveDefaultCurrencyNameSharedPreferences(currencyName);
-          await SharedPreference.saveDefaultCurrencySymbolSharedPreferences(currencySymbol);
+          await SharedPreference.saveDefaultCurrencyIdSharedPreferences(
+              currencyId);
+          await SharedPreference.saveDefaultCurrencyNameSharedPreferences(
+              currencyName);
+          await SharedPreference.saveDefaultCurrencySymbolSharedPreferences(
+              currencySymbol);
           await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
 
 
@@ -358,28 +392,27 @@ class ApiDataProvider extends ChangeNotifier {
           await merchantTransactionRequests(context, token);
           await getCurrencies(context, token);
           Get.back();
-          if(roleId==5){
+          if (roleId == 5) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => CBottomNavigationBar(),
+                builder: (context) => CBottomNavigationBar(index: 0,),
               ),
             );
-          }else{
-            if(roleId==4){
+          } else {
+            if (roleId == 4) {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                  builder: (context) => MBottomNavigationBar(),));
+                    builder: (context) => MBottomNavigationBar(index: 0,),));
             }
           }
-
 
 
           return false;
         } else {
           Get.back();
-          showSnackbar(context, apiResponse['message'],redColor);
+          showSnackbar(context, apiResponse['message'], redColor);
           print('status is $status');
           return false;
         }
@@ -387,8 +420,9 @@ class ApiDataProvider extends ChangeNotifier {
         Get.back();
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
         print(
-            "status code is ${response.statusCode} and ${apiResponse['error']}");
-        showSnackbar(context, 'Email or Password is incorrect',redColor);
+            "status code is ${response
+                .statusCode} and ${apiResponse['error']}");
+        showSnackbar(context, 'Email or Password is incorrect', redColor);
         return false;
       }
     } catch (e) {
@@ -398,48 +432,58 @@ class ApiDataProvider extends ChangeNotifier {
     }
   }
 
-  Future validateToken(BuildContext context,String token) async{
-    Uri url=Uri.parse(SERVER_URL + 'validate-token');
-    try{
+  Future validateToken(BuildContext context, String token) async {
+    Uri url = Uri.parse(SERVER_URL + 'validate-token');
+    try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token",
       };
-      var response= await http.post(url,headers: header);
-      if(response.statusCode ==200){
-        Map<String, dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
+      var response = await http.post(url, headers: header);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
           _userWalletModelList.clear();
 
-          int user_id=apiResponse['user']['id'];
-          String firstName=apiResponse['user']['first_name'];
-          String lastName=apiResponse['user']['last_name'];
-          String email=apiResponse['user']['email'];
+          int user_id = apiResponse['user']['id'];
+          String firstName = apiResponse['user']['first_name'];
+          String lastName = apiResponse['user']['last_name'];
+          String email = apiResponse['user']['email'];
           // String wallet=apiResponse['user']['wallet'];
-          int role_id=apiResponse['user']['role_id'];
-          String country_code=apiResponse['user']['country_code'];
-          String rating=apiResponse['user']['rating'];
+          int role_id = apiResponse['user']['role_id'];
+          String country_code = apiResponse['user']['country_code'];
+          String rating = apiResponse['user']['rating'];
           //String? default_currency=apiResponse['user']['default_currency'];
-          String photo_url=apiResponse['user']['profile_photo_path'];
+          String photo_url = apiResponse['user']['profile_photo_path'];
           // String token=apiResponse['token'];
-          int currencyId=apiResponse['user']['default_currency_id'];
-          String currencyName=apiResponse['user']['default_currency']['name'];
-          String currencySymbol=apiResponse['user']['default_currency']['symbol'];
-          List<dynamic> user_wallets_data=apiResponse['user']['user_wallet'];
+          int currencyId = apiResponse['user']['default_currency_id'];
+          String country_name=apiResponse['user']['country_name'];
+          String currencyName = apiResponse['user']['default_currency']['name'];
+          String currencySymbol = apiResponse['user']['default_currency']['symbol'];
+          List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
 
-          for(int i=0;i<user_wallets_data.length;i++){
-            if(UserWalletsModel.fromJson(user_wallets_data[i]).currency_id==currencyId){
-              await SharedPreference.saveWalletBalanceSharedPreferences(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
-              setBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
-              setSelectedWalletBalance(UserWalletsModel.fromJson(user_wallets_data[i]).wallet);
+          for (int i = 0; i < user_wallets_data.length; i++) {
+            if (UserWalletsModel
+                .fromJson(user_wallets_data[i])
+                .currency_id == currencyId) {
+              await SharedPreference.saveWalletBalanceSharedPreferences(
+                  UserWalletsModel
+                      .fromJson(user_wallets_data[i])
+                      .wallet);
+              setBalance(UserWalletsModel
+                  .fromJson(user_wallets_data[i])
+                  .wallet);
+              setSelectedWalletBalance(UserWalletsModel
+                  .fromJson(user_wallets_data[i])
+                  .wallet);
             }
-            _userWalletModelList.add(UserWalletsModel.fromJson(user_wallets_data[i]));
+            _userWalletModelList.add(
+                UserWalletsModel.fromJson(user_wallets_data[i]));
           }
-          final String encodedData=UserWalletsModel.encode(_userWalletModelList);
-
-
+          final String encodedData = UserWalletsModel.encode(
+              _userWalletModelList);
 
 
           await SharedPreference.saveUserIdSharedPreferences(user_id);
@@ -453,9 +497,12 @@ class ApiDataProvider extends ChangeNotifier {
           await SharedPreference.savePhotoUrlSharedPreferences(photo_url);
           await SharedPreference.saveBearerTokenSharedPreferences(token);
           await SharedPreference.saveIsLoggedInSharedPreferences(true);
-          await SharedPreference.saveDefaultCurrencyIdSharedPreferences(currencyId);
-          await SharedPreference.saveDefaultCurrencyNameSharedPreferences(currencyName);
-          await SharedPreference.saveDefaultCurrencySymbolSharedPreferences(currencySymbol);
+          await SharedPreference.saveDefaultCurrencyIdSharedPreferences(
+              currencyId);
+          await SharedPreference.saveDefaultCurrencyNameSharedPreferences(
+              currencyName);
+          await SharedPreference.saveDefaultCurrencySymbolSharedPreferences(
+              currencySymbol);
           await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
 
           await setId(user_id);
@@ -474,7 +521,7 @@ class ApiDataProvider extends ChangeNotifier {
           await setdefaultCurrencyName(currencyName);
           await setdefaultCurrencySymbol(currencySymbol);
           await setSelectedCurrencySymbol(currencySymbol);
-
+          await setRegisterUserCountryName(country_name);
 
 
           await getCountries(context, token);
@@ -486,35 +533,42 @@ class ApiDataProvider extends ChangeNotifier {
           int? role;
           bool? isLoggedIn;
           //initScreen = await preferences.getInt('initScreen');
-          role=await preferences.getInt(SharedPreference.roleIdKey);
-          isLoggedIn=await preferences.getBool(SharedPreference.userLoggedInKey);
+          role = await preferences.getInt(SharedPreference.roleIdKey);
+          isLoggedIn =
+          await preferences.getBool(SharedPreference.userLoggedInKey);
 
           print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaa ${isLoggedIn} and ${roleId}');
-           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> role==5 ?CBottomNavigationBar():MBottomNavigationBar()));
-
-        }else{
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
-
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) =>
+              role == 5
+                  ? CBottomNavigationBar(index: 0,)
+                  : MBottomNavigationBar(index: 0,)));
+        } else {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Login()));
         }
-      }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Login()));
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from validateToken $e');
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Login()));
-
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => Login()));
     }
   }
 
-  Future<bool> updateWallet(BuildContext context, String token,int wallet_action_id,String amount,int to_user_id,String accountNumber,String name,int currencyId) async{
+  Future<bool> updateWallet(BuildContext context, String token,
+      int wallet_action_id, String amount, int to_user_id, String accountNumber,
+      String name, int currencyId) async {
     Get.dialog(CustomLoader());
-    Uri url=Uri.parse(SERVER_URL + 'update-wallet');
+    Uri url = Uri.parse(SERVER_URL + 'update-wallet');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
-    try{
-      if(token!=null) {
+    try {
+      if (token != null) {
         var header = {
           "Content-Type": "application/json",
-          "Accept" : "application/json",
+          "Accept": "application/json",
           "Authorization": "Bearer $token",
         };
 
@@ -522,7 +576,7 @@ class ApiDataProvider extends ChangeNotifier {
         Map addBalanceData = {
           'wallet_action_id': wallet_action_id,
           'amount': amount,
-          'currency_id':currencyId
+          'currency_id': currencyId
           //'device_token': device_token
         };
         Map withdrawData = {
@@ -530,14 +584,14 @@ class ApiDataProvider extends ChangeNotifier {
           'acc_owner_name': name,
           'acc_number': accountNumber,
           'amount': amount,
-          'currency_id':currencyId
+          'currency_id': currencyId
           //'device_token': device_token
         };
         Map walletToWalletTransferData = {
           'wallet_action_id': wallet_action_id,
           'amount': amount,
           'to_user_id': to_user_id,
-          'currency_id':currencyId
+          'currency_id': currencyId
           //'device_token': device_token
         };
         var body = jsonEncode(
@@ -552,28 +606,31 @@ class ApiDataProvider extends ChangeNotifier {
 
           bool status = apiResponse['status'];
           if (status) {
-
             SharedPreferences pref = await SharedPreferences.getInstance();
-            String? token = await pref.getString(SharedPreference.bearerTokenKey);
-            String? wallletList=await pref.getString(SharedPreference.userWalletsKey);
-            List<UserWalletsModel> list=UserWalletsModel.decode(wallletList!);
+            String? token = await pref.getString(
+                SharedPreference.bearerTokenKey);
+            String? wallletList = await pref.getString(
+                SharedPreference.userWalletsKey);
+            List<UserWalletsModel> list = UserWalletsModel.decode(wallletList!);
 
             list.forEach((element) {
-              if(element.currency_id==selectedCurrencyId){
-                String amount1=element.wallet;
-                List a=amount1.split('.');
-                int amount2=int.parse(a[0]);
-                int amount3=int.parse(amount);
+              if (element.currency_id == selectedCurrencyId) {
+                String amount1 = element.wallet;
+                List a = amount1.split('.');
+                int amount2 = int.parse(a[0]);
+                int amount3 = int.parse(amount);
                 int total;
-                if(wallet_action_id==1){
-                   total=amount3+amount2;
-                }else{
-                  total=amount2-amount3;
+                if (wallet_action_id == 1) {
+                  total = amount3 + amount2;
+                } else {
+                  total = amount2 - amount3;
                 }
 
-                print('balance bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb${element.wallet}');
-                element.wallet=total.toString();
-                print('balance ccccccccccccccccccccccccccccccccc ${element.wallet}');
+                print('balance bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb${element
+                    .wallet}');
+                element.wallet = total.toString();
+                print('balance ccccccccccccccccccccccccccccccccc ${element
+                    .wallet}');
                 //SharedPreference.saveWalletBalanceSharedPreferences(total.toString());
                 setBalance(total.toString());
                 setSelectedWalletBalance(total.toString());
@@ -582,10 +639,11 @@ class ApiDataProvider extends ChangeNotifier {
             });
 
             await setUserWalletModelList(list);
-            final String encodedData=UserWalletsModel.encode(list);
-            await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
+            final String encodedData = UserWalletsModel.encode(list);
+            await SharedPreference.saveUserWalletsSharedPreferences(
+                encodedData);
             Get.back();
-            showSnackbar(context, apiResponse['message'],buttonColor);
+            showSnackbar(context, apiResponse['message'], buttonColor);
             // Navigator.pop(context);
           } else {
             Get.back();
@@ -593,168 +651,167 @@ class ApiDataProvider extends ChangeNotifier {
           }
         } else {
           Get.back();
-          showSnackbar(context, apiResponse['error']['acc_number'][0],redColor);
+          showSnackbar(
+              context, apiResponse['error']['acc_number'][0], redColor);
         }
-      }else{
+      } else {
         Get.back();
         print('token is null');
       }
-
-    }catch(e){
+    } catch (e) {
       Get.back();
       print('try catch error in update wallet $e');
     }
     return false;
   }
 
-  Future getMercchantes(BuildContext context, String token,String amount,String countryCode,int currency_id) async {
-Get.dialog(CustomLoader());
+  Future getMercchantes(BuildContext context, String token, String amount,
+      String countryCode, int currency_id,int from_country_id,int to_country_id) async {
+    Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'get-merchants');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token",
       };
       Map data = {
-        'country_code': countryCode,
-        'amount': amount,
-        'currency_id':currency_id
+        'from_country_id': from_country_id,
+        'to_country_id': to_country_id,
+        //'currency_id': currency_id
         //'device_token': device_token
       };
-      var body=jsonEncode(data);
-      var response=await http.post(url, body: body,headers: header);
-      Map<String, dynamic> apiResponse=jsonDecode(response.body);
-      if(response.statusCode==200){
+      var body = jsonEncode(data);
+      var response = await http.post(url, body: body, headers: header);
+      Map<String, dynamic> apiResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
         top_five_merchant_list.clear();
         print(jsonDecode(response.body));
 
-        bool status=apiResponse['status'];
-        if(status){
-          Get.back();
-          List<dynamic> data=apiResponse['merchants'];
-          for(int i=0; i<data.length;i++){
+        bool status = apiResponse['status'];
+        if (status) {
+          Get.back(closeOverlays: true);
+          List<dynamic> data = apiResponse['merchant_rates'];
+          for (int i = 0; i < data.length; i++) {
             top_five_merchant_list.add(TopFiveMerchants.fromJson(data[i]));
           }
-
-        }else{
-          Get.back();
-          showSnackbar(context, apiResponse['message'],redColor);
+        } else {
+          Get.back(closeOverlays: true);
+          showSnackbar(context, apiResponse['message'], redColor);
         }
-      }else{
-        Get.back();
-        showSnackbar(context, apiResponse['error'],redColor);
+      } else {
+        Get.back(closeOverlays: true);
+        showSnackbar(context, apiResponse['error'], redColor);
       }
-    }catch(e){
-      Get.back();
+    } catch (e) {
+      Get.back(closeOverlays: true);
       Get.showSnackbar(GetSnackBar(
         backgroundColor: redColor,
         message: 'Something went wrong',
         duration: Duration(seconds: 1),
         animationDuration: Duration(milliseconds: 500),
-      ));;
+      ));
+      ;
     }
   }
 
-  Future getCountries(BuildContext context, String token,) async{
+  Future getCountries(BuildContext context, String token,) async {
     Uri url = Uri.parse(SERVER_URL + 'get-countries');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token",
       };
 
 
-      var response=await http.post(url, headers: header);
-      if(response.statusCode==200){
+      var response = await http.post(url, headers: header);
+      if (response.statusCode == 200) {
         print(jsonDecode(response.body));
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
-           getCountriesForMerchants.clear();
-          List<dynamic> data=apiResponse['countries'];
-          for( int i=0;i<data.length;i++){
-            getCountriesForMerchants.add(GetCountriesForMerchants.fromJson(data[i]));
-
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
+          getCountriesForMerchants.clear();
+          List<dynamic> data = apiResponse['countries'];
+          for (int i = 0; i < data.length; i++) {
+            getCountriesForMerchants.add(
+                GetCountriesForMerchants.fromJson(data[i]));
           }
-        }else{
-          showSnackbar(context, apiResponse['message'],redColor);
+        } else {
+          showSnackbar(context, apiResponse['message'], redColor);
         }
-
-      }else{
-        showSnackbar(context, 'Get countries error',redColor);
+      } else {
+        showSnackbar(context, 'Get countries error', redColor);
       }
-    }catch(e){
-
+    } catch (e) {
       print('try catch error from getCountries is ${e}');
     }
   }
 
-  Future getCurrencies(BuildContext context, String token,) async{
+  Future getCurrencies(BuildContext context, String token,) async {
     Uri url = Uri.parse(SERVER_URL + 'get-currencies');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token",
       };
 
 
-      var response=await http.post(url, headers: header);
-      if(response.statusCode==200){
+      var response = await http.post(url, headers: header);
+      if (response.statusCode == 200) {
         print(jsonDecode(response.body));
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
           getCurrenciesList.clear();
-          List<dynamic> data=apiResponse['currencies'];
-          for( int i=0;i<data.length;i++){
+          List<dynamic> data = apiResponse['currencies'];
+          for (int i = 0; i < data.length; i++) {
             getCurrenciesList.add(GetCurrenciesModel.fromJson(data[i]));
           }
-        }else{
-          showSnackbar(context, apiResponse['message'],redColor);
+        } else {
+          showSnackbar(context, apiResponse['message'], redColor);
         }
-
-      }else{
+      } else {
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
-        showSnackbar(context, apiResponse['error'][0],redColor);
+        showSnackbar(context, apiResponse['error'][0], redColor);
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from getCurrencies ${e}');
     }
   }
 
 
-  Future requestTransaction(BuildContext context, String amount, int id,String token, String name,int currency_id) async {
+  Future requestTransaction(BuildContext context, String amount, int id,
+      String token, String name, int currency_id,int merchant_rate_id) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'request-transaction');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token",
       };
       Map data = {
         'to_user_id': id,
         'amount': amount,
-        'currency_id':currency_id
+        //'currency_id': currency_id,
+        'merchant_rate_id':merchant_rate_id
         //'device_token': device_token
       };
       var body = jsonEncode(data);
       var response = await http.post(url, body: body, headers: header);
-      Map<String,dynamic> apiResponse=jsonDecode(response.body);
-      if(response.statusCode==200){
-        bool status=apiResponse['status'];
-        if(status){
-
+      Map<String, dynamic> apiResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        bool status = apiResponse['status'];
+        if (status) {
           Get.back(closeOverlays: true);
           print(apiResponse['message']);
-          Map transaction=apiResponse['transaction'];
+          Map transaction = apiResponse['transaction'];
 
           Get.showSnackbar(GetSnackBar(
             backgroundColor: buttonColor,
@@ -764,67 +821,66 @@ Get.dialog(CustomLoader());
           ),);
 
 
-
-
           pushNewScreen(context,
-              screen: ChatScreen(reciever_id: id,name: name,transactionId: transaction['id'],),
+              screen: ChatScreen(
+                reciever_id: id, name: name, transactionId: transaction['id'],),
               withNavBar: false,
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);
-        }else{
+        } else {
           Get.back(closeOverlays: true);
           showSnackbar(context, apiResponse['message'], redColor);
-
-
         }
-      }else{
+      } else {
         Get.back();
         getError(apiResponse['error'], context);
       }
-    }catch(e){
+    } catch (e) {
       Get.back();
       print('Try Catch Error from request transaction $e');
     }
   }
 
-  Future merchantTransactionRequests(BuildContext context,String token) async {
+  Future merchantTransactionRequests(BuildContext context, String token) async {
     Uri url = Uri.parse(SERVER_URL + 'merchant-transaction-requests');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token",
       };
-      var response=await http.post(url,headers: header);
-      if(response.statusCode==200){
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      var response = await http.post(url, headers: header);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
         //print(apiResponse.values);
-        bool status=apiResponse['status'];
-        if(status){
+        bool status = apiResponse['status'];
+        if (status) {
           merchantTransactionRequestsList.clear();
-          List<dynamic> data=apiResponse['requests'];
-          for(int i=0; i<data.length;i++){
-             merchantTransactionRequestsList.add(MerchantTransactionRequestsModel.fromJson(data[i]));
+          List<dynamic> data = apiResponse['requests'];
+          for (int i = 0; i < data.length; i++) {
+            merchantTransactionRequestsList.add(
+                MerchantTransactionRequestsModel.fromJson(data[i]));
           }
-        }else{
-          showSnackbar(context, apiResponse['message'],redColor);
+        } else {
+          showSnackbar(context, apiResponse['message'], redColor);
         }
-      }else{
+      } else {
         // showSnackbar(context, 'Something went wrong',redColor);
       }
-    }catch(e){
-      showSnackbar(context, 'Something went wrong',redColor);
+    } catch (e) {
+      showSnackbar(context, 'Something went wrong', redColor);
     }
   }
 
-  Future accepteOrNotStatusRequest(BuildContext context,String token,String status,int transaction_id,int index) async {
+  Future accepteOrNotStatusRequest(BuildContext context, String token,
+      String status, int transaction_id, int index) async {
     Uri url = Uri.parse(SERVER_URL + 'update-transaction-request-status');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token",
       };
       Map data = {
@@ -833,46 +889,47 @@ Get.dialog(CustomLoader());
       };
       var body = jsonEncode(data);
       var response = await http.post(url, body: body, headers: header);
-      if(response.statusCode==200){
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
           print(apiResponse['message']);
-          showSnackbar(context, apiResponse['message'],buttonColor);
+          showSnackbar(context, apiResponse['message'], buttonColor);
           //merchantTransactionRequestsList.removeAt(index);
         }
       }
-
-    }catch(e){
+    } catch (e) {
       print('try catch error from accepterOrNotStatusRequest $e');
     }
   }
-  Future acceptedRequests(BuildContext context, String token) async{
-    Uri url=Uri.parse(SERVER_URL + "accepted-transaction-request");
-    try{
-      var header={
-        "Content-Type":"application/json",
-        "Accept" : "application/json",
+
+  Future acceptedRequests(BuildContext context, String token) async {
+    Uri url = Uri.parse(SERVER_URL + "accepted-transaction-request");
+    try {
+      var header = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
-      var response=await http.post(url,headers: header);
-      if(response.statusCode==200){
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
+      var response = await http.post(url, headers: header);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
           acceptedRequestMerchantsList.clear();
-          List<dynamic> data=apiResponse['transaction_requests'];
-          for(int i=0;i<data.length;i++){
-            acceptedRequestMerchantsList.add(AcceptedRequestMerchantsModel.fromJson(data[i]));
+          List<dynamic> data = apiResponse['transaction_requests'];
+          for (int i = 0; i < data.length; i++) {
+            acceptedRequestMerchantsList.add(
+                AcceptedRequestMerchantsModel.fromJson(data[i]));
           }
-        }else{
-          showSnackbar(context, apiResponse['message'],redColor);
+        } else {
+          showSnackbar(context, apiResponse['message'], redColor);
         }
-      }else{
+      } else {
         print('status code is not 200');
-        showSnackbar(context, 'Something went wrong',redColor);
+        showSnackbar(context, 'Something went wrong', redColor);
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from acceptedRequests $e');
     }
   }
@@ -904,69 +961,72 @@ Get.dialog(CustomLoader());
   //   }
   // }
 
-  Future<void> customerTrancationHistory(BuildContext context,String token,) async{
+  Future<void> customerTrancationHistory(BuildContext context,
+      String token,) async {
     Get.dialog(CustomLoader());
-    Uri url=Uri.parse(SERVER_URL + "customer-transaction-history");
+    Uri url = Uri.parse(SERVER_URL + "customer-transaction-history");
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
       var response = await http.post(url, headers: header);
-      if(response.statusCode==200) {
+      if (response.statusCode == 200) {
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
         bool status = apiResponse['status'];
 
-        if(status){
+        if (status) {
           Get.back();
           customerTransactionHistoryList.clear();
-          List<dynamic> data=apiResponse['transaction_history'];
-          for(int i=0;i<data.length;i++){
-            customerTransactionHistoryList.add(CustomerTransactionHistoryModel.fromJson(data[i]));
+          List<dynamic> data = apiResponse['transaction_history'];
+          for (int i = 0; i < data.length; i++) {
+            customerTransactionHistoryList.add(
+                CustomerTransactionHistoryModel.fromJson(data[i]));
           }
           // return true;
         }
-      }else{
+      } else {
         print('status is not 200');
         Get.back();
         // return false;
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from customerTrancationHistory $e');
       Get.back();
       // return false;
     }
   }
 
-  Future getAppData(BuildContext context,String token,) async{
-    Uri url=Uri.parse(SERVER_URL + "get-app-data");
+  Future getAppData(BuildContext context, String token,) async {
+    Uri url = Uri.parse(SERVER_URL + "get-app-data");
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
       var response = await http.post(url, headers: header);
-      if(response.statusCode==200) {
+      if (response.statusCode == 200) {
         Map<String, dynamic> apiResponse = jsonDecode(response.body);
         bool status = apiResponse['status'];
 
-        if(status){
-          appSetting=apiResponse['app_settings'];
-          aboutUs=apiResponse['about_us'];
-          List<dynamic> data=apiResponse['faqs'];
-          for(int i=0;i<data.length;i++){
+        if (status) {
+          appSetting = apiResponse['app_settings'];
+          aboutUs = apiResponse['about_us'];
+          List<dynamic> data = apiResponse['faqs'];
+          for (int i = 0; i < data.length; i++) {
             faqsList.add(FaqsModel.fromJson(data[i]));
           }
         }
-      }else{
+      } else {
         print('status is not 200');
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from getAppData $e');
     }
   }
+
   // Future showChatt(BuildContext context,String token, int reciever_id) async{
   //   Uri url=Uri.parse(SERVER_URL + 'show-chat');
   //   try{
@@ -995,58 +1055,59 @@ Get.dialog(CustomLoader());
   //     print('try catch error from showChat $e');
   //   }
   // }
-  Future contactUs(BuildContext context, String token, String message) async{
-    Uri url=Uri.parse(SERVER_URL + "store-contact-message");
+  Future contactUs(BuildContext context, String token, String message) async {
+    Uri url = Uri.parse(SERVER_URL + "store-contact-message");
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
-      Map bodyData={
-        "message":message
+      Map bodyData = {
+        "message": message
       };
-      var body=jsonEncode(bodyData);
-      var response = await http.post(url, headers: header,body: body);
-      if(response.statusCode==200){
-        Map<String, dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
-          String m=apiResponse['message'];
-          showSnackbar(context, m,buttonColor);
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
+          String m = apiResponse['message'];
+          showSnackbar(context, m, buttonColor);
         }
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from contactUs $e');
     }
   }
 
-  Future sendMessage(BuildContext context, String token, int recieverid, String message,String filePath,String name,int? transacion_id) async{
-
-    Uri url=Uri.parse(SERVER_URL + "send-message");
+  Future sendMessage(BuildContext context, String token, int recieverid,
+      String message, String filePath, String name, int? transacion_id) async {
+    Uri url = Uri.parse(SERVER_URL + "send-message");
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
-      Map bodyData={
-        "receiver_id":recieverid,
-        "message":message,
-        "transaction_id":transacion_id
+      Map bodyData = {
+        "receiver_id": recieverid,
+        "message": message,
+        "transaction_id": transacion_id
       };
-      Map bodyData2={
-        "receiver_id":recieverid,
+      Map bodyData2 = {
+        "receiver_id": recieverid,
       };
       var body;
       var response;
-      if(message != ''){
-        body=jsonEncode(bodyData);
-        response=await http.post(url, headers: header,body: body);
-      }else{
-        var request=await http.MultipartRequest('POST',url);
-        request.headers['Authorization']="Bearer $token";
-        request.fields['receiver_id']='$recieverid';
+      if (message != '') {
+        body = jsonEncode(bodyData);
+        response = await http.post(url, headers: header, body: body);
+      } else {
+        var request = await http.MultipartRequest('POST', url);
+        request.headers['Authorization'] = "Bearer $token";
+        request.fields['receiver_id'] = '$recieverid';
+        request.fields['transaction_id'] ='$transacion_id';
         request.files.add(
             await http.MultipartFile.fromPath(
                 'file',
@@ -1054,93 +1115,93 @@ Get.dialog(CustomLoader());
             )
         );
 
-        response=await request.send();
+        response = await request.send();
         // print(response);
         print(response.statusCode);
       }
 
 
       Map<String, dynamic> apiResponse;
-      if(message==''){
+      if (message == '') {
         final res = await http.Response.fromStream(response);
-        apiResponse=jsonDecode(res.body);
-      }else{
-        apiResponse=jsonDecode(response.body);
+        apiResponse = jsonDecode(res.body);
+      } else {
+        apiResponse = jsonDecode(response.body);
       }
-      if(response.statusCode==200){
-
-
-        bool status=apiResponse['status'];
-        if(status){
-          String m=apiResponse['message'];
+      if (response.statusCode == 200) {
+        bool status = apiResponse['status'];
+        if (status) {
+          String m = apiResponse['message'];
           //showSnackbar(context, m);
-        }else{
+        } else {
           print('status is not true from sendMessage');
         }
-      }else{
+      } else {
         print('status from send message ${apiResponse['error']}');
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from sendMessage $e');
     }
-    }
+  }
 
-    Future updateDefaultCurrency(BuildContext context,String token, int currency_id) async {
+  Future updateDefaultCurrency(BuildContext context, String token,
+      int currency_id) async {
     Get.dialog(CustomLoader());
-      Uri url = Uri.parse(SERVER_URL + "update-default-currency");
-      try {
-        var header = {
-          "Content-Type": "application/json",
-          "Accept" : "application/json",
-          "Authorization": "Bearer $token"
-        };
-        Map bodyData = {
-          "currency_id": currency_id,
-        };
-        var body=jsonEncode(bodyData);
-        var response=await http.post(url, headers: header,body: body);
-        if(response.statusCode==200){
-          Map<String, dynamic> apiResponse=jsonDecode(response.body);
-          bool status=apiResponse['status'];
-          if(status){
-            Get.back();
-            showSnackbar(context, apiResponse['message'],buttonColor);
-          }else{
-            Get.back();
-            print('status is not true from updateDefaultCurrency');
-            showSnackbar(context, apiResponse['message'],redColor);
-          }
-        }else{
-          showSnackbar(context, 'Something went wrong',redColor);
-        }
-
-      }catch(e){
-        Get.back();
-        print('try catch error from updateDefaultCurrency $e');
-      }
-    }
-  Future updateProfile(BuildContext context, String token, String first_name, String last_name,String filePath) async{
-    Get.dialog(CustomLoader());
-    Uri url=Uri.parse(SERVER_URL + "update-profile");
+    Uri url = Uri.parse(SERVER_URL + "update-default-currency");
     try {
       var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
-      Map bodyData={
-        "first_name":first_name,
-        "last_name":last_name
+      Map bodyData = {
+        "currency_id": currency_id,
+      };
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
+          Get.back();
+          showSnackbar(context, apiResponse['message'], buttonColor);
+        } else {
+          Get.back();
+          print('status is not true from updateDefaultCurrency');
+          showSnackbar(context, apiResponse['message'], redColor);
+        }
+      } else {
+        showSnackbar(context, 'Something went wrong', redColor);
+      }
+    } catch (e) {
+      Get.back();
+      print('try catch error from updateDefaultCurrency $e');
+    }
+  }
+
+  Future updateProfile(BuildContext context, String token, String first_name,
+      String last_name, String filePath) async {
+    Get.dialog(CustomLoader());
+    Uri url = Uri.parse(SERVER_URL + "update-profile");
+    try {
+      var header = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map bodyData = {
+        "first_name": first_name,
+        "last_name": last_name
       };
 
       var body;
       var response;
-      if(first_name != ''){
-        body=jsonEncode(bodyData);
-        response=await http.post(url, headers: header,body: body);
-      }else{
-        var request=await http.MultipartRequest('POST',url);
-        request.headers['Authorization']="Bearer $token";
+      if (first_name != '') {
+        body = jsonEncode(bodyData);
+        response = await http.post(url, headers: header, body: body);
+      } else {
+        var request = await http.MultipartRequest('POST', url);
+        request.headers['Authorization'] = "Bearer $token";
         //request.fields['receiver_id']='$recieverid';
         request.files.add(
             await http.MultipartFile.fromPath(
@@ -1149,148 +1210,217 @@ Get.dialog(CustomLoader());
             )
         );
 
-        response=await request.send();
+        response = await request.send();
         //print(response.body);
         print(response.statusCode);
       }
 
 
       Map<String, dynamic> apiResponse;
-      if(first_name==''){
+      if (first_name == '') {
         final res = await http.Response.fromStream(response);
-        apiResponse=jsonDecode(res.body);
-      }else{
-        apiResponse=jsonDecode(response.body);
+        apiResponse = jsonDecode(res.body);
+      } else {
+        apiResponse = jsonDecode(response.body);
       }
-      if(response.statusCode==200){
-
-
-        bool status=apiResponse['status'];
-        if(status){
+      if (response.statusCode == 200) {
+        bool status = apiResponse['status'];
+        if (status) {
           Get.back();
-          if(first_name==''){
-            String m=apiResponse['message'];
-            String p=apiResponse['photo_path'];
+          if (first_name == '') {
+            String m = apiResponse['message'];
+            String p = apiResponse['photo_path'];
             setPhotoUrl(p);
-            showSnackbar(context, m,buttonColor);
-          }else{
+            showSnackbar(context, m, buttonColor);
+          } else {
             setFirstName(first_name);
             setLastName(last_name);
             showSnackbar(context, apiResponse['message'], buttonColor);
           }
-
-        }else{
+        } else {
           Get.back();
           print('status is not true from sendMessage');
         }
-      }else{
+      } else {
         Get.back();
         print('status from send message ${apiResponse['error']}');
       }
-    }catch(e){
+    } catch (e) {
       Get.back();
       print('try catch error from sendMessage $e');
     }
   }
 
-  Future validateVoucher(BuildContext context, String token, String code) async{
+  Future validateVoucher(BuildContext context, String token,
+      String code) async {
     Get.dialog(CustomLoader());
-    Uri url=Uri.parse(SERVER_URL + 'validate-voucher');
-    try{
-      var header={
+    Uri url = Uri.parse(SERVER_URL + 'validate-voucher');
+    try {
+      var header = {
         "Content-Type": "application/json",
-        "Accept" : "application/json",
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
 
-      Map bodyData={
-        'code':code
+      Map bodyData = {
+        'code': code
       };
-      var body=jsonEncode(bodyData);
-      var response=await http.post(url,headers: header,body: body);
-      Map<String,dynamic> apiResponse=jsonDecode(response.body);
-      if(response.statusCode==200){
-
-        bool status=apiResponse['status'];
-        if(status){
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      Map<String, dynamic> apiResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        bool status = apiResponse['status'];
+        if (status) {
           Get.back();
-          showSnackbar(context, apiResponse['message'],buttonColor);
-        }else{
+          showSnackbar(context, apiResponse['message'], buttonColor);
+        } else {
           Get.back();
           print('status is not true from validateVoucher ');
-          showSnackbar(context, apiResponse['message'],redColor);
+          showSnackbar(context, apiResponse['message'], redColor);
         }
-      }else{
+      } else {
         Get.back();
         print('status code is not 200 from validateVoucher ');
-        showSnackbar(context, apiResponse['error'][0],redColor);
+        showSnackbar(context, apiResponse['error'][0], redColor);
       }
-
-    }catch(e){
+    } catch (e) {
       Get.back();
       print('try catch error from validateVoucher $e');
     }
   }
 
-  Future privacyPolicy(BuildContext context) async{
-    Uri url=Uri.parse(SERVER_URL+'privacypolicy-termsconditions');
-    try{
-      var header={
-        'Content-Type':'application/json',
-        "Accept" : "application/json",
+  Future privacyPolicy(BuildContext context) async {
+    Uri url = Uri.parse(SERVER_URL + 'privacypolicy-termsconditions');
+    try {
+      var header = {
+        'Content-Type': 'application/json',
+        "Accept": "application/json",
       };
-      var response=await http.post(url,headers: header);
-      if(response.statusCode==200){
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
-          appSetting=apiResponse['app_settings'];
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>TermsConditions()));
-        }else{
+      var response = await http.post(url, headers: header);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
+          appSetting = apiResponse['app_settings'];
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TermsConditions()));
+        } else {
           showSnackbar(context, apiResponse['message'], redColor);
         }
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from privacyPolicy $e');
     }
   }
-  Future<bool> completeTransaction(BuildContext context,String token,int? transactionId,String status) async{
-    Uri url=Uri.parse(SERVER_URL+'complete-transaction');
-    try{
-      var header={
-        'Content-Type':'application/json',
-        "Accept" : "application/json",
+
+  Future<bool> completeTransaction(BuildContext context, String token,
+      int? transactionId, String status) async {
+    Uri url = Uri.parse(SERVER_URL + 'complete-transaction');
+    try {
+      var header = {
+        'Content-Type': 'application/json',
+        "Accept": "application/json",
         "Authorization": "Bearer $token"
       };
-      Map bodyData={
-        'transaction_id':transactionId,
-        'status':status
+      Map bodyData = {
+        'transaction_id': transactionId,
+        'status': status
       };
-      var body=jsonEncode(bodyData);
-      var response=await http.post(url,headers: header,body: body);
-      if(response.statusCode==200){
-        Map<String,dynamic> apiResponse=jsonDecode(response.body);
-        bool status=apiResponse['status'];
-        if(status){
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
           showSnackbar(context, apiResponse['message'], buttonColor);
           return true;
-        }else{
+        } else {
           getError(apiResponse['error'], context);
           return false;
         }
-      }else{
-
+      } else {
         showSnackbar(context, 'Something went wrong', redColor);
         return false;
       }
-    }catch(e){
+    } catch (e) {
       print('try catch error from privacyPolicy $e');
       return false;
     }
   }
 
-  Future rateMerchant(BuildContext context,String token, int merchant_id,double rate) async {
-    Uri url=Uri.parse(SERVER_URL+'rate-merchant');
+  Future rateMerchant(BuildContext context, String token, int merchant_id,
+      double rate) async {
+    Uri url = Uri.parse(SERVER_URL + 'rate-merchant');
+    try {
+      var header = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map bodyData = {
+        'merchant_id': merchant_id,
+        'rating': rate
+      };
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      Map<String, dynamic> apiResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        bool status = apiResponse['status'];
+        if (status) {
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => CBottomNavigationBar(index: 0,)));
+          showSnackbar(context, apiResponse['message'], buttonColor);
+        } else {
+          Navigator.pop(context);
+          showSnackbar(context, apiResponse['message'], redColor);
+        }
+      } else {
+        Navigator.pop(context);
+        getError(apiResponse['error'], context);
+      }
+    } catch (e) {
+      print('try catch error from rateMerchant $e');
+      showSnackbar(context, e.toString(), redColor);
+    }
+  }
+
+  Future forgotPassword(BuildContext context, String email_id) async {
+    Get.dialog(CustomLoader());
+    Uri url = Uri.parse(SERVER_URL + 'password-reset-email');
+    try {
+      var header = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      };
+      Map bodyData = {
+        'email': email_id
+      };
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      Map<String, dynamic> apiResponse = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        bool status = apiResponse['status'];
+        if (status) {
+          Get.back();
+          showSnackbar(context, apiResponse['message'], buttonColor);
+        } else {
+          Get.back();
+          print('status is not true from forgot password');
+          showSnackbar(context, apiResponse['message'], redColor);
+        }
+      } else {
+        Get.back();
+        getError(apiResponse['error'], context);
+      }
+    } catch (e) {
+      Get.back();
+      print('try catch error from rateMerchant $e');
+      showSnackbar(context, e.toString(), redColor);
+    }
+  }
+  Future CreateRate(BuildContext context, String token, int fromCurrency, int toCurrency, String exchangeRate) async{
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL+'create-rate');
     try{
       var  header={
         "Content-Type":"application/json",
@@ -1298,64 +1428,149 @@ Get.dialog(CustomLoader());
         "Authorization": "Bearer $token"
       };
       Map  bodyData={
-        'merchant_id':merchant_id,
-        'rating':rate
+        'from_currency_id':fromCurrency,
+        'to_currency_id':toCurrency,
+        'exchange_rate':exchangeRate
       };
       var body=jsonEncode(bodyData);
       var response=await http.post(url,headers: header,body: body);
       Map<String,dynamic> apiResponse=jsonDecode(response.body);
       if(response.statusCode==200){
-
         bool status=apiResponse['status'];
         if(status){
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CBottomNavigationBar()));
-          showSnackbar(context, apiResponse['message'], buttonColor);
+          Get.back(closeOverlays: true);
+          Map data=apiResponse['created_rate'];
+          getCurrencyRateModelList.add(GetCurrencyRatesModel(id: data['id'], from_currency_id: data['from_currency_id'],
+              to_currency_id: data['to_currency_id'], exchange_rate: data['exchange_rate'],
+              user_id: data['user_id'], from_currency: data['from_currency'], to_currency: data['to_currency']));
+          //showSnackbar(context, apiResponse['messsage'], buttonColor);
         }else{
-          Navigator.pop(context);
-          showSnackbar(context, apiResponse['message'], redColor);
+          Get.back(closeOverlays: true);
+          showSnackbar(context, apiResponse['messsage'], redColor);
         }
       }else{
-        Navigator.pop(context);
+        Get.back(closeOverlays: true);
         getError(apiResponse['error'], context);
       }
+
     }catch(e){
-      print('try catch error from rateMerchant $e');
-      showSnackbar(context, e.toString(), redColor);
+      Get.back(closeOverlays: true);
+      showSnackbar(context, 'Something went wrong', redColor);
     }
   }
-  Future forgotPassword(BuildContext context, String email_id) async {
+
+  Future GetRate(BuildContext context, String token) async{
     Get.dialog(CustomLoader());
-    Uri url=Uri.parse(SERVER_URL+'password-reset-email');
+    Uri url=Uri.parse(SERVER_URL+'get-rates');
     try{
       var  header={
         "Content-Type":"application/json",
         "Accept" : "application/json",
+        "Authorization": "Bearer $token"
+      };
+
+      var response=await http.post(url,headers: header);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      if(response.statusCode==200){
+        bool status=apiResponse['status'];
+        if(status){
+          Get.back(closeOverlays: true);
+          getCurrencyRateModelList.clear();
+          List<dynamic> data=apiResponse['rates'];
+          for(int i=0;i<data.length;i++){
+            getCurrencyRateModelList.add(GetCurrencyRatesModel.fromJson(data[i]));
+          }
+
+        }else{
+          Get.back(closeOverlays: true);
+          showSnackbar(context, apiResponse['messsage'], redColor);
+        }
+      }else{
+        Get.back(closeOverlays: true);
+        getError(apiResponse['error'], context);
+      }
+
+    }catch(e){
+      Get.back(closeOverlays: true);
+      showSnackbar(context, 'Something went wrong', redColor);
+    }
+  }
+
+  Future DeleteRate(BuildContext context, String token,int rate_id,int index) async{
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL+'delete-rate');
+    try{
+      var  header={
+        "Content-Type":"application/json",
+        "Accept" : "application/json",
+        "Authorization": "Bearer $token"
+      };
+
+      var bodyData={
+        'rate_id':rate_id
+      };
+      var body=jsonEncode(bodyData);
+
+      var response=await http.post(url,headers: header,body: body);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      if(response.statusCode==200){
+        bool status=apiResponse['status'];
+        if(status){
+          Get.back(closeOverlays: true);
+          getCurrencyRateModelList.removeAt(index);
+          //showSnackbar(context, apiResponse['messsage'], buttonColor);
+
+
+        }else{
+          Get.back(closeOverlays: true);
+          showSnackbar(context, apiResponse['messsage'], redColor);
+        }
+      }else{
+        Get.back(closeOverlays: true);
+        getError(apiResponse['error'], context);
+      }
+
+    }catch(e){
+      Get.back(closeOverlays: true);
+      showSnackbar(context, 'Something went wrong', redColor);
+    }
+  }
+
+  Future UpdateRate(BuildContext context, String token, int fromCurrency, int toCurrency, String exchangeRate,int rate_id) async{
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL+'update-rate');
+    try{
+      var  header={
+        "Content-Type":"application/json",
+        "Accept" : "application/json",
+        "Authorization": "Bearer $token"
       };
       Map  bodyData={
-        'email':email_id
+        'from_currency_id':fromCurrency,
+        'to_currency_id':toCurrency,
+        'exchange_rate':exchangeRate,
+        'rate_id':rate_id
       };
       var body=jsonEncode(bodyData);
       var response=await http.post(url,headers: header,body: body);
       Map<String,dynamic> apiResponse=jsonDecode(response.body);
       if(response.statusCode==200){
-
         bool status=apiResponse['status'];
         if(status){
-          Get.back();
-          showSnackbar(context, apiResponse['message'], buttonColor);
+          Get.back(closeOverlays: true);
+         // showSnackbar(context, apiResponse['messsage'], buttonColor);
         }else{
-          Get.back();
-          print('status is not true from forgot password');
-          showSnackbar(context, apiResponse['message'], redColor);
+          Get.back(closeOverlays: true);
+          showSnackbar(context, apiResponse['messsage'], redColor);
         }
       }else{
-        Get.back();
+        Get.back(closeOverlays: true);
         getError(apiResponse['error'], context);
       }
+
     }catch(e){
-      Get.back();
-      print('try catch error from rateMerchant $e');
-      showSnackbar(context, e.toString(), redColor);
+      Get.back(closeOverlays: true);
+      showSnackbar(context, 'Something went wrong', redColor);
     }
   }
 
@@ -1460,7 +1675,7 @@ Get.dialog(CustomLoader());
       backgroundColor: color,
       message: text,
       duration: Duration(seconds: 2),
-      animationDuration: Duration(milliseconds: 500),
+      animationDuration: Duration(milliseconds: 200),
     ));
   }
 
@@ -1513,4 +1728,6 @@ Get.dialog(CustomLoader());
   int get selectedCurrencyId => _selectedCurrencyId!;
   String get selectedWalletBalance => _selectedWalletBalance!;
   String get selectedCurrencySymbol => _selectedCurrencySymbol!;
+  String get currencySymbolForExchangeRateScreen => _currencySymbolForExchangeRateScreen ?? '';
+  String get countryName => _countryName ?? '';
 }

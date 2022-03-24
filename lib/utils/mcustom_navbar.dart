@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -107,6 +108,7 @@ class CustomNavBarWidget extends StatelessWidget {
               return Flexible(
                 child: InkWell(
                   onTap: () {
+
                     this.onItemSelected(index);
                   },
                   child: _buildItem(

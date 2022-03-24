@@ -1,27 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/merchant/mhome.dart';
 import 'package:fx_pluses/screens/merchant/mmessages.dart';
 import 'package:fx_pluses/screens/merchant/mtransaction_requests.dart';
 import 'package:fx_pluses/screens/merchant/mwallet.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../shared_preferences.dart';
 import '../../utils/mcustom_navbar.dart';
-class MBottomNavigationBar extends StatefulWidget {
-  MBottomNavigationBar({Key? key}) : super(key: key);
 
+class MBottomNavigationBar extends StatefulWidget {
+  MBottomNavigationBar({Key? key,required this.index}) : super(key: key);
+  int index=0;
   @override
   State<MBottomNavigationBar> createState() => _MBottomNavigationBarState();
 }
 
 class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
-  PersistentTabController _controller = PersistentTabController(initialIndex: 0);
+  PersistentTabController _controller = PersistentTabController();
   String? bearerToken;
   String? balance;
+  bool exit=false;
 
   List<Widget> _buildScreens() {
     return [
@@ -40,6 +45,7 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
     // TODO: implement initState
     super.initState();
     //getData();
+    _controller = PersistentTabController(initialIndex : widget.index);
   }
 
   // List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -52,8 +58,39 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
       itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
       screens: _buildScreens(),
       confineInSafeArea: false,
-      handleAndroidBackButtonPress: false,
+      handleAndroidBackButtonPress: true,
+      onWillPop: (value) async{
+        showDialog(context: context,barrierDismissible: false, builder: (context){
+          return AlertDialog(
+            title: Text('Are you sure you want to close the app'),
+            actions: [
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FlatButton(
+                      onPressed: (){
+                        SystemNavigator.pop();
+                      },
+                      child: Text('Yes'),
+                    ),
 
+                    FlatButton(
+                      onPressed: (){
+                        exit=false;
+                        Get.back();
+                      },
+                      child: Text('No'),
+                    )
+                  ],
+                ),
+              )
+            ],
+          );
+
+        });
+        return exit;
+      },
 
       // onItemSelected: (int) {
       //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
@@ -104,7 +141,9 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
             await getData();
           }
           setState(() {
-
+            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
+              return MBottomNavigationBar(index: index);
+            }), (route) => false);
           });
 
 

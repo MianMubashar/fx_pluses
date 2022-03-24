@@ -1,63 +1,71 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/customer/chome.dart';
 import 'package:fx_pluses/screens/customer/cmessages.dart';
 import 'package:fx_pluses/screens/customer/cwallet.dart';
 import 'package:fx_pluses/screens/customer/profile.dart';
+import 'package:fx_pluses/screens/home.dart';
 import 'package:fx_pluses/screens/merchant/mhome.dart';
 import 'package:fx_pluses/screens/merchant/mmessages.dart';
 import 'package:fx_pluses/screens/merchant/mtransaction_requests.dart';
 import 'package:fx_pluses/screens/merchant/mwallet.dart';
+import 'package:fx_pluses/screens/splash_screen.dart';
+import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../shared_preferences.dart';
 import '../../utils/mcustom_navbar.dart';
+
 class CBottomNavigationBar extends StatefulWidget {
   static final String id ='CBottomNavigationBar_screen';
-  CBottomNavigationBar({Key? key}) : super(key: key);
+  int index = 0;
+  CBottomNavigationBar({required this.index,Key? key}) : super(key: key);
 
   @override
   State<CBottomNavigationBar> createState() => _CBottomNavigationBarState();
 }
 
 class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
+
   PersistentTabController _controller = PersistentTabController(initialIndex: 0);
   String? bearerToken;
   String? balance;
   String? firstName;
   String? lastName;
+  bool exit=false;
 
   List<Widget> _buildScreens() {
     return [
-      CHome(), CWallet(), CMessages(), CProfile()
+      CHome(), CWallet(), CMessages(), CProfile(backButtonEnabled: false,)
     ];
   }
-  getData() async{
-    print('get data');
-    SharedPreferences preferences=await SharedPreferences.getInstance();
-    bearerToken=await preferences.getString(SharedPreference.bearerTokenKey);
-    balance=await preferences.getString(SharedPreference.walletKey);
-    firstName=await preferences.getString(SharedPreference.firstNameKey);
-    lastName=await preferences.getString(SharedPreference.lastNameKey);
-    await Provider.of<ApiDataProvider>(context,listen: false).setBearerToken(bearerToken!);
-    await Provider.of<ApiDataProvider>(context,listen: false).setFirstName(firstName!);
-    await Provider.of<ApiDataProvider>(context,listen: false).setLastName(lastName!);
-    await Provider.of<ApiDataProvider>(context,listen: false).setBalance(balance!);
-    await Provider.of<ApiDataProvider>(context, listen: false)
-        .getCountries(context, bearerToken!);
-  }
-  // @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   //getData();
-  //   setState(() {
-  //
-  //   });
+
+
+  // getData() async{
+  //   print('get data');
+  //   SharedPreferences preferences=await SharedPreferences.getInstance();
+  //   bearerToken=await preferences.getString(SharedPreference.bearerTokenKey);
+  //   balance=await preferences.getString(SharedPreference.walletKey);
+  //   firstName=await preferences.getString(SharedPreference.firstNameKey);
+  //   lastName=await preferences.getString(SharedPreference.lastNameKey);
+  //   await Provider.of<ApiDataProvider>(context,listen: false).setBearerToken(bearerToken!);
+  //   await Provider.of<ApiDataProvider>(context,listen: false).setFirstName(firstName!);
+  //   await Provider.of<ApiDataProvider>(context,listen: false).setLastName(lastName!);
+  //   await Provider.of<ApiDataProvider>(context,listen: false).setBalance(balance!);
+  //   await Provider.of<ApiDataProvider>(context, listen: false)
+  //       .getCountries(context, bearerToken!);
   // }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //getData();
+    _controller = PersistentTabController(initialIndex : widget.index);
+  }
 
   // List<PersistentBottomNavBarItem> _navBarsItems() {
   @override
@@ -66,11 +74,43 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
     return PersistentTabView.custom(
       context,
       controller: _controller,
-
       itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
       screens: _buildScreens(),
       confineInSafeArea: false,
-      handleAndroidBackButtonPress: false,
+      handleAndroidBackButtonPress: true,
+      stateManagement: false,
+      onWillPop: (value) async{
+        showDialog(context: context,barrierDismissible: false, builder: (context){
+          return AlertDialog(
+            title: Text('Are you sure you want to close the app'),
+            actions: [
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FlatButton(
+                      onPressed: (){
+                        SystemNavigator.pop();
+                      },
+                      child: Text('Yes'),
+                    ),
+
+                    FlatButton(
+                      onPressed: (){
+                        exit=false;
+                        Get.back();
+                      },
+                      child: Text('No'),
+                    )
+                  ],
+                ),
+              )
+            ],
+          );
+
+        });
+        return exit;
+      },
 
 
       //stateManagement: false,
@@ -130,13 +170,18 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
         onItemSelected: (index) {
 
 
-            _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
             setState(() {
+              _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
+
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
+                 return CBottomNavigationBar(index: index);
+              }), (route) => false);
 
             });
-            print(Provider.of<ApiDataProvider>(context,listen: false).photoUrl);
+
         },
       ),
     );
   }
+
 }

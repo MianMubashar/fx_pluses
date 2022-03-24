@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/onboarding_content.dart';

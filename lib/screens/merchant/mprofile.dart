@@ -110,7 +110,7 @@ class MProfile extends StatelessWidget {
                                         SizedBox(
                                           width:MediaQuery.of(context).size.width * 0.45,
                                           child: Text(
-                                            Provider.of<ApiDataProvider>(context,listen: true).firstName + Provider.of<ApiDataProvider>(context,listen: true).lastName,
+                                            Provider.of<ApiDataProvider>(context,listen: true).firstName +" "+ Provider.of<ApiDataProvider>(context,listen: true).lastName,
                                             softWrap: false,overflow: TextOverflow.fade,style: TextStyle(
                                               color: textBlackColor,
                                               fontSize: 18,
@@ -213,14 +213,16 @@ class MProfile extends StatelessWidget {
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>TransactionHistory()));
                       },
                     ),
-                    // ProfileCard(
-                    //   iconData: 'assets/icons/couponicon.png',
-                    //   size: size,
-                    //   text: 'Exchange Rates',
-                    //   onPress: () {
-                    //     Navigator.push(context, MaterialPageRoute(builder: (context)=>MExchangeRates()));
-                    //   },
-                    // ),
+                    ProfileCard(
+                      iconData: 'assets/icons/couponicon.png',
+                      size: size,
+                      text: 'Exchange Rates',
+                      onPress: () async{
+                        await Provider.of<ApiDataProvider>(context,listen: false).GetRate(context,
+                            Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>MExchangeRates()));
+                      },
+                    ),
                     ProfileCard(
                       iconData: 'assets/icons/helpicon.png',
                       size: size,

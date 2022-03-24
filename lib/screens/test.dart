@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,3 +1,4 @@
+import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,14 @@ class _CCreateAccountState extends State<CCreateAccount> {
   final TextEditingController passwordController = TextEditingController();
   //final TextEditingController controller = TextEditingController();
 
+  clearControllers(){
+    controller.clear();
+    firstNameController.clear();
+    lastNameController.clear();
+    userNameController.clear();
+    emailController.clear();
+    passwordController.clear();
+  }
 
   @override
   void initState() {
@@ -321,31 +330,32 @@ class _CCreateAccountState extends State<CCreateAccount> {
                                     await Provider.of<ApiDataProvider>(context, listen: false).setContact(controller.text);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setFirstName(firstName);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setLastName(lastName);
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setEmail(email);
+                                    await Provider.of<ApiDataProvider>(context, listen: false).setEmail(email.trim());
                                     await Provider.of<ApiDataProvider>(context, listen: false).setPassword(password);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setToken(deviceToken);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setCountryCode(countryCode);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(5);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setUserId('');
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setRegisterUserCountryName(CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
 
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false)
-                                          .registerRequest(
-                                          context,
-                                          firstName,
-                                          lastName,
-                                          email,
-                                          password,
-                                          phoneNumber.toString(),
-                                          countryCode,
-                                          userId,
-                                          5,
-                                          deviceToken);
-                                      controller.clear();
-                                      firstNameController.clear();
-                                      lastNameController.clear();
-                                      emailController.clear();
-                                      passwordController.clear();
+                                    Provider.of<ApiDataProvider>(
+                                        context, listen: false)
+                                        .otpRequest(phoneNumber, context);
+                                      // await Provider.of<ApiDataProvider>(
+                                      //     context, listen: false)
+                                      //     .registerRequest(
+                                      //     context,
+                                      //     firstName,
+                                      //     lastName,
+                                      //     email.trim(),
+                                      //     password,
+                                      //     phoneNumber.toString(),
+                                      //     countryCode,
+                                      //     userId,
+                                      //     5,
+                                      //     deviceToken);
+                                    clearControllers();
 
                                   }
                                 }
