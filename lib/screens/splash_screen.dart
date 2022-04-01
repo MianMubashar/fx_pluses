@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/onboarding_content.dart';
 import 'package:fx_pluses/model/user_wallets_model.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
+import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:fx_pluses/screens/customer/cbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/customer/chome.dart';
 import 'package:fx_pluses/screens/home.dart';
@@ -16,6 +19,8 @@ import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 class SplashScreen extends StatefulWidget {
   static final String id = 'SplashScreen_Screen';
@@ -48,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
 
-  abc() async {
+  startApp() async {
 
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -60,69 +65,125 @@ class _SplashScreenState extends State<SplashScreen> {
       print('get data');
       //SharedPreferences preferences=await SharedPreferences.getInstance();
       bearerToken=await preferences.getString(SharedPreference.bearerTokenKey) ?? "";
-      await Provider.of<ApiDataProvider>(context,listen: false).validateToken(context, bearerToken);
-      // userId=await preferences.getInt(SharedPreference.userIdKey);
-      // firstName=await preferences.getString(SharedPreference.firstNameKey);
-      // lastName=await preferences.getString(SharedPreference.lastNameKey);
-      // email=await preferences.getString(SharedPreference.userEmailKey);
-      //balance=await preferences.getString(SharedPreference.walletKey);
-      //roleId=await preferences.getInt(SharedPreference.roleIdKey);
-      // countryCode=await preferences.getString(SharedPreference.countryCodeKey);
-      // rating=await preferences.getString(SharedPreference.ratingKey);
-      // //defaultCurrencey=await preferences.getString(SharedPreference.defaultCurrencyKey);
-      // photoUrl=await preferences.getString(SharedPreference.photoUrlKey);
-
-      // defaultCurrenceyId=await preferences.getInt(SharedPreference.defaultCurrencyIdKey);
-      // defaultCurrenceyName=await preferences.getString(SharedPreference.defaultCurrencyNameKey);
-      // defaultCurrenceySymbol=await preferences.getString(SharedPreference.defaultCurrencySymbolKey);
-      // listData=await preferences.getString(SharedPreference.userWalletsKey);
-      //
-      //
-      // list=UserWalletsModel.decode(listData!);
-      // list!.forEach((element) async{
-      //   if(element.currency_id==defaultCurrenceyId){
-      //     balance=element.wallet;
-      //   }
-      // });
-
-
-      // await Provider.of<ApiDataProvider>(context,listen: false).setId(userId!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setFirstName(firstName!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setLastName(lastName!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setEmail(email!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setBalance(balance!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setSelectedWalletBalance(balance!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setRoleId(roleId!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setCountryCode(countryCode!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setRating(rating!);
-      // //await Provider.of<ApiDataProvider>(context,listen: false).setDefaultCurrency(defaultCurrencey!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setPhotoUrl(photoUrl!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setBearerToken(bearerToken!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setDefaultCurrencyId(defaultCurrenceyId!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setSelectedCurrencyId(defaultCurrenceyId!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setdefaultCurrencyName(defaultCurrenceyName!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setdefaultCurrencySymbol(defaultCurrenceySymbol!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setSelectedCurrencySymbol(defaultCurrenceySymbol!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).setUserWalletModelList(list!);
-      // await Provider.of<ApiDataProvider>(context, listen: false).getCountries(context, bearerToken!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context, bearerToken!);
-      // await Provider.of<ApiDataProvider>(context,listen: false).getCurrencies(context, bearerToken!);
-
-
-
-
-
+      int? initScreen=await preferences.getInt('initScreen');
+      if(initScreen != 1){
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home())
+        );
+      }else{
+        await Provider.of<ApiDataProvider>(context,listen: false).validateToken(context, bearerToken);
+      }
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    abc();
-    // int a=SharedPreference.getIsSeenSharedPreferences()!;
+    getNotificationSettings();
+    startApp();
+    setupInteractedMessage();
+  }
 
+  Future<void> _handleMessage(RemoteMessage message) async{
+  print('notification opened');
+  }
+  void getNotificationSettings() async{
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true
+    );
+
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+      if (message != null) {
+        print('data from get initial message ${message.data['type']}');
+        // Navigator.pushNamed(
+        //   context,
+        //   ChatScreen.id
+        //   arguments: MessageArguments(message, true),
+        // );
+      }
+    });
+
+    FirebaseMessaging.onMessage.listen((event) async{
+
+      print('data recieved ${event.data}');
+      if(event.data.containsKey('wallet')){
+        //int balance=int.parse(event.data['wallet']['id']);
+        Map<String, dynamic> wallet=jsonDecode(event.data['wallet']);
+        if(wallet['user_id']==Provider.of<ApiDataProvider>(Get.context!,listen: false).id && event.data['wallet_action_id']=='3'){
+
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          String? wallletList = await pref.getString(
+              SharedPreference.userWalletsKey);
+          List<UserWalletsModel> list = UserWalletsModel.decode(wallletList!);
+          list.forEach((element) async {
+            if(element.currency_id == wallet['currency_id']){
+              String amount1 = element.wallet;
+              List a = amount1.split('.');
+              int amount2 = int.parse(a[0]);
+              int amount3 = double.parse(wallet['wallet'].toString()).round();
+              // int total = amount2 + amount3;
+              element.wallet=amount3.toString();
+              Provider.of<ApiDataProvider>(Get.context!,listen: false).setBalance(amount3.toString());
+              Provider.of<ApiDataProvider>(Get.context!,listen: false).setSelectedWalletBalance(amount3.toString());
+
+            }
+          });
+          await Provider.of<ApiDataProvider>(Get.context!,listen: false).setUserWalletModelList(list);
+          final String encodedData = UserWalletsModel.encode(list);
+          await SharedPreference.saveUserWalletsSharedPreferences(
+              encodedData);
+        }
+
+
+
+      }
+
+
+
+
+      RemoteNotification? notification = event.notification;
+      if (notification != null) {
+        flutterLocalNotificationsPlugin.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id,
+                channel.name,
+                channelDescription: channel.description,
+
+                //icon: android.smallIcon,
+                // other properties...
+              ),
+            ));
+      }
+      print('Notification recieved');
+      // Local Notifications Library will be showing with event.notification.title & event.notification.body
+    });
 
   }
+  Future<void> setupInteractedMessage() async {
+    // Get any messages which caused the application to open from
+    // a terminated state.
+    RemoteMessage? initialMessage =
+    await FirebaseMessaging.instance.getInitialMessage();
+
+    // If the message also contains a data property with a "type" of "chat",
+    // navigate to a chat screen
+    if (initialMessage != null) {
+      _handleMessage(initialMessage);
+    }
+
+    // Also handle any interaction when the app is in the background via a
+    // Stream listener
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

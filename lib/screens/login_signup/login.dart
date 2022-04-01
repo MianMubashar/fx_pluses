@@ -10,7 +10,7 @@ import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/reuseable_widgets/top_container.dart';
 import 'package:fx_pluses/screens/login_signup/signup.dart';
 import 'package:get/get.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
 import 'package:provider/provider.dart';
 
 
@@ -45,9 +45,7 @@ class _LoginState extends State<Login> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: ModalProgressHUD(
-        inAsyncCall: Provider.of<ApiDataProvider>(context,listen: false).check,
-        child: SafeArea(
+      body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(left: 20, right: 20, top: 50),
             child: Column(
@@ -191,7 +189,7 @@ class _LoginState extends State<Login> {
             ),
           ),
         ),
-      ),
+
     );
   }
 }

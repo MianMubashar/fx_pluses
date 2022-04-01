@@ -6,6 +6,7 @@ import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/list_of_users_having_chat.dart';
 import 'package:fx_pluses/screens/chat_screen.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -31,12 +32,18 @@ class _CMessagesState extends State<CMessages> with AutomaticKeepAliveClientMixi
   //   await Provider.of<ApiDataProvider>(context,listen: false).chatMenu(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
   // }
 
+  final NavigationHistoryObserver historyObserver = NavigationHistoryObserver();
+
+  int historyCount = 0;
+  int poppedCount = 0;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     //getData();
   }
+
 
   @override
   Widget build(BuildContext context) {

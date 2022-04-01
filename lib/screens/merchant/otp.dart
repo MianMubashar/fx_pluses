@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 class OTP extends StatefulWidget {
   static final String id='OTP_Screen';
   String verificationIdRecieved;
-  OTP({required this.verificationIdRecieved});
+  int from;
+  OTP({required this.verificationIdRecieved,required this.from});
 
   @override
   _OTPState createState() => _OTPState();
@@ -23,24 +24,59 @@ class _OTPState extends State<OTP> {
     if(widget.verificationIdRecieved==''){
       print('verification id is null');
     }else{
-      PhoneAuthCredential credential=PhoneAuthProvider.credential(verificationId: widget.verificationIdRecieved, smsCode: smsCode);
-      print('credentials are ${credential.smsCode}');
-      await FirebaseAuth.instance.signInWithCredential(credential).then((value) async{
-        await Provider.of<ApiDataProvider>(context, listen: false).registerRequest(
-          context,
-          Provider.of<ApiDataProvider>(context, listen: false).firstName,
-          Provider.of<ApiDataProvider>(context, listen: false).lastName,
-          Provider.of<ApiDataProvider>(context, listen: false).email,
-          Provider.of<ApiDataProvider>(context, listen: false).password,
-          Provider.of<ApiDataProvider>(context, listen: false).contact,
-          Provider.of<ApiDataProvider>(context, listen: false).countryCode,
-          Provider.of<ApiDataProvider>(context, listen: false).userId,
-          Provider.of<ApiDataProvider>(context, listen: false).roleId,
-          Provider.of<ApiDataProvider>(context, listen: false).deviceToken,
-            Provider.of<ApiDataProvider>(context, listen: false).countryName
-        );
+      try{
+        PhoneAuthCredential credential=PhoneAuthProvider.credential(verificationId: widget.verificationIdRecieved, smsCode: smsCode);
+        print('credentials are ${credential.smsCode}');
 
-      });
+        if(widget.from==0) {
+          await FirebaseAuth.instance.signInWithCredential(credential).then((
+              value) async {
+            await Provider.of<ApiDataProvider>(context, listen: false)
+                .registerRequest(
+                context,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .firstName,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .lastName,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .email,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .password,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .contact,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .countryCode,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .userId,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .roleId,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .deviceToken,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .countryName
+            );
+          });
+        }else{
+          await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
+              Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+              null, null, '', '',
+              Provider.of<ApiDataProvider>(context, listen: false).contact, null,null,null);
+          Navigator.pop(context);
+        }
+      }catch(e){
+        print('error exception is $e');
+      }
+
     }
   }
 
@@ -122,7 +158,7 @@ class _OTPState extends State<OTP> {
                 InkWell(
                   onTap: (){
                     print('Resend Code clicked');
-                    Provider.of<ApiDataProvider>(context,listen: false).otpRequest(Provider.of<ApiDataProvider>(context,listen: false).contact, context);
+                    Provider.of<ApiDataProvider>(context,listen: false).otpRequest(Provider.of<ApiDataProvider>(context,listen: false).contact, context,widget.from);
                   },
                   child: Text('Resend Code',style: TextStyle(
                     color: Colors.black,

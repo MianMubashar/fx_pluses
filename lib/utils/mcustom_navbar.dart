@@ -108,7 +108,6 @@ class CustomNavBarWidget extends StatelessWidget {
               return Flexible(
                 child: InkWell(
                   onTap: () {
-
                     this.onItemSelected(index);
                   },
                   child: _buildItem(

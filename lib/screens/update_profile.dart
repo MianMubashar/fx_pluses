@@ -1,0 +1,227 @@
+
+import 'package:country_currency_pickers/country_pickers.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:fx_pluses/providers/api_data_provider.dart';
+import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
+import 'package:provider/provider.dart';
+
+import '../constants.dart';
+import '../reuseable_widgets/appbar.dart';
+class UpdateProfile extends StatelessWidget {
+
+  UpdateProfile({Key? key}) : super(key: key);
+  PhoneNumber? phoneNumber;
+  bool numberValid=false;
+  String countryCode='';
+  FilePickerResult? result;
+  String? buisnessName;
+
+
+  final TextEditingController phoneNumbercontroller = TextEditingController();
+  final TextEditingController buisnessController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    var size=MediaQuery.of(context).size;
+    // print('navigation history ${NavigationHistoryObserver().top}');
+    return Scaffold(
+      //resizeToAvoidBottomInset: false,
+      appBar: PreferredSize(
+          preferredSize: Size.fromHeight(60),
+          child: appbar(
+            size: size,
+            onPress: () {
+              Navigator.pop(context);
+            },
+            text: 'Profile Information',
+            check: true,
+          )),
+      body: Padding(
+        padding: EdgeInsets.only(left: 15,right: 15,top: 15),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?
+              Text(
+                'Buisness Name',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: greyColor),
+              ):Container(),
+              Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?SizedBox(
+                height: 8,
+              ):Container(),
+              Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: TextField(
+                  //controller: buisnessController,
+                  decoration: InputDecoration(
+                      hintText: Provider.of<ApiDataProvider>(context,listen: true).buisnessName == null ||
+                          Provider.of<ApiDataProvider>(context,listen: true).buisnessName == 'null' ? 'Business name':
+                                Provider.of<ApiDataProvider>(context,listen: true).buisnessName,
+                      helperStyle: TextStyle(color: blackColor),
+                      isDense: true,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(10),
+                      )),
+                  onChanged: (value) {
+                    buisnessName = value;
+                    print(value);
+                  },
+                  onSubmitted: (value){
+                    buisnessName=value;
+                  },
+                ),
+              ):Container(),
+              Text(
+                'Phone Number',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: greyColor),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 20,top: 10),
+                padding: EdgeInsets.only(left: 10),
+                decoration: BoxDecoration(
+                  color: Colors.black12.withOpacity(0.04),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: InternationalPhoneNumberInput(
+                   //countries: ['PK'],
+                  //formatInput: true,
+                  initialValue: PhoneNumber(phoneNumber: Provider.of<ApiDataProvider>(context,listen: true).contact,
+                      isoCode: Provider.of<ApiDataProvider>(context,listen: true).countryCode),
+                  errorMessage: 'Invalid Phone Number',
+                  hintText: 'xxxx-xxxx-xxxx',
+                  textFieldController: phoneNumbercontroller,
+
+                  spaceBetweenSelectorAndTextField: 0,
+                  selectorButtonOnErrorPadding: 0,
+                  inputDecoration: InputDecoration(
+                    // filled: true,
+                    isDense: true,
+                    border: InputBorder.none,
+                  ),
+                  autoValidateMode: AutovalidateMode.always,
+                  selectorConfig: const SelectorConfig(
+                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    setSelectorButtonAsPrefixIcon: true,
+                    leadingPadding: 0,
+                    useEmoji: true,
+                    showFlags: true,
+                    //trailingSpace: true
+                  ),
+                  onInputValidated: (bool value) {
+                    numberValid=value;
+                  },
+
+
+                  onInputChanged: (value) {
+                    print('${value.phoneNumber}');
+                    countryCode = value.isoCode.toString();
+                    print('phone number is $value');
+                    print(countryCode);
+                    phoneNumber = value;
+                  },
+                  // onSaved: (data){
+                  //   print(data.phoneNumber);
+                  //   phoneNumber=data;
+                  //   countryCode=data.isoCode.toString();
+                  // },
+
+
+                ),
+              ),
+              Provider.of<ApiDataProvider>(context,listen: true).idFile==null ||
+                  Provider.of<ApiDataProvider>(context,listen: true).idFile==''?
+              InkWell(
+                onTap: ()async{
+                  result=await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
+                  if (result == null) {
+                  print("No file selected");
+                  }else{
+                    Provider.of<ApiDataProvider>(context,listen: false).setIdFileForLocal(result!.files.first.path!);
+                  }
+                },
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Text('Select Id'),
+                        Container(
+                          height: size.height * 0.04,
+                          width: size.width * 0.3,
+                          decoration: BoxDecoration(
+                            color: buttonColor,
+                            borderRadius: BorderRadius.circular(10)
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.camera_alt_outlined,color: whiteColor,),
+                              Text(Provider.of<ApiDataProvider>(context,listen: true).idFileForlocal == null
+                                  ?'Select'
+                                  :'Selected',style: TextStyle(
+                                color: textWhiteColor
+                              ),)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+
+                  ],
+                ),
+              ):Container(
+                height: size.height * 0.35,
+                width: size.width,
+                child: Image.network(profile_url + Provider.of<ApiDataProvider>(context,listen: true).idFile!,fit: BoxFit.fill,),
+                              ),
+              SizedBox(height: 20,),
+              MainButton(text: 'Update', onPress: () async{
+                if(buisnessName == null && result == null && phoneNumber==null){
+                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Enter data to update', redColor);
+                }else{
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  if(countryCode ==null || countryCode==''){
+                    await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
+                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                        '', '',
+                        result == null ? null: result!.files.single.path.toString(),
+                        'id_file',
+                        null,
+                        buisnessName,
+                        null,
+                        null);
+                  }else{
+                    await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
+                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                        '', '',
+                        result == null ? null: result!.files.single.path.toString(),
+                        'id_file',
+                        phoneNumber==null?null:phoneNumber.toString(),
+                        buisnessName,
+                        countryCode==null ? null: countryCode,
+                        countryCode==null ? null: CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
+                  }
+
+
+                }
+
+                }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

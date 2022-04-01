@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fx_pluses/l10n/l10n.dart';
+import 'package:fx_pluses/model/onboarding_content.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/providers/language_provider.dart';
 import 'package:fx_pluses/screens/about.dart';
@@ -40,12 +43,44 @@ import 'package:fx_pluses/screens/terms_conditions.dart';
 import 'package:fx_pluses/screens/test.dart';
 import 'package:fx_pluses/screens/transaction_history.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void main() async {
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  'high_importance_channel', // id
+  'High Importance Notifications', // title
+  description: 'This channel is used for important notifications.', // description
+  importance: Importance.max,
+);
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+FlutterLocalNotificationsPlugin();
+Future notificationSelected(String? payload) async {
+
+}
+
+Future<void> _firbaseHandler(RemoteMessage message) async{
+await Firebase.initializeApp();
+print('a bg msg is showed up ${message.messageId}');
+}
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firbaseHandler);
+  var initilizationsSettings =
+  InitializationSettings(android: AndroidInitializationSettings('ic_launcher'),iOS: IOSInitializationSettings());
+  await flutterLocalNotificationsPlugin.initialize(initilizationsSettings,
+      onSelectNotification: notificationSelected);
+
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+      ?.createNotificationChannel(channel);
+
+
+
+
+
   Stripe.publishableKey =
       'pk_test_51KUTspLzsnFu9r8sQ875Kw4dt72c3zSKZSIWf8MuNTp1tZSAY8kLTZWEqoNt3OeZ7P2h1eay3PkIpLedJ2aDGN5000lPap05Pc';
   HttpOverrides.global=MyHttpOverrides();
@@ -98,6 +133,7 @@ class MyApp extends StatelessWidget {
       //   brightness: Brightness.dark,
       //   /* dark theme settings */
       // ),
+
       initialRoute: SplashScreen.id,
       routes: {
         SplashScreen.id: (context) => SplashScreen(),
@@ -114,7 +150,7 @@ class MyApp extends StatelessWidget {
         CReferCode.id: (context) => CReferCode(),
         CWallet.id: (context) => CWallet(),
         CWalletToWalletTransfer.id: (context) => CWalletToWalletTransfer(),
-       // CProfile.id: (context) => CProfile(backButtonEnabled: false,),
+        CProfile.id: (context) => CProfile(backButtonEnabled: false,),
         Signup.id: (context) => Signup(),
         MCreateAccount.id: (context) => MCreateAccount(),
         MHome.id: (context) => MHome(),
@@ -126,8 +162,10 @@ class MyApp extends StatelessWidget {
         HelpSupport.id: (context) => HelpSupport(),
         TermsConditions.id: (context) => TermsConditions(),
         TransactionHistory.id: (context) => TransactionHistory()
+
       },
-     // home: SplashScreen(),
+      //home: SplashScreen(),
+      //navigatorObservers: [NavigationHistoryObserver()],
     );
   }
 }

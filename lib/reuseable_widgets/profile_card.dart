@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 
 import '../constants.dart';
 
@@ -11,6 +12,7 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return InkWell(
       onTap: onPress,
       child: Container(

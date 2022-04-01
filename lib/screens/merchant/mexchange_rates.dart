@@ -151,6 +151,7 @@ class _MExchangeRatesState extends State<MExchangeRates> {
                   if(fromCountryId != null){
                     if(toCountryId != null){
                       if(amount.text.isNotEmpty){
+                        Navigator.pop(context);
                         await Provider.of<ApiDataProvider>(context,listen: false).CreateRate(context,
                             Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                             fromCountryId!, toCountryId!,

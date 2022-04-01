@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
+import '../providers/api_data_provider.dart';
 class ListOfUsersHavingChat extends StatelessWidget {
   ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId,required this.profile,required this.transaction_id}) : super(key: key);
   final String firstName;
@@ -21,6 +23,8 @@ class ListOfUsersHavingChat extends StatelessWidget {
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);
+        await Provider.of<ApiDataProvider>(context, listen: false)
+            .setScreenIndex(6);
       },
       child: Container(
         height: size.height * 0.13,

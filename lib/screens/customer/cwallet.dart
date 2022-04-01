@@ -19,6 +19,7 @@ import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:http/http.dart' as http;
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -47,13 +48,20 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
 
     });
   }
+  final NavigationHistoryObserver historyObserver = NavigationHistoryObserver();
+
+  int historyCount = 0;
+  int poppedCount = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+
     //getData();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -254,6 +262,8 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
               MainButton(
                 text: 'Withdraw',
                 onPress: () async {
+                  await Provider.of<ApiDataProvider>(context, listen: false)
+                      .setScreenIndex(6);
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>CWithdraw(currency_id:
                   Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,)));
                 },
@@ -264,6 +274,8 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
                   onPress: () async{
                     await Provider.of<ApiDataProvider>(context,listen: false).acceptedRequests(context,
                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                    await Provider.of<ApiDataProvider>(context, listen: false)
+                        .setScreenIndex(6);
                     Navigator.push(
                         context,
                         MaterialPageRoute(

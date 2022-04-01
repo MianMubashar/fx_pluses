@@ -10,7 +10,7 @@ class CRecieverInfo extends StatefulWidget {
   static final String id='CRecieverInfo_Screen';
   CRecieverInfo({Key? key,required this.reciever_id,required this.transaction_id}) : super(key: key);
   int reciever_id;
-  int  transaction_id;
+  int?  transaction_id;
 
   @override
   _CRecieverInfoState createState() => _CRecieverInfoState();
@@ -185,7 +185,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                  await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                       Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                       widget.reciever_id,
-                      "Name: "+firstNameController.text +lastNameController.text +'\n'+
+                      "Name: "+firstNameController.text +" "+lastNameController.text +'\n'+
                       "Account Number: "+accountNumberController.text + "\n"+
                       "Swift Code: "+swiftCodeController.text + "\n"+
                       "Amount: "+amountController.text,

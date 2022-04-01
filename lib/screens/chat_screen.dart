@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -7,12 +8,14 @@ import 'package:fx_pluses/model/show_chat_model.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:fx_pluses/reuseable_widgets/revise_rate_dialog.dart';
 import 'package:fx_pluses/reuseable_widgets/text_bubble.dart';
 import 'package:fx_pluses/screens/customer/creciever_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
+import '../model/get_currencies_model.dart';
 
 class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
@@ -31,6 +34,26 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageText=TextEditingController();
   bool messageSentCheck=false;
   double ratingBar=0;
+
+  List<String> emailCheck(String message){
+    RegExp regExpForEmail=RegExp(
+      r'\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b',
+      caseSensitive: false,
+      multiLine: false,
+    );
+
+    final matches=regExpForEmail.allMatches(message);
+
+    List<String> emails=[];
+    if (matches != null) {
+      for (final Match match in matches) {
+        emails.add(message.substring(match.start, match.end));
+      }
+    }
+    return emails;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
@@ -56,7 +79,10 @@ class _ChatScreenState extends State<ChatScreen> {
               },
             ),
             actions: [
+
+
               Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
+              widget.transactionId != null ?
               IconButton(
                 icon: Icon(Icons.check,color: whiteColor,),
                 onPressed: () async{
@@ -182,7 +208,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
                 },
+              )
+                  :Container()
+                  :
+              widget.transactionId != null?
+              IconButton(onPressed: (){
+                showDialog(context: context,barrierDismissible: true, builder: (dialogContext){
+                  return ReviseRateDialog(reciever_id: widget.reciever_id,transaction_id: widget.transactionId,);
+                });
+              }, icon: Image.asset('assets/icons/dollar_icon.png'),
               ):Container()
+
             ],
           ),
       ),
@@ -190,9 +226,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
         children: [
           Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
+          widget.transactionId != null?
           InkWell(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo(transaction_id: widget.transactionId!,reciever_id: widget.reciever_id,)));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo(transaction_id: widget.transactionId,reciever_id: widget.reciever_id,)));
             },
             child: Container(
               height: size.height * 0.05,
@@ -205,7 +242,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
               ),)),
             ),
-          ):Container(),
+          )
+              :Container()
+              :Container(),
           Stream_Builder(recieverId: widget.reciever_id,transactionId: widget.transactionId,),
           Container(
             padding: EdgeInsets.only(left: 10,right: 10),
@@ -215,27 +254,28 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  splashRadius: 1,
-                  onPressed: () async{
-                      FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
-                      if (result == null) {
-                        print("No file selected");
-                      } else {
-                        Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
-                            Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                            widget.reciever_id, '',result.files.single.path.toString(),'image',widget.transactionId );
-                        print(result.files.single.name);
-                        print(result.files.single.path);
-                      }
-
-                  },
-                  icon: Image.asset('assets/icons/attach_fileicon.png',height: size.height * 0.03,),
+                // Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?
+                // IconButton(
+                //   padding: EdgeInsets.zero,
+                //   splashRadius: 1,
+                //   onPressed: () async{
+                //       FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
+                //       if (result == null) {
+                //         print("No file selected");
+                //       } else {
+                //         Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
+                //             Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                //             widget.reciever_id, '',result.files.single.path.toString(),'image',widget.transactionId );
+                //         print(result.files.single.name);
+                //         print(result.files.single.path);
+                //       }
+                //
+                //   },
+                //   icon: Image.asset('assets/icons/attach_fileicon.png',height: size.height * 0.03,),
+                // ):Container(),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.05,
                 ),
-                // SizedBox(
-                //   width: MediaQuery.of(context).size.width * 0.05,
-                // ),
                 Expanded(
                   child: TextField(
                     controller: messageText,
@@ -255,18 +295,79 @@ class _ChatScreenState extends State<ChatScreen> {
                 IconButton(
                   onPressed: () async {
                     if(messageText.text.isNotEmpty){
-                      messageSentCheck=true;
-                      setState(() {
 
-                      });
-                      await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
-                          Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                          widget.reciever_id, messageText.text,'','',widget.transactionId );
-                      messageText.clear();
-                      messageSentCheck=false;
-                      setState(() {
 
-                      });
+
+                      // String pattern = r'\b[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*\b';
+                      String pattern = r'\b[+]*[(]{0,1}[6-9]{1,4}[)]{0,1}[-\s\.0-9]*\b';
+                      RegExp regExp = new RegExp(pattern,caseSensitive: false,multiLine: false);
+
+                      final phoneNumberMatches=regExp.allMatches(messageText.text);
+                      List<String> phoneNumbers=[];
+                      if(phoneNumberMatches != null){
+                        for(final Match match in phoneNumberMatches){
+                          phoneNumbers.add(messageText.text.substring(match.start,match.end));
+                        }
+                      }
+                      print('number is ${phoneNumberMatches}');
+
+
+                      List<String> emails=emailCheck(messageText.text);
+                      print('email is is $emails');
+                      if(emails.isNotEmpty){
+                        showDialog(context: context, builder: (dialogContext){
+                          return AlertDialog(
+                            title: Text('You cannot send email or phone number here',style: TextStyle(
+                              color: buttonColor
+                            ),),
+                            backgroundColor: whiteColor,
+                            actions: [
+                              Center(
+                                child: ElevatedButton(onPressed: (){
+                                  Navigator.pop(dialogContext);
+                                },child: Text('Close'),style: ElevatedButton.styleFrom(
+                                  primary: buttonColor
+                                ),),
+                              )
+                            ],
+                          );
+                        });
+                      }else{
+                        if(phoneNumbers.isNotEmpty){
+                          showDialog(context: context, builder: (dialogContext){
+                            return AlertDialog(
+                              title: Text('You cannot send email or phone number here',style: TextStyle(
+                                  color: buttonColor
+                              ),),
+                              backgroundColor: whiteColor,
+                              actions: [
+                                Center(
+                                  child: ElevatedButton(onPressed: (){
+                                    Navigator.pop(dialogContext);
+                                  },child: Text('Close'),style: ElevatedButton.styleFrom(
+                                      primary: buttonColor
+                                  ),),
+                                )
+                              ],
+                            );
+                          });
+                        }else{
+                          messageSentCheck=true;
+                          setState(() {
+
+                          });
+                          await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
+                              Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                              widget.reciever_id, messageText.text,'','',widget.transactionId );
+                          messageText.clear();
+                          messageSentCheck=false;
+                          setState(() {
+
+                          });
+                        }
+
+                      }
+
                     }else{
 
                     }
@@ -351,10 +452,10 @@ class Stream_Builder extends StatelessWidget {
                 List<dynamic> data=Provider.of<ApiDataProvider>(context,listen: false).showChatList;
 
                 for(int i=0;i<data.length;i++) {
-                  String? message=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].message;
-                  String? filePath=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].file;
-                  String? isAdmin=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].isAdmin;
-                  String? firstName=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender['first_name'];
+                  String? message=data[i].message;
+                  String? filePath=data[i].file;
+                  String? isAdmin=data[i].isAdmin;
+                  String? firstName=data[i].sender['first_name'];
                   final isMe;
                   isAdmin=='1'? isMe=false:
                   isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;

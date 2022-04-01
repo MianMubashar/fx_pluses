@@ -55,7 +55,8 @@ class _MHomeState extends State<MHome> {
               Padding(
                 padding: const EdgeInsets.only(right: 15.0,top: 5),
                 child: InkWell(
-                  onTap: (){
+                  onTap: ()async{
+                    await Provider.of<ApiDataProvider>(context,listen: false).setScreenIndex(6);
                     Navigator.push(context,MaterialPageRoute(builder: (context)=>MProfile()));
                   },
                   child: Provider.of<ApiDataProvider>(context,listen: true).photoUrl !=null ?CircleAvatar(

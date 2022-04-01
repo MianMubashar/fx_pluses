@@ -140,7 +140,7 @@ class CInviteFriend2 extends StatelessWidget {
                             ),
                             InkWell(
                               onTap:() async{
-                                var whatsappUrl =Uri.encodeFull("https://api.whatsapp.com/send?phone=+92${contacts[index].phones!.length>0?contacts[index].phones![0].value:''}&text='hi'");
+                                var whatsappUrl =Uri.encodeFull("https://api.whatsapp.com/send?phone=${contacts[index].phones!.length>0?contacts[index].phones![0].value:''}&text='hi'");
                                 if (!await launch(whatsappUrl)) throw 'Could not launch $whatsappUrl';
                               },
                               child: Container(

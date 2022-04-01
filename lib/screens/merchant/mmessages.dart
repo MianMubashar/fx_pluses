@@ -135,7 +135,7 @@ class Stream_Builder extends StatelessWidget {
                       final message=provider.usersHavingChatList[i].message;
                       final recieverId=provider.usersHavingChatList[i].sender_id;
                       final profile_url=provider.usersHavingChatList[i].sender['profile_photo_path'];
-                      final transactionId=provider.usersHavingChatList[i].transaction!['id'];
+                      final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                       final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
                       list.add(listWidget);
                     }else{
@@ -145,7 +145,7 @@ class Stream_Builder extends StatelessWidget {
                       final message=provider.usersHavingChatList[i].message;
                       final recieverId=provider.usersHavingChatList[i].receiver_id;
                       final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
-                      final transactionId=provider.usersHavingChatList[i].transaction!['id'];
+                      final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                       final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
                       list.add(listWidget);
                     }
@@ -163,7 +163,7 @@ class Stream_Builder extends StatelessWidget {
                     final message=provider.usersHavingChatList[i].message;
                     final recieverId=provider.usersHavingChatList[i].sender_id;
                     final profile_url=provider.usersHavingChatList[i].sender['profile_photo_path'];
-                    final transactionId=provider.usersHavingChatList[i].transaction!['id'];
+                    final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                     final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
                     list.add(listWidget);
                   }else{
@@ -173,7 +173,7 @@ class Stream_Builder extends StatelessWidget {
                     final message=provider.usersHavingChatList[i].message;
                     final recieverId=provider.usersHavingChatList[i].receiver_id;
                     final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
-                    final transactionId=provider.usersHavingChatList[i].transaction!['id'];
+                    final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                     final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
                     list.add(listWidget);
                   }

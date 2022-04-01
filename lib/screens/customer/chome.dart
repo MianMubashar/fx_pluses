@@ -8,6 +8,7 @@ import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/customer/profile.dart';
 import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -38,6 +39,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
   int? from_country_id;
   int? to_counntry_id;
   String? fromCurrencySymbol;
+  bool active=false;
   getData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     bearerToken = await preferences.getString(SharedPreference.bearerTokenKey);
@@ -46,12 +48,17 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
         .getCountries(context, bearerToken!);
   }
 
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     //getData();
+
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +87,9 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
               child: InkWell(
-                onTap: (){
+                onTap: () async{
+                  await Provider.of<ApiDataProvider>(context, listen: false)
+                      .setScreenIndex(6);
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>CProfile(backButtonEnabled: true,)));
                 },
                 child: CircleAvatar(
@@ -280,6 +289,8 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                 margin: EdgeInsets.only(bottom: 25, top: 5),
                 child: TextField(
                   controller: amount,
+
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
                       padding:  EdgeInsets.only(left: 20.0,top: 15),
@@ -344,6 +355,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                             }else{
                               if(from_country_id != null && to_counntry_id != null){
                                 FocusScope.of(context).requestFocus(FocusNode());
+
                                 await Provider.of<ApiDataProvider>(context, listen: false).getMercchantes(context,
                                     token!,
                                     amount.text,
@@ -535,9 +547,13 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                                           width:size.width * 0.25,
                                                           child: Text(
                                                             Provider.of<ApiDataProvider>(context, listen: false)
+                                                                .top_five_merchant_list[index].user['business']==null?
+                                                            Provider.of<ApiDataProvider>(context, listen: false)
                                                                     .top_five_merchant_list[index].user['first_name'] +
                                                                 Provider.of<ApiDataProvider>(context, listen: false)
-                                                                    .top_five_merchant_list[index].user['last_name'],
+                                                                    .top_five_merchant_list[index].user['last_name']:
+                                                            Provider.of<ApiDataProvider>(context, listen: false)
+                                                                .top_five_merchant_list[index].user['business'],
                                                             style: TextStyle(
                                                                 color: textBlackColor,
                                                                 fontSize: 15,

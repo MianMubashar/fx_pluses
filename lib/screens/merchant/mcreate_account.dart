@@ -53,7 +53,18 @@ class _MCreateAccountState extends State<MCreateAccount> {
     deviceToken = (await FirebaseMessaging.instance.getToken())!;
   }
 
-
+  clearControllers(){
+    firstNameController.clear();
+    lastNameController.clear();
+    emailController.clear();
+    passwordController.clear();
+    phoneNumbercontroller.clear();
+    usernameController.clear();
+    firstName='';
+    lastName='';
+    email='';
+    password='';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -370,43 +381,29 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                           'Username should be atleast 5 characters long',redColor);
                                     }else {
                                       await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setContact(
-                                          phoneNumbercontroller.text);
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setFirstName(
+                                          context, listen: false).setContact(phoneNumber.toString());
+                                      await Provider.of<ApiDataProvider>(context, listen: false).setFirstName(
                                           firstName);
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setLastName(
+                                      await Provider.of<ApiDataProvider>(context, listen: false).setLastName(
                                           lastName);
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setEmail(
+                                      await Provider.of<ApiDataProvider>(context, listen: false).setEmail(
                                           email);
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setPassword(
+                                      await Provider.of<ApiDataProvider>(context, listen: false).setPassword(
                                           password);
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setToken(
+                                      await Provider.of<ApiDataProvider>(context, listen: false).setToken(
                                           deviceToken);
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false)
+                                      await Provider.of<ApiDataProvider>(context, listen: false)
                                           .setCountryCode(countryCode);
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setRoleId(4);
-                                     await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setUserId(
+                                      await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(4);
+                                     await Provider.of<ApiDataProvider>(context, listen: false).setUserId(
                                           usernameController.text);
-                                     await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setRegisterUserCountryName(CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
+                                     await Provider.of<ApiDataProvider>(context, listen: false).setRegisterUserCountryName(CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
                                       // Provider.of<ApiDataProvider>(context, listen: false).otp_check==false
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false)
-                                          .otpRequest(phoneNumber, context);
-                                      firstNameController.clear();
-                                      lastNameController.clear();
-                                      emailController.clear();
-                                      passwordController.clear();
-                                      phoneNumbercontroller.clear();
-                                      usernameController.clear();
+                                      await Provider.of<ApiDataProvider>(context, listen: false)
+                                          .otpRequest(phoneNumber, context,0);
+
+                                      clearControllers();
+
                                     }
                                     }
                                 }

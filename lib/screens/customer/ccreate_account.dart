@@ -1,4 +1,5 @@
 import 'package:country_currency_pickers/utils/utils.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
   final TextEditingController userNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController buisnessController= TextEditingController();
   //final TextEditingController controller = TextEditingController();
 
   clearControllers(){
@@ -51,6 +53,11 @@ class _CCreateAccountState extends State<CCreateAccount> {
     userNameController.clear();
     emailController.clear();
     passwordController.clear();
+    firstName='';
+    lastName='';
+    email='';
+    password='';
+
   }
 
   @override
@@ -258,6 +265,8 @@ class _CCreateAccountState extends State<CCreateAccount> {
                   },
                 ),
               ),
+
+
               Center(
                 child: RichText(
                     text: TextSpan(
@@ -327,7 +336,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
                                   if(deviceToken==''){ CircularProgressIndicator(
                                     color: newColor,
                                   ); }else {
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setContact(controller.text);
+                                    await Provider.of<ApiDataProvider>(context, listen: false).setContact(phoneNumber.toString());
                                     await Provider.of<ApiDataProvider>(context, listen: false).setFirstName(firstName);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setLastName(lastName);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setEmail(email.trim());
@@ -341,7 +350,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
 
                                     Provider.of<ApiDataProvider>(
                                         context, listen: false)
-                                        .otpRequest(phoneNumber, context);
+                                        .otpRequest(phoneNumber, context,0);
                                       // await Provider.of<ApiDataProvider>(
                                       //     context, listen: false)
                                       //     .registerRequest(

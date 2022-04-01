@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/accepted_request_merchants_model.dart';
 import 'package:fx_pluses/model/chat_menu_model.dart';
@@ -30,14 +33,17 @@ import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../main.dart';
+
 class ApiDataProvider extends ChangeNotifier {
-  static const String BASE_URL =
-      'http://console.fxpluses.com/';
   // static const String BASE_URL =
-  //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+  //     'http://console.fxpluses.com/';
+  static const String BASE_URL =
+      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 
@@ -52,6 +58,13 @@ class ApiDataProvider extends ChangeNotifier {
   int? _roleId = 0;
   String? _deviceToken = '';
   String verificationIdRecieved = '';
+  String? _idFile;
+  String? _idFileForlocal;
+
+
+  String? _buisnessName;
+
+
   bool check = false;
   String? _balance = '';
   int? _defaultCurrencyId;
@@ -80,12 +93,29 @@ class ApiDataProvider extends ChangeNotifier {
   String? _selectedWalletBalance = '';
   String? _selectedCurrencySymbol = '';
   String? _countryName;
+  int _screenIndex=0;
+
 
 
   String? _currencySymbolForExchangeRateScreen;
 
 
-
+ setScreenIndex(int i){
+   _screenIndex=i;
+   notifyListeners();
+ }
+  setIdFileForLocal(String file){
+    _idFileForlocal=file;
+    notifyListeners();
+  }
+  setBuisnessName(String? n){
+    _buisnessName=n;
+    notifyListeners();
+  }
+  setIdFile(String? file){
+    _idFile=file;
+    notifyListeners();
+  }
 setRegisterUserCountryName(String n){
   _countryName=n;
 }
@@ -158,6 +188,7 @@ setRegisterUserCountryName(String n){
 
   setContact(String contact) {
     this._contact = contact;
+    notifyListeners();
   }
 
   setCountryCode(String contryCode) {
@@ -187,6 +218,7 @@ setRegisterUserCountryName(String n){
     _photoUrl = photo;
     notifyListeners();
   }
+
 
 
   Future<bool> registerRequest(BuildContext context,
@@ -316,6 +348,10 @@ setRegisterUserCountryName(String n){
           String firstName = apiResponse['user']['first_name'];
           String lastName = apiResponse['user']['last_name'];
           String email = apiResponse['user']['email'];
+          String contactNum=apiResponse['user']['contact_no'];
+         String? file=apiResponse['user']['id_file'];
+         String? buisness=apiResponse['user']['business'];
+
           // String wallet=apiResponse['user']['wallet'];
           int role_id = apiResponse['user']['role_id'];
           String country_code = apiResponse['user']['country_code'];
@@ -326,6 +362,7 @@ setRegisterUserCountryName(String n){
           int currencyId = apiResponse['user']['default_currency_id'];
           String currencyName = apiResponse['user']['default_currency']['name'];
           String currencySymbol = apiResponse['user']['default_currency']['symbol'];
+
           List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
 
           for (int i = 0; i < user_wallets_data.length; i++) {
@@ -386,6 +423,12 @@ setRegisterUserCountryName(String n){
           await setdefaultCurrencySymbol(currencySymbol);
           await setSelectedCurrencySymbol(currencySymbol);
           await setSelectedCurrencyId(currencyId);
+          await setContact(contactNum);
+          await setIdFile(file);
+          await setBuisnessName(buisness);
+
+          await setScreenIndex(0);
+
 
 
           await getCountries(context, token);
@@ -447,10 +490,14 @@ setRegisterUserCountryName(String n){
         if (status) {
           _userWalletModelList.clear();
 
+
           int user_id = apiResponse['user']['id'];
           String firstName = apiResponse['user']['first_name'];
           String lastName = apiResponse['user']['last_name'];
           String email = apiResponse['user']['email'];
+          String contact=apiResponse['user']['contact_no'];
+          String? file=apiResponse['user']['id_file'];
+          String? buisness=apiResponse['user']['business'];
           // String wallet=apiResponse['user']['wallet'];
           int role_id = apiResponse['user']['role_id'];
           String country_code = apiResponse['user']['country_code'];
@@ -509,6 +556,7 @@ setRegisterUserCountryName(String n){
           await setFirstName(firstName);
           await setLastName(lastName);
           await setEmail(email);
+          setContact(contact);
           // setBalance(wallet);
           await setRoleId(role_id);
           await setCountryCode(country_code);
@@ -522,6 +570,10 @@ setRegisterUserCountryName(String n){
           await setdefaultCurrencySymbol(currencySymbol);
           await setSelectedCurrencySymbol(currencySymbol);
           await setRegisterUserCountryName(country_name);
+          await setIdFile(file);
+          await setBuisnessName(buisness);
+
+          await setScreenIndex(0);
 
 
           await getCountries(context, token);
@@ -691,21 +743,21 @@ setRegisterUserCountryName(String n){
 
         bool status = apiResponse['status'];
         if (status) {
-          Get.back(closeOverlays: true);
+          Get.back();
           List<dynamic> data = apiResponse['merchant_rates'];
           for (int i = 0; i < data.length; i++) {
             top_five_merchant_list.add(TopFiveMerchants.fromJson(data[i]));
           }
         } else {
-          Get.back(closeOverlays: true);
+          Get.back();
           showSnackbar(context, apiResponse['message'], redColor);
         }
       } else {
-        Get.back(closeOverlays: true);
+        Get.back();
         showSnackbar(context, apiResponse['error'], redColor);
       }
     } catch (e) {
-      Get.back(closeOverlays: true);
+      Get.back();
       Get.showSnackbar(GetSnackBar(
         backgroundColor: redColor,
         message: 'Something went wrong',
@@ -809,9 +861,11 @@ setRegisterUserCountryName(String n){
       if (response.statusCode == 200) {
         bool status = apiResponse['status'];
         if (status) {
+
           Get.back(closeOverlays: true);
           print(apiResponse['message']);
           Map transaction = apiResponse['transaction'];
+          setScreenIndex(6);
 
           Get.showSnackbar(GetSnackBar(
             backgroundColor: buttonColor,
@@ -1179,8 +1233,9 @@ setRegisterUserCountryName(String n){
     }
   }
 
-  Future updateProfile(BuildContext context, String token, String first_name,
-      String last_name, String filePath) async {
+  Future updateProfile(BuildContext context, String token, String? first_name,
+      String? last_name, String? filePath, String file_Key,String? contact_num,
+      String? buisness,String? country_code,String? country_name) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + "update-profile");
     try {
@@ -1191,7 +1246,7 @@ setRegisterUserCountryName(String n){
       };
       Map bodyData = {
         "first_name": first_name,
-        "last_name": last_name
+        "last_name": last_name,
       };
 
       var body;
@@ -1202,13 +1257,23 @@ setRegisterUserCountryName(String n){
       } else {
         var request = await http.MultipartRequest('POST', url);
         request.headers['Authorization'] = "Bearer $token";
-        //request.fields['receiver_id']='$recieverid';
-        request.files.add(
-            await http.MultipartFile.fromPath(
-                'photo',
-                filePath
-            )
-        );
+        if(contact_num != 'null' && contact_num != null) {
+          request.fields['contact_no'] = '$contact_num';
+          request.fields['country_code']= '$countryCode';
+          request.fields['country_name']='$countryName';
+        }
+        if(buisness != null && buisness != ''){
+          request.fields['business']='$buisness';
+        }
+        if(filePath !=null){
+          request.files.add(
+              await http.MultipartFile.fromPath(
+                  file_Key,
+                  filePath
+              )
+          );
+        }
+
 
         response = await request.send();
         //print(response.body);
@@ -1227,15 +1292,40 @@ setRegisterUserCountryName(String n){
         bool status = apiResponse['status'];
         if (status) {
           Get.back();
-          if (first_name == '') {
+          if (first_name == '' || first_name==null) {
             String m = apiResponse['message'];
-            String p = apiResponse['photo_path'];
-            setPhotoUrl(p);
+            if(buisness != null && buisnessName != ''){
+              setBuisnessName(buisness);
+            }
+            if(contact_num != null){
+              setContact(contact_num);
+            }
+            if(filePath != null && filePath != ''){
+              if(file_Key == 'photo'){
+                String p = apiResponse['photo_path'];
+                setPhotoUrl(p);
+              }else{
+                Map<String, dynamic> user = apiResponse['user'];
+                 if(user['id_file'] != '' || user['id_file'] != null){
+                   setIdFile(user['id_file']);
+                 }
+
+              }
+
+            }
             showSnackbar(context, m, buttonColor);
           } else {
-            setFirstName(first_name);
-            setLastName(last_name);
-            showSnackbar(context, apiResponse['message'], buttonColor);
+            if(first_name==null && last_name==null){
+              setContact(contact_num!);
+              showSnackbar(context, apiResponse['message'], buttonColor);
+            }
+            else{
+              setFirstName(first_name);
+              setLastName(last_name!);
+              showSnackbar(context, apiResponse['message'], buttonColor);
+            }
+
+
           }
         } else {
           Get.back();
@@ -1247,7 +1337,7 @@ setRegisterUserCountryName(String n){
       }
     } catch (e) {
       Get.back();
-      print('try catch error from sendMessage $e');
+      print('try catch error from updateProfile $e');
     }
   }
 
@@ -1438,23 +1528,23 @@ setRegisterUserCountryName(String n){
       if(response.statusCode==200){
         bool status=apiResponse['status'];
         if(status){
-          Get.back(closeOverlays: true);
+          Get.back();
           Map data=apiResponse['created_rate'];
           getCurrencyRateModelList.add(GetCurrencyRatesModel(id: data['id'], from_currency_id: data['from_currency_id'],
               to_currency_id: data['to_currency_id'], exchange_rate: data['exchange_rate'],
               user_id: data['user_id'], from_currency: data['from_currency'], to_currency: data['to_currency']));
           //showSnackbar(context, apiResponse['messsage'], buttonColor);
         }else{
-          Get.back(closeOverlays: true);
+          Get.back();
           showSnackbar(context, apiResponse['messsage'], redColor);
         }
       }else{
-        Get.back(closeOverlays: true);
+        Get.back();
         getError(apiResponse['error'], context);
       }
 
     }catch(e){
-      Get.back(closeOverlays: true);
+      Get.back();
       showSnackbar(context, 'Something went wrong', redColor);
     }
   }
@@ -1474,7 +1564,7 @@ setRegisterUserCountryName(String n){
       if(response.statusCode==200){
         bool status=apiResponse['status'];
         if(status){
-          Get.back(closeOverlays: true);
+          Get.back();
           getCurrencyRateModelList.clear();
           List<dynamic> data=apiResponse['rates'];
           for(int i=0;i<data.length;i++){
@@ -1482,16 +1572,16 @@ setRegisterUserCountryName(String n){
           }
 
         }else{
-          Get.back(closeOverlays: true);
+          Get.back();
           showSnackbar(context, apiResponse['messsage'], redColor);
         }
       }else{
-        Get.back(closeOverlays: true);
+        Get.back();
         getError(apiResponse['error'], context);
       }
 
     }catch(e){
-      Get.back(closeOverlays: true);
+      Get.back();
       showSnackbar(context, 'Something went wrong', redColor);
     }
   }
@@ -1516,22 +1606,22 @@ setRegisterUserCountryName(String n){
       if(response.statusCode==200){
         bool status=apiResponse['status'];
         if(status){
-          Get.back(closeOverlays: true);
+          Get.back();
           getCurrencyRateModelList.removeAt(index);
           //showSnackbar(context, apiResponse['messsage'], buttonColor);
 
 
         }else{
-          Get.back(closeOverlays: true);
+          Get.back();
           showSnackbar(context, apiResponse['messsage'], redColor);
         }
       }else{
-        Get.back(closeOverlays: true);
+        Get.back();
         getError(apiResponse['error'], context);
       }
 
     }catch(e){
-      Get.back(closeOverlays: true);
+      Get.back();
       showSnackbar(context, 'Something went wrong', redColor);
     }
   }
@@ -1557,19 +1647,19 @@ setRegisterUserCountryName(String n){
       if(response.statusCode==200){
         bool status=apiResponse['status'];
         if(status){
-          Get.back(closeOverlays: true);
+          Get.back();
          // showSnackbar(context, apiResponse['messsage'], buttonColor);
         }else{
-          Get.back(closeOverlays: true);
+          Get.back();
           showSnackbar(context, apiResponse['messsage'], redColor);
         }
       }else{
-        Get.back(closeOverlays: true);
+        Get.back();
         getError(apiResponse['error'], context);
       }
 
     }catch(e){
-      Get.back(closeOverlays: true);
+      Get.back();
       showSnackbar(context, 'Something went wrong', redColor);
     }
   }
@@ -1581,7 +1671,7 @@ setRegisterUserCountryName(String n){
       'Authorization':'Bearer $token'
     };
     //print('stream builder 4');
-    yield* Stream.periodic(Duration(milliseconds: 1000), (_) async{
+    yield* Stream.periodic(Duration(milliseconds:3000), (_) async{
       return await http.post(Uri.parse(SERVER_URL + 'chat-menu'),headers:header);
     }).asyncMap((event) async {
       //print('stream builder 4');
@@ -1610,7 +1700,7 @@ setRegisterUserCountryName(String n){
   }
 
 
-  Future<void> otpRequest(phoneNumber, BuildContext context) async {
+  Future<void> otpRequest(phoneNumber, BuildContext context,int from) async {
     Get.dialog(CustomLoader());
     var auth = FirebaseAuth.instance;
     await auth.verifyPhoneNumber(
@@ -1644,7 +1734,7 @@ setRegisterUserCountryName(String n){
       verificationFailed: (FirebaseAuthException exception) {
         Get.back();
         print('Verification Failed ${exception.message}');
-        showSnackbar(context, 'Verification Failed',redColor);
+        showSnackbar(context, '${exception.message}',redColor);
 
       },
       codeSent: (String verificationId, int? resendToken) async{
@@ -1656,6 +1746,7 @@ setRegisterUserCountryName(String n){
           MaterialPageRoute(
             builder: (context) => OTP(
               verificationIdRecieved: verificationId,
+              from: from,
             ),
           ),
         );
@@ -1666,6 +1757,27 @@ setRegisterUserCountryName(String n){
         Get.back();
       },
     );
+  }
+
+
+
+
+  getNotificationsPermissions() {
+    Future<PermissionStatus> permissionStatus =
+    NotificationPermissions.getNotificationPermissionStatus();
+
+    permissionStatus.then((value) async => {
+      if (value == PermissionStatus.unknown)
+        {NotificationPermissions.requestNotificationPermissions()}
+      else if (value == PermissionStatus.denied)
+        {
+          NotificationPermissions.requestNotificationPermissions(
+              openSettings: true)
+        }
+      else if(value == PermissionStatus.granted){
+          // saveToken()
+        }
+    });
   }
 
 
@@ -1730,4 +1842,8 @@ setRegisterUserCountryName(String n){
   String get selectedCurrencySymbol => _selectedCurrencySymbol!;
   String get currencySymbolForExchangeRateScreen => _currencySymbolForExchangeRateScreen ?? '';
   String get countryName => _countryName ?? '';
+  String? get idFile => _idFile;
+  String? get buisnessName => _buisnessName;
+  String? get idFileForlocal => _idFileForlocal;
+  int get screenIndex => _screenIndex;
 }

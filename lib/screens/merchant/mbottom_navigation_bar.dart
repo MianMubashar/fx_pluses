@@ -52,102 +52,163 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
-    return PersistentTabView.custom(
-      context,
-      controller: _controller,
-      itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
-      screens: _buildScreens(),
-      confineInSafeArea: false,
-      handleAndroidBackButtonPress: true,
-      onWillPop: (value) async{
-        showDialog(context: context,barrierDismissible: false, builder: (context){
-          return AlertDialog(
-            title: Text('Are you sure you want to close the app'),
-            actions: [
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FlatButton(
-                      onPressed: (){
-                        SystemNavigator.pop();
-                      },
-                      child: Text('Yes'),
-                    ),
+    return WillPopScope(
+      onWillPop: () async
+      {
+        if(_controller.index==0){
+          showDialog(context: context,barrierDismissible: false, builder: (context){
+            return AlertDialog(
+              title: Text('Are you sure you want to close the app'),
+              actions: [
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                        onPressed: (){
+                          SystemNavigator.pop();
+                        },
+                        child: Text('Yes'),
+                      ),
 
-                    FlatButton(
-                      onPressed: (){
-                        exit=false;
-                        Get.back();
-                      },
-                      child: Text('No'),
-                    )
-                  ],
-                ),
-              )
-            ],
-          );
+                      FlatButton(
+                        onPressed: (){
+                          exit=false;
+                          Get.back();
+                        },
+                        child: Text('No'),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            );
 
-        });
-        return exit;
-      },
-
-      // onItemSelected: (int) {
-      //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
-      // },
-      customWidget: CustomNavBarWidget( // Your custom widget goes here
-
-        items: [
-          PersistentBottomNavBarItem(
-
-            icon: Image.asset(_controller.index==0?'assets/images/bhome.png':'assets/images/home.png',
-              height: size.height * 0.04,
-              width: size.width * 0.07,),
-            title: ("Home"),
-            activeColorPrimary: CupertinoColors.activeBlue,
-            inactiveColorPrimary: CupertinoColors.systemGrey,
-          ),
-          PersistentBottomNavBarItem(
-            icon: Image.asset(_controller.index==1?'assets/images/brequest.png':'assets/images/request.png',
-              height: size.height * 0.04,
-              width: size.width * 0.06,),
-            title: ("Requests"),
-            activeColorPrimary: CupertinoColors.activeBlue,
-            inactiveColorPrimary: CupertinoColors.systemGrey,
-          ),
-          PersistentBottomNavBarItem(
-            icon: Image.asset(_controller.index==2?'assets/images/bwallet.png':'assets/images/wallet.png',
-              height: size.height * 0.04,
-              width: size.width * 0.07,),
-            title: ("Wallet"),
-            activeColorPrimary: CupertinoColors.activeBlue,
-            inactiveColorPrimary: CupertinoColors.systemGrey,
-          ),
-          PersistentBottomNavBarItem(
-            icon: Image.asset(_controller.index==3?'assets/images/bmessage.png':'assets/images/message.png',
-              height: size.height * 0.04,
-              width: size.width * 0.07,),
-            title: ("Message\'s"),
-            activeColorPrimary: CupertinoColors.activeBlue,
-            inactiveColorPrimary: CupertinoColors.systemGrey,
-          ),
-
-        ],
-        selectedIndex: _controller.index,
-        onItemSelected: (index) async{
-          _controller.index = index;// NOTE: THIS IS CRITICAL!! Don't miss it!
-
-          if(index==0 || index == 1){
-            await getData();
-          }
-          setState(() {
-            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context){
-              return MBottomNavigationBar(index: index);
-            }), (route) => false);
           });
+          return false;
+        }else{
 
+          setState(() {
 
-        },
+          });
+          //Get.back();
+          return true;
+        }
+      },
+      child: PersistentTabView.custom(
+        context,
+        controller: _controller,
+        itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
+        screens: _buildScreens(),
+        confineInSafeArea: false,
+        handleAndroidBackButtonPress: true,
+        stateManagement: true,
+        // onWillPop: (value) async{
+        //   showDialog(context: context,barrierDismissible: false, builder: (context){
+        //     return AlertDialog(
+        //       title: Text('Are you sure you want to close the app'),
+        //       actions: [
+        //         Container(
+        //           child: Row(
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: [
+        //               FlatButton(
+        //                 onPressed: (){
+        //                   SystemNavigator.pop();
+        //                 },
+        //                 child: Text('Yes'),
+        //               ),
+        //
+        //               FlatButton(
+        //                 onPressed: (){
+        //                   exit=false;
+        //                   Get.back();
+        //                 },
+        //                 child: Text('No'),
+        //               )
+        //             ],
+        //           ),
+        //         )
+        //       ],
+        //     );
+        //
+        //   });
+        //   return exit;
+        // },
+
+        // onItemSelected: (int) {
+        //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
+        // },
+        customWidget: CustomNavBarWidget( // Your custom widget goes here
+
+          items: [
+            PersistentBottomNavBarItem(
+
+              icon: Image.asset(_controller.index==0?'assets/images/bhome.png':'assets/images/home.png',
+                height: size.height * 0.04,
+                width: size.width * 0.07,),
+              title: ("Home"),
+              activeColorPrimary: CupertinoColors.activeBlue,
+              inactiveColorPrimary: CupertinoColors.systemGrey,
+            ),
+            PersistentBottomNavBarItem(
+              icon: Image.asset(_controller.index==1?'assets/images/brequest.png':'assets/images/request.png',
+                height: size.height * 0.04,
+                width: size.width * 0.06,),
+              title: ("Requests"),
+              activeColorPrimary: CupertinoColors.activeBlue,
+              inactiveColorPrimary: CupertinoColors.systemGrey,
+            ),
+            PersistentBottomNavBarItem(
+              icon: Image.asset(_controller.index==2?'assets/images/bwallet.png':'assets/images/wallet.png',
+                height: size.height * 0.04,
+                width: size.width * 0.07,),
+              title: ("Wallet"),
+              activeColorPrimary: CupertinoColors.activeBlue,
+              inactiveColorPrimary: CupertinoColors.systemGrey,
+            ),
+            PersistentBottomNavBarItem(
+              icon: Image.asset(_controller.index==3?'assets/images/bmessage.png':'assets/images/message.png',
+                height: size.height * 0.04,
+                width: size.width * 0.07,),
+              title: ("Message\'s"),
+              activeColorPrimary: CupertinoColors.activeBlue,
+              inactiveColorPrimary: CupertinoColors.systemGrey,
+            ),
+
+          ],
+          selectedIndex: _controller.index,
+          onItemSelected: (index) async{
+
+            int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
+
+    if(_controller.index == index) {
+    if(screen != index) {
+
+      await Provider.of<ApiDataProvider>(context, listen: false)
+          .setScreenIndex(index);
+      if (index == 0 || index == 1) {
+        await getData();
+      }
+      setState(() {
+        Navigator.pushAndRemoveUntil(
+            Get.context!, MaterialPageRoute(builder: (context) {
+          return MBottomNavigationBar(index: index);
+        }), (route) => false);
+      });
+    }
+    }else{
+      print("different tab");
+      _controller.index =
+          index;
+
+      setState(() {
+
+      });
+    }
+
+          },
+        ),
       ),
     );
   }

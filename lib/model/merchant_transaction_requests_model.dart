@@ -4,7 +4,7 @@ class MerchantTransactionRequestsModel {
   int from_user_id;
   int to_user_id;
   int transaction_status_id;
-  String slip_no;
+  String? slip_no;
   Map from_user;
   MerchantTransactionRequestsModel(
       {required this.id,
@@ -22,6 +22,7 @@ class MerchantTransactionRequestsModel {
         from_user_id: data['from_user_id'],
         to_user_id: data['to_user_id'],
         transaction_status_id: data['transaction_status_id'],
-        slip_no: data['slip_no'], from_user: data['from_user']);
+        slip_no: data['slip_no'],
+        from_user: data['from_user']);
   }
 }

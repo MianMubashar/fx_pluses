@@ -37,6 +37,13 @@
             {
               "client_id": "130219934275-m1hmumem70pss1c6299qn584qlsr7jfk.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "130219934275-j073g11f4ktiebdo4igvfbik4lrctp1q.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.app.fxpluses"
+              }
             }
           ]
         }

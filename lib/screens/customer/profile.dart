@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,30 +15,59 @@ import 'package:fx_pluses/screens/customer/cwallet.dart';
 import 'package:fx_pluses/screens/help_support.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
 import 'package:fx_pluses/screens/transaction_history.dart';
+import 'package:fx_pluses/screens/update_profile.dart';
 import 'package:fx_pluses/shared_preferences.dart';
+import 'package:get/get.dart';
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 
-class CProfile extends StatelessWidget {
+class CProfile extends StatefulWidget {
   static final String id='CProfile_Screen';
    CProfile({Key? key,required this.backButtonEnabled}) : super(key: key);
 
    bool backButtonEnabled=false;
 
+  @override
+  State<CProfile> createState() => _CProfileState();
+}
+
+class _CProfileState extends State<CProfile> {
+   PhoneNumber? phoneNumber;
+
+   bool numberValid=false;
+
+   String countryCode='';
+
   TextEditingController firstNameController=TextEditingController();
+
   TextEditingController lastNameController=TextEditingController();
+
+  final TextEditingController phoneNumbercontroller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60),
-          child: backButtonEnabled==true ?appbar(
+          child: widget.backButtonEnabled==true ?appbar(
             size: size,
             onPress: () {
               Navigator.pop(context);
@@ -65,7 +96,7 @@ class CProfile extends StatelessWidget {
                       height: size.height * 0.1,
                       width: size.width,
                       margin: EdgeInsets.only(
-                        bottom: 20,
+                        bottom: 10,
                       ),
                       padding: EdgeInsets.only(left: 10, right: 10),
                       decoration: BoxDecoration(
@@ -94,9 +125,10 @@ class CProfile extends StatelessWidget {
                                   if (result == null) {
                                     print("No file selected");
                                   }else{
+
                                     Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                        '', '', result.files.single.path.toString());
+                                        '', '', result.files.single.path.toString(),'photo',null,null,null,null);
                                   }
                                 },
                                 child: CircleAvatar(
@@ -180,7 +212,7 @@ class CProfile extends StatelessWidget {
                                                             Navigator.pop(context);
                                                             Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                                                                 Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                                                firstNameController.text, lastNameController.text, '');
+                                                                firstNameController.text, lastNameController.text, '','',null,null,null,null);
                                                           }
                                                         })
                                                       ],
@@ -211,15 +243,25 @@ class CProfile extends StatelessWidget {
                         ],
                       ),
                     ),
+
                     Divider(
                       color: greyColor,
                     ),
+                    ProfileCard(iconData:'assets/icons/inviteicon.png', size: size, text: 'My Profile',
+                        onPress: () async{
+                          await Provider.of<ApiDataProvider>(context, listen: false)
+                              .setScreenIndex(6);
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateProfile(
+                      )));
+                        }),
                     ProfileCard(
                       iconData: 'assets/icons/transaction_historyicon.png',
                       size: size,
                       text: 'Transactions History',
                       onPress: () async{
                         await Provider.of<ApiDataProvider>(context,listen: false).customerTrancationHistory(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        await Provider.of<ApiDataProvider>(context, listen: false)
+                            .setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>TransactionHistory()));
                       },
                     ),
@@ -227,7 +269,9 @@ class CProfile extends StatelessWidget {
                       iconData: 'assets/icons/couponicon.png',
                       size: size,
                       text: 'Enter Coupon Code',
-                      onPress: () {
+                      onPress: () async{
+                        await Provider.of<ApiDataProvider>(context, listen: false)
+                            .setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>CReferCode()));
                       },
                     ),
@@ -235,7 +279,9 @@ class CProfile extends StatelessWidget {
                       iconData: 'assets/icons/inviteicon.png',
                       size: size,
                       text: 'Invite',
-                      onPress: () {
+                      onPress: () async{
+                        await Provider.of<ApiDataProvider>(context, listen: false)
+                            .setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>CInviteFriend()));
                       },
                     ),
@@ -245,6 +291,8 @@ class CProfile extends StatelessWidget {
                       text: 'Help and support ',
                       onPress: () async{
                         await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        await Provider.of<ApiDataProvider>(context, listen: false)
+                            .setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupport()));
                       },
                     ),
@@ -254,6 +302,8 @@ class CProfile extends StatelessWidget {
                       text: 'About ',
                       onPress: () async{
                         await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        await Provider.of<ApiDataProvider>(context, listen: false)
+                            .setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>About()));
                       },
                     ),

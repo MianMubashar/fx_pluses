@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 import '../../shared_preferences.dart';
+import '../update_profile.dart';
 
 class MProfile extends StatelessWidget {
   static final String id='MProfile_Screen';
@@ -86,7 +89,7 @@ class MProfile extends StatelessWidget {
                                   }else{
                                     Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                        '', '', result.files.single.path.toString());
+                                        '', '', result.files.single.path.toString(),'photo',null,null,null,null);
 
                                   }
                                 },
@@ -170,7 +173,7 @@ class MProfile extends StatelessWidget {
                                                             Navigator.pop(context);
                                                             Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                                                                 Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                                                firstNameController.text, lastNameController.text, '');
+                                                                firstNameController.text, lastNameController.text, '','',null,null,null,null);
                                                           }
                                                         })
                                                       ],
@@ -204,12 +207,19 @@ class MProfile extends StatelessWidget {
                     Divider(
                       color: greyColor,
                     ),
+                    ProfileCard(iconData:'assets/icons/inviteicon.png', size: size, text: 'My Profile',
+                        onPress: () async{
+                          await Provider.of<ApiDataProvider>(context,listen: false).setScreenIndex(6);
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateProfile(
+                          )));
+                        }),
                     ProfileCard(
                       iconData: 'assets/icons/transaction_historyicon.png',
                       size: size,
                       text: 'Transactions History',
                       onPress: () async{
                         await Provider.of<ApiDataProvider>(context,listen: false).customerTrancationHistory(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        await Provider.of<ApiDataProvider>(context,listen: false).setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>TransactionHistory()));
                       },
                     ),
@@ -220,6 +230,7 @@ class MProfile extends StatelessWidget {
                       onPress: () async{
                         await Provider.of<ApiDataProvider>(context,listen: false).GetRate(context,
                             Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        await Provider.of<ApiDataProvider>(context,listen: false).setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>MExchangeRates()));
                       },
                     ),
@@ -229,6 +240,7 @@ class MProfile extends StatelessWidget {
                       text: 'Help and support ',
                       onPress: () async{
                         await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        await Provider.of<ApiDataProvider>(context,listen: false).setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>HelpSupport()));
                       },
                     ),
@@ -238,6 +250,7 @@ class MProfile extends StatelessWidget {
                       text: 'About ',
                       onPress: () async{
                         await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                        await Provider.of<ApiDataProvider>(context,listen: false).setScreenIndex(6);
                         Navigator.push(context, MaterialPageRoute(builder: (context)=>About()));
                       },
                     ),

@@ -262,6 +262,7 @@ class _MWalletState extends State<MWallet> with AutomaticKeepAliveClientMixin{
               MainButton(
                 text: 'Withdraw',
                 onPress: () async {
+                  await Provider.of<ApiDataProvider>(context,listen: false).setScreenIndex(6);
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>CWithdraw(
                     currency_id: Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,)));
                 },

@@ -96,7 +96,14 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                             children: [
                               CircleAvatar(
                                 radius: 30,
-                                backgroundColor: Colors.black12,
+                                backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: false)
+                                    .acceptedRequestMerchantsList[index].from_user['profile_photo_path'].toString().contains('https') ||
+                                    Provider.of<ApiDataProvider>(context,listen: false)
+                                        .acceptedRequestMerchantsList[index].from_user['profile_photo_path'].toString().contains('http'))?
+                                Provider.of<ApiDataProvider>(context,listen: false)
+                                    .acceptedRequestMerchantsList[index].from_user['profile_photo_path']:
+                                profile_url + Provider.of<ApiDataProvider>(context,listen: false)
+                                    .acceptedRequestMerchantsList[index].from_user['profile_photo_path']),
                               ),
                               Container(
                                 padding: EdgeInsets.only(left: 10),
