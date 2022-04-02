@@ -78,36 +78,15 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
       onWillPop: () async
     {
       if(_controller.index==0){
-          showDialog(context: context,barrierDismissible: false, builder: (context){
-            return AlertDialog(
-              title: Text('Are you sure you want to close the app'),
-              actions: [
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlatButton(
-                        onPressed: (){
-                          SystemNavigator.pop();
-                        },
-                        child: Text('Yes'),
-                      ),
+        if(Provider.of<ApiDataProvider>(context,listen: false).screenIndex==0){
 
-                      FlatButton(
-                        onPressed: (){
-                          exit=false;
-                          Get.back();
-                        },
-                        child: Text('No'),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            );
+          return false;
+        }else {
+          setState(() {
 
           });
-        return false;
+          return true;
+        }
       }else{
 
         setState(() {
@@ -146,38 +125,38 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
         //   }
         //
         // ),
-        // onWillPop: (value) async{
-        //   showDialog(context: context,barrierDismissible: false, builder: (context){
-        //     return AlertDialog(
-        //       title: Text('Are you sure you want to close the app'),
-        //       actions: [
-        //         Container(
-        //           child: Row(
-        //             mainAxisAlignment: MainAxisAlignment.center,
-        //             children: [
-        //               FlatButton(
-        //                 onPressed: (){
-        //                   SystemNavigator.pop();
-        //                 },
-        //                 child: Text('Yes'),
-        //               ),
-        //
-        //               FlatButton(
-        //                 onPressed: (){
-        //                   exit=false;
-        //                   Get.back();
-        //                 },
-        //                 child: Text('No'),
-        //               )
-        //             ],
-        //           ),
-        //         )
-        //       ],
-        //     );
-        //
-        //   });
-        //   return exit;
-        // },
+        onWillPop: (value) async{
+          showDialog(context: context,barrierDismissible: false, builder: (context){
+            return AlertDialog(
+              title: Text('Are you sure you want to close the app'),
+              actions: [
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FlatButton(
+                        onPressed: (){
+                          SystemNavigator.pop();
+                        },
+                        child: Text('Yes'),
+                      ),
+
+                      FlatButton(
+                        onPressed: (){
+                          exit=false;
+                          Get.back();
+                        },
+                        child: Text('No'),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            );
+
+          });
+          return exit;
+        },
 
 
         //stateManagement: false,
@@ -237,23 +216,24 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
           selectedIndex: _controller.index,
           onItemSelected: (index) async{
 
-            int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
+
 
 
             if(_controller.index == index){
+              int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
               print("same tab");
               if(screen != index) {
                 print("pop now");
                 await Provider.of<ApiDataProvider>(context, listen: false)
                     .setScreenIndex(index);
-                setState(() {
+
                   // NOTE: THIS IS CRITICAL!! Don't miss it!
 
                   Navigator.pushAndRemoveUntil(
                     Get.context!, MaterialPageRoute(builder: (context) {
                     return CBottomNavigationBar(index: index);
                   }), (route) => false,);
-                });
+
               }
             }else{
               print("different tab");

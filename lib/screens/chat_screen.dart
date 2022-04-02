@@ -433,7 +433,16 @@ class Stream_Builder extends StatelessWidget {
                 bool status = apiResponse['status'];
                 if(status){
                   Provider.of<ApiDataProvider>(context,listen: false).showChatList.clear();
-                  List<dynamic> data=apiResponse['messages'];
+                  List<dynamic> data;
+                  if(transactionId == null){
+                     data=apiResponse['messages'];
+                  }else{
+                    List<dynamic> data1=apiResponse['messages'];
+                    data1.removeLast();
+                     data=data1;
+                  }
+
+
 
                   for(int i=0;i<data.length;i++) {
                     Provider.of<ApiDataProvider>(context,listen: false).showChatList.add(ShowChatModel.fromJson(data[i]));

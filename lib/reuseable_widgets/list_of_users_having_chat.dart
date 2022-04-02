@@ -11,7 +11,7 @@ class ListOfUsersHavingChat extends StatelessWidget {
   final String lastName;
    String? message;
   final int recieverId;
-  String? profile;
+  String? profile; 
   int? transaction_id;
   @override
   Widget build(BuildContext context) {
@@ -56,7 +56,9 @@ class ListOfUsersHavingChat extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: NetworkImage((profile!.contains('http') || profile!.contains('https'))? profile!:
+                      backgroundImage: profile==null ?
+                      NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSMA98U5nhBmtcdj2hmFD4ijUIue_fCxNWw&usqp=CAU')
+                          :NetworkImage((profile!.contains('http') || profile!.contains('https'))? profile!:
                       profile_url+profile!,),
                     )
                     // Container(

@@ -56,6 +56,34 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
       onWillPop: () async
       {
         if(_controller.index==0){
+          if(Provider.of<ApiDataProvider>(context,listen: false).screenIndex==0){
+
+          return false;
+          }else{
+            setState(() {
+
+            });
+            return true;
+          }
+
+        }else{
+
+          setState(() {
+
+          });
+          //Get.back();
+          return true;
+        }
+      },
+      child: PersistentTabView.custom(
+        context,
+        controller: _controller,
+        itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
+        screens: _buildScreens(),
+        confineInSafeArea: false,
+        handleAndroidBackButtonPress: true,
+        stateManagement: true,
+        onWillPop: (value) async{
           showDialog(context: context,barrierDismissible: false, builder: (context){
             return AlertDialog(
               title: Text('Are you sure you want to close the app'),
@@ -85,56 +113,8 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
             );
 
           });
-          return false;
-        }else{
-
-          setState(() {
-
-          });
-          //Get.back();
-          return true;
-        }
-      },
-      child: PersistentTabView.custom(
-        context,
-        controller: _controller,
-        itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
-        screens: _buildScreens(),
-        confineInSafeArea: false,
-        handleAndroidBackButtonPress: true,
-        stateManagement: true,
-        // onWillPop: (value) async{
-        //   showDialog(context: context,barrierDismissible: false, builder: (context){
-        //     return AlertDialog(
-        //       title: Text('Are you sure you want to close the app'),
-        //       actions: [
-        //         Container(
-        //           child: Row(
-        //             mainAxisAlignment: MainAxisAlignment.center,
-        //             children: [
-        //               FlatButton(
-        //                 onPressed: (){
-        //                   SystemNavigator.pop();
-        //                 },
-        //                 child: Text('Yes'),
-        //               ),
-        //
-        //               FlatButton(
-        //                 onPressed: (){
-        //                   exit=false;
-        //                   Get.back();
-        //                 },
-        //                 child: Text('No'),
-        //               )
-        //             ],
-        //           ),
-        //         )
-        //       ],
-        //     );
-        //
-        //   });
-        //   return exit;
-        // },
+          return exit;
+        },
 
         // onItemSelected: (int) {
         //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
@@ -180,9 +160,10 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
           selectedIndex: _controller.index,
           onItemSelected: (index) async{
 
-            int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
+
 
     if(_controller.index == index) {
+      int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
     if(screen != index) {
 
       await Provider.of<ApiDataProvider>(context, listen: false)
@@ -190,12 +171,12 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
       if (index == 0 || index == 1) {
         await getData();
       }
-      setState(() {
+
         Navigator.pushAndRemoveUntil(
             Get.context!, MaterialPageRoute(builder: (context) {
           return MBottomNavigationBar(index: index);
         }), (route) => false);
-      });
+
     }
     }else{
       print("different tab");

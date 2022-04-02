@@ -19,6 +19,8 @@ class UpdateProfile extends StatelessWidget {
   String countryCode='';
   FilePickerResult? result;
   String? buisnessName;
+  PhoneNumber? mobileNummber;
+  String code='';
 
 
   final TextEditingController phoneNumbercontroller = TextEditingController();
@@ -52,9 +54,11 @@ class UpdateProfile extends StatelessWidget {
                 textAlign: TextAlign.start,
                 style: TextStyle(color: greyColor),
               ):Container(),
-              Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?SizedBox(
+              Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?
+              SizedBox(
                 height: 8,
-              ):Container(),
+              )
+                  :Container(),
               Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
@@ -71,11 +75,14 @@ class UpdateProfile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       )),
                   onChanged: (value) {
+
                     buisnessName = value;
+                    Provider.of<ApiDataProvider>(context,listen: false).setBuisnessName(buisnessName);
                     print(value);
                   },
                   onSubmitted: (value){
                     buisnessName=value;
+                    Provider.of<ApiDataProvider>(context,listen: false).setBuisnessName(buisnessName);
                   },
                 ),
               ):Container(),
@@ -130,12 +137,22 @@ class UpdateProfile extends StatelessWidget {
                     print('phone number is $value');
                     print(countryCode);
                     phoneNumber = value;
+
                   },
                   // onSaved: (data){
                   //   print(data.phoneNumber);
                   //   phoneNumber=data;
                   //   countryCode=data.isoCode.toString();
                   // },
+                  onSubmit: (){
+                    mobileNummber=phoneNumber;
+                    code=countryCode;
+                    Provider.of<ApiDataProvider>(context,listen: false).setUpdatedContact(phoneNumber.toString());
+                    Provider.of<ApiDataProvider>(context,listen: false).setCountryCode(phoneNumber!.isoCode.toString());
+                    Provider.of<ApiDataProvider>(context,listen: false).setRegisterUserCountryName(
+                        CountryPickerUtils.getCountryByIsoCode(phoneNumber!.isoCode.toString()).name.toString()
+                    );
+                  },
 
 
                 ),
@@ -181,37 +198,46 @@ class UpdateProfile extends StatelessWidget {
 
                   ],
                 ),
-              ):Container(
+              )
+                  : Column(
+                    children: [
+                      Text('Selected Id'),
+                      SizedBox(height: 5,),
+                      Container(
                 height: size.height * 0.35,
                 width: size.width,
-                child: Image.network(profile_url + Provider.of<ApiDataProvider>(context,listen: true).idFile!,fit: BoxFit.fill,),
-                              ),
+                child: Image.network(profile_url + Provider.of<ApiDataProvider>(context,listen: true).idFile!,fit: BoxFit.contain,),
+                                  ),
+                    ],
+                  ),
               SizedBox(height: 20,),
               MainButton(text: 'Update', onPress: () async{
-                if(buisnessName == null && result == null && phoneNumber==null){
+                if(buisnessName == null && result == null && mobileNummber==null){
                   Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Enter data to update', redColor);
                 }else{
                   FocusManager.instance.primaryFocus?.unfocus();
-                  if(countryCode ==null || countryCode==''){
+                  if(code ==null || code==''){
                     await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                         '', '',
                         result == null ? null: result!.files.single.path.toString(),
                         'id_file',
                         null,
-                        buisnessName,
+                        buisnessName==null ? null : buisnessName,
                         null,
                         null);
                   }else{
-                    await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
-                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                        '', '',
-                        result == null ? null: result!.files.single.path.toString(),
-                        'id_file',
-                        phoneNumber==null?null:phoneNumber.toString(),
-                        buisnessName,
-                        countryCode==null ? null: countryCode,
-                        countryCode==null ? null: CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
+                    await Provider.of<ApiDataProvider>(context,listen: false).otpRequest(phoneNumber, context, 1);
+
+                    // await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
+                    //     Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                    //     '', '',
+                    //     result == null ? null: result!.files.single.path.toString(),
+                    //     'id_file',
+                    //     phoneNumber==null?null:phoneNumber.toString(),
+                    //     buisnessName==null ? null : buisnessName,
+                    //     countryCode==null ? null: countryCode,
+                    //     countryCode==null ? null: CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
                   }
 
 

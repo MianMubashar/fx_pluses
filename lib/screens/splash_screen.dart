@@ -80,18 +80,13 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     getNotificationSettings();
     startApp();
-    setupInteractedMessage();
+    //setupInteractedMessage();
   }
 
   Future<void> _handleMessage(RemoteMessage message) async{
   print('notification opened');
   }
   void getNotificationSettings() async{
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-        alert: true,
-        badge: true,
-        sound: true
-    );
 
     FirebaseMessaging.instance
         .getInitialMessage()
@@ -145,7 +140,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
       RemoteNotification? notification = event.notification;
-      if (notification != null) {
+      AndroidNotification? android = event.notification?.android;
+      if (notification != null && android != null) {
         flutterLocalNotificationsPlugin.show(
             notification.hashCode,
             notification.title,
@@ -155,7 +151,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 channel.id,
                 channel.name,
                 channelDescription: channel.description,
-
+                color: buttonColor,
+                  playSound: true,
+                icon: '@mipmap/ic_launcher'
                 //icon: android.smallIcon,
                 // other properties...
               ),
@@ -164,6 +162,21 @@ class _SplashScreenState extends State<SplashScreen> {
       print('Notification recieved');
       // Local Notifications Library will be showing with event.notification.title & event.notification.body
     });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+    });
+    // FirebaseMessaging.configure(
+    //   onMessage: (Map<String, dynamic> message) async {
+    //     print("onMessage: $message");
+    //   },
+    //   onLaunch: (Map<String, dynamic> message) async {
+    //     print("onLaunch: $message");
+    //   },
+    //   onResume: (Map<String, dynamic> message) async {
+    //     print("onResume: $message");
+    //   },
+    // );
 
   }
   Future<void> setupInteractedMessage() async {

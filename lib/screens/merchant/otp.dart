@@ -69,8 +69,11 @@ class _OTPState extends State<OTP> {
         }else{
           await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
               Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-              null, null, '', '',
-              Provider.of<ApiDataProvider>(context, listen: false).contact, null,null,null);
+              '', '', Provider.of<ApiDataProvider>(context,listen: false).idFileForlocal, 'id_file',
+              Provider.of<ApiDataProvider>(context, listen: false).updatedContact,
+              Provider.of<ApiDataProvider>(context, listen: false).buisnessName,
+              Provider.of<ApiDataProvider>(context, listen: false).countryCode,
+              Provider.of<ApiDataProvider>(context, listen: false).countryName);
           Navigator.pop(context);
         }
       }catch(e){

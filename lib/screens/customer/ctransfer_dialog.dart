@@ -48,6 +48,7 @@ class CTransferDialog extends StatelessWidget {
               Container(
                 margin: EdgeInsets.only(bottom: 25, top: 5),
                 child: TextField(
+                  keyboardType: TextInputType.number,
                   controller: amountController,
                   decoration: InputDecoration(
                       hintText: 'amount',

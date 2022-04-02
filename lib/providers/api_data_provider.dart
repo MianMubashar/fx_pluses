@@ -40,10 +40,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
 class ApiDataProvider extends ChangeNotifier {
-  // static const String BASE_URL =
-  //     'http://console.fxpluses.com/';
   static const String BASE_URL =
-      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+      'http://console.fxpluses.com/';
+  // static const String BASE_URL =
+  //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 
@@ -59,9 +59,8 @@ class ApiDataProvider extends ChangeNotifier {
   String? _deviceToken = '';
   String verificationIdRecieved = '';
   String? _idFile;
+
   String? _idFileForlocal;
-
-
   String? _buisnessName;
 
 
@@ -95,11 +94,18 @@ class ApiDataProvider extends ChangeNotifier {
   String? _countryName;
   int _screenIndex=0;
 
+  String? _updatedContact;
+
+   //String? id_file;
+
 
 
   String? _currencySymbolForExchangeRateScreen;
 
 
+  setUpdatedContact(String c){
+    _updatedContact=c;
+  }
  setScreenIndex(int i){
    _screenIndex=i;
    notifyListeners();
@@ -356,6 +362,7 @@ setRegisterUserCountryName(String n){
           int role_id = apiResponse['user']['role_id'];
           String country_code = apiResponse['user']['country_code'];
           String rating = apiResponse['user']['rating'];
+          String country_name=apiResponse['user']['country_name'];
           //String? default_currency=apiResponse['user']['default_currency'];
           String photo_url = apiResponse['user']['profile_photo_path'];
           String token = apiResponse['token'];
@@ -426,6 +433,7 @@ setRegisterUserCountryName(String n){
           await setContact(contactNum);
           await setIdFile(file);
           await setBuisnessName(buisness);
+          await setRegisterUserCountryName(country_name);
 
           await setScreenIndex(0);
 
@@ -668,14 +676,18 @@ setRegisterUserCountryName(String n){
             list.forEach((element) {
               if (element.currency_id == selectedCurrencyId) {
                 String amount1 = element.wallet;
-                List a = amount1.split('.');
-                int amount2 = int.parse(a[0]);
+                double a = double.parse(amount1);
+                int amount2 = a.round();
+
                 int amount3 = int.parse(amount);
-                int total;
+                int total=0;
                 if (wallet_action_id == 1) {
                   total = amount3 + amount2;
                 } else {
-                  total = amount2 - amount3;
+                  if(amount2>0){
+                    total = amount2 - amount3;
+                  }
+
                 }
 
                 print('balance bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb${element
@@ -1846,4 +1858,5 @@ setRegisterUserCountryName(String n){
   String? get buisnessName => _buisnessName;
   String? get idFileForlocal => _idFileForlocal;
   int get screenIndex => _screenIndex;
+  String? get updatedContact => _updatedContact;
 }
