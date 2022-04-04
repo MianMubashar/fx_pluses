@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/constants.dart';
@@ -16,28 +18,38 @@ class CInviteFriend extends StatelessWidget {
 
   List<Contact> contacts=[];
   Future getData(BuildContext context) async{
-    Get.dialog(CustomLoader());
-  var serviceStatus= await Permission.contacts.status;
-  if(serviceStatus==PermissionStatus.granted) {
-
-    contacts = await ContactsService.getContacts(withThumbnails: false);
-    Get.back();
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>CInviteFriend2(contacts: contacts,)));
-  }else{
-    Get.back();
-    Permission.contacts.request().then((value) async{
-      if(value.isGranted){
-        Get.dialog(CustomLoader());
+    if(Platform.isAndroid) {
+      Get.dialog(CustomLoader());
+      var serviceStatus = await Permission.contacts.status;
+      if (serviceStatus == PermissionStatus.granted) {
         contacts = await ContactsService.getContacts(withThumbnails: false);
         Get.back();
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>CInviteFriend2(contacts: contacts,)));
-      }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>CInviteFriend()));
-      }
-    });
-   // serviceStatus=await Permission.contacts.status;
+        Navigator.push(context, MaterialPageRoute(
+            builder: (context) => CInviteFriend2(contacts: contacts,)));
+      } else {
+        Get.back();
+        Permission.contacts.request().then((value) async {
+          if (value.isGranted) {
+            Get.dialog(CustomLoader());
+            contacts = await ContactsService.getContacts(withThumbnails: false);
+            Get.back();
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => CInviteFriend2(contacts: contacts,)));
+          } else {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => CInviteFriend()));
+          }
+        });
+        // serviceStatus=await Permission.contacts.status;
 
-  }
+      }
+    }else{
+      Get.dialog(CustomLoader());
+      contacts = await ContactsService.getContacts(withThumbnails: false);
+      Get.back();
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => CInviteFriend2(contacts: contacts,)));
+    }
   }
 
   @override

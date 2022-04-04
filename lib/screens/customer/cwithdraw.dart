@@ -154,7 +154,9 @@ class _CWithdrawState extends State<CWithdraw> {
                 amount.text,
                 0,
                 accountNumber.text,
-                accountHolderName.text,widget.currency_id);
+                accountHolderName.text,
+                widget.currency_id);
+
             accountHolderName.clear();
             accountNumber.clear();
             amount.clear();

@@ -684,10 +684,13 @@ setRegisterUserCountryName(String n){
                 if (wallet_action_id == 1) {
                   total = amount3 + amount2;
                 } else {
-                  if(amount2>0){
-                    total = amount2 - amount3;
+                  if(wallet_action_id ==2){
+                    total=amount2;
+                  }else{
+                    if(amount2>0){
+                      total = amount2 - amount3;
+                    }
                   }
-
                 }
 
                 print('balance bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb${element

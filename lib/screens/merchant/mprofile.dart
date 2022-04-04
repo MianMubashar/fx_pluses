@@ -16,6 +16,7 @@ import 'package:fx_pluses/screens/login_signup/login.dart';
 import 'package:fx_pluses/screens/merchant/mexchange_rates.dart';
 import 'package:fx_pluses/screens/merchant/mwallet.dart';
 import 'package:fx_pluses/screens/transaction_history.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -83,13 +84,15 @@ class MProfile extends StatelessWidget {
                             children: [
                               InkWell(
                                 onTap:() async{
-                                  FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
+                                  final ImagePicker _picker = ImagePicker();
+                                  final XFile? result=await _picker.pickImage(source: ImageSource.gallery);
+                                  //FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
                                   if (result == null) {
                                     print("No file selected");
                                   }else{
                                     Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                        '', '', result.files.single.path.toString(),'photo',null,null,null,null);
+                                        '', '', result.path.toString(),'photo',null,null,null,null);
 
                                   }
                                 },

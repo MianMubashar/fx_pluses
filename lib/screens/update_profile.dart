@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:provider/provider.dart';
@@ -161,11 +162,13 @@ class UpdateProfile extends StatelessWidget {
                   Provider.of<ApiDataProvider>(context,listen: true).idFile==''?
               InkWell(
                 onTap: ()async{
-                  result=await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
+                  final ImagePicker _picker = ImagePicker();
+                  final XFile? result=await _picker.pickImage(source: ImageSource.gallery);
+                 // result=await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
                   if (result == null) {
                   print("No file selected");
                   }else{
-                    Provider.of<ApiDataProvider>(context,listen: false).setIdFileForLocal(result!.files.first.path!);
+                    Provider.of<ApiDataProvider>(context,listen: false).setIdFileForLocal(result.path.toString());
                   }
                 },
                 child: Column(
@@ -212,6 +215,7 @@ class UpdateProfile extends StatelessWidget {
                   ),
               SizedBox(height: 20,),
               MainButton(text: 'Update', onPress: () async{
+                print('abcd ${phoneNumbercontroller.text.isEmpty}');
                 if(buisnessName == null && result == null && mobileNummber==null){
                   Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Enter data to update', redColor);
                 }else{
@@ -227,7 +231,7 @@ class UpdateProfile extends StatelessWidget {
                         null,
                         null);
                   }else{
-                    await Provider.of<ApiDataProvider>(context,listen: false).otpRequest(phoneNumber, context, 1);
+                    //await Provider.of<ApiDataProvider>(context,listen: false).otpRequest(phoneNumber, context, 1);
 
                     // await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                     //     Provider.of<ApiDataProvider>(context,listen: false).bearerToken,

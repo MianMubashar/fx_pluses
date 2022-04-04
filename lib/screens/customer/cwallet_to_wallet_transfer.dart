@@ -5,6 +5,7 @@ import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../model/accepted_request_merchants_model.dart';
 import 'ctransfer_dialog.dart';
 
 class CWalletToWalletTransfer extends StatefulWidget {
@@ -16,6 +17,17 @@ class CWalletToWalletTransfer extends StatefulWidget {
 
 class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
   TextEditingController searcchFieldController=TextEditingController();
+
+  List<AcceptedRequestMerchantsModel> originaldata=[];
+  List<AcceptedRequestMerchantsModel> searchdata=[];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    searchdata = Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +62,28 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
           ),
               ),
                 onChanged: (value){
+                  print(value);
+                  setState(() async{
+                    searchdata.clear();
+                    if(searcchFieldController.text.isNotEmpty) {
+                     // print(originaldata.length);
+                      for (int i = 0; i <= Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList.length; i++) {
+                        AcceptedRequestMerchantsModel item = await Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[i];
+                        print(item.from_user['first_name']);
+                        if ('${item.from_user['first_name'] + " " +
+                            item.from_user['last_name']}'
+                            .toLowerCase()
+                            .contains(searcchFieldController.text
+                            .toLowerCase())) {
+                          print(item.from_user['first_name']);
+                          searchdata.add(item);
+                        }
+                      }
+                    }
+                    else{
+                      searchdata = Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
+                    }
+                  });
 
                 },
             ),
@@ -65,8 +99,9 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
             ),
 
             Expanded(
-              child: ListView.builder(
-                  itemCount: Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList.length,
+              child:
+              ListView.builder(
+                  itemCount: searchdata.length,
                   itemBuilder: (context, index) {
                     return Container(
                       height: size.height * 0.13,
@@ -96,14 +131,10 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                             children: [
                               CircleAvatar(
                                 radius: 30,
-                                backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: false)
-                                    .acceptedRequestMerchantsList[index].from_user['profile_photo_path'].toString().contains('https') ||
-                                    Provider.of<ApiDataProvider>(context,listen: false)
-                                        .acceptedRequestMerchantsList[index].from_user['profile_photo_path'].toString().contains('http'))?
-                                Provider.of<ApiDataProvider>(context,listen: false)
-                                    .acceptedRequestMerchantsList[index].from_user['profile_photo_path']:
-                                profile_url + Provider.of<ApiDataProvider>(context,listen: false)
-                                    .acceptedRequestMerchantsList[index].from_user['profile_photo_path']),
+                                backgroundImage: NetworkImage((searchdata[index].from_user['profile_photo_path'].toString().contains('https') ||
+                                    searchdata[index].from_user['profile_photo_path'].toString().contains('http'))?
+                                searchdata[index].from_user['profile_photo_path']:
+                                profile_url + searchdata[index].from_user['profile_photo_path']),
                               ),
                               Container(
                                 padding: EdgeInsets.only(left: 10),
@@ -118,15 +149,15 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                                         SizedBox(
                                           width:size.width * 0.18,
                                           child: Text(
-                                            Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['first_name']+" "+Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['last_name'],
-                                              maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
-                                                color: textBlackColor,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w500),
+                                            searchdata[index].from_user['first_name']+" "+searchdata[index].from_user['last_name'],
+                                            maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
+                                              color: textBlackColor,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w500),
                                           ),
                                         ),
                                         Image.asset(
-                                          'icons/flags/png/${Provider.of<ApiDataProvider>(context, listen: false).acceptedRequestMerchantsList[index].from_user['country_code'].toLowerCase()}.png',
+                                          'icons/flags/png/${searchdata[index].from_user['country_code'].toLowerCase()}.png',
                                           package: 'country_icons',
                                           height: 20,
                                           width: 20,
@@ -186,4 +217,8 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
       ),
     );
   }
+  //
+  // Container transferMerchantData(Size size, BuildContext context, int index) {
+  //   return ;
+  // }
 }

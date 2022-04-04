@@ -18,6 +18,7 @@ import 'package:fx_pluses/screens/transaction_history.dart';
 import 'package:fx_pluses/screens/update_profile.dart';
 import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
@@ -121,14 +122,19 @@ class _CProfileState extends State<CProfile> {
                             children: [
                               InkWell(
                                 onTap:() async{
-                                  FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
+                                  final ImagePicker _picker = ImagePicker();
+                                  final XFile? result=await _picker.pickImage(source: ImageSource.gallery);
+
+
+                                  //FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
                                   if (result == null) {
                                     print("No file selected");
                                   }else{
+                                    print('${result.path}');
 
                                     Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                        '', '', result.files.single.path.toString(),'photo',null,null,null,null);
+                                        '', '', result.path.toString(),'photo',null,null,null,null);
                                   }
                                 },
                                 child: CircleAvatar(
