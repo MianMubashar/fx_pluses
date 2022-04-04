@@ -64,12 +64,12 @@ class _CCreateAccountState extends State<CCreateAccount> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDeviceToken();
+    //getDeviceToken();
   }
 
-  getDeviceToken() async {
-    deviceToken = (await FirebaseMessaging.instance.getToken())!;
-  }
+  // getDeviceToken() async {
+  //   deviceToken = (await FirebaseMessaging.instance.getToken())!;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -333,15 +333,15 @@ class _CCreateAccountState extends State<CCreateAccount> {
                                 if(!numberValid){
                                   Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid phone number',redColor);
                                 }else{
-                                  if(deviceToken==''){ CircularProgressIndicator(
-                                    color: newColor,
-                                  ); }else {
+                                  // if(deviceToken==''){ CircularProgressIndicator(
+                                  //   color: newColor,
+                                  // ); }else {
                                     await Provider.of<ApiDataProvider>(context, listen: false).setContact(phoneNumber.toString());
                                     await Provider.of<ApiDataProvider>(context, listen: false).setFirstName(firstName);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setLastName(lastName);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setEmail(email.trim());
                                     await Provider.of<ApiDataProvider>(context, listen: false).setPassword(password);
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setToken(deviceToken);
+                                    //await Provider.of<ApiDataProvider>(context, listen: false).setToken(deviceToken);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setCountryCode(countryCode);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(5);
                                     await Provider.of<ApiDataProvider>(context, listen: false).setUserId('');
@@ -366,7 +366,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
                                       //     deviceToken);
                                     clearControllers();
 
-                                  }
+                                  //}
                                 }
 
                               }

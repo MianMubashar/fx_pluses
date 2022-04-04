@@ -31,7 +31,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
   String password = '';
   String countryCode = '';
   String currencyCode='';
-  String deviceToken = '';
+  //String deviceToken = '';
   String userId = '';
   bool numberValid = false;
   String verificationIdRecieved = '';
@@ -46,12 +46,12 @@ class _MCreateAccountState extends State<MCreateAccount> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDeviceToken();
+    //getDeviceToken();
   }
 
-  getDeviceToken() async {
-    deviceToken = (await FirebaseMessaging.instance.getToken())!;
-  }
+  // getDeviceToken() async {
+  //   deviceToken = (await FirebaseMessaging.instance.getToken())!;
+  // }
 
   clearControllers(){
     firstNameController.clear();
@@ -369,11 +369,11 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                       .showSnackbar(context,
                                           'Please enter valid phone number',redColor);
                                 } else {
-                                  if (deviceToken == '') {
-                                    const CircularProgressIndicator(
-                                      color: newColor,
-                                    );
-                                  } else {
+                                  // if (deviceToken == '') {
+                                  //   const CircularProgressIndicator(
+                                  //     color: newColor,
+                                  //   );
+                                  // } else {
                                     if(usernameController.text.length < 5){
                                       Provider.of<ApiDataProvider>(context,
                                           listen: false)
@@ -390,8 +390,8 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                           email);
                                       await Provider.of<ApiDataProvider>(context, listen: false).setPassword(
                                           password);
-                                      await Provider.of<ApiDataProvider>(context, listen: false).setToken(
-                                          deviceToken);
+                                      // await Provider.of<ApiDataProvider>(context, listen: false).setToken(
+                                      //     deviceToken);
                                       await Provider.of<ApiDataProvider>(context, listen: false)
                                           .setCountryCode(countryCode);
                                       await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(4);
@@ -405,7 +405,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                       clearControllers();
 
                                     }
-                                    }
+                                   // }
                                 }
                               }
                             }

@@ -26,8 +26,14 @@ class SharedPreference{
   static String defaultCurrencySymbolKey='Default_Currency_Symbol_Key';
   static String userWalletsKey='User_Wallets_Key';
 
+  static String deviceTokenKey='Device_Token_Key';
 
 
+
+  static saveDeviceToken(String token) async{
+    SharedPreferences preferences=await SharedPreferences.getInstance();
+    preferences.setString(deviceTokenKey, token);
+  }
   static saveUserWalletsSharedPreferences(String list) async{
     SharedPreferences preferences=await SharedPreferences.getInstance();
     preferences.remove(userWalletsKey);

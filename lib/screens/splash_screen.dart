@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:fx_pluses/screens/merchant/mbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/merchant/mhome.dart';
 import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,29 +35,31 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
 
-  int? userId;
-  String? firstName;
-  String? lastName;
-  String? email;
-  String? balance;
-
-  String? countryCode;
-  String? rating;
-  String? photoUrl;
+  // int? userId;
+  // String? firstName;
+  // String? lastName;
+  // String? email;
+  // String? balance;
+  //
+  // String? countryCode;
+  // String? rating;
+  // String? photoUrl;
+  // int? defaultCurrenceyId;
+  // String? defaultCurrenceyName;
+  // String? defaultCurrenceySymbol;
+  // String? listData;
+  // List<UserWalletsModel>? list;
+  String deviceToken='';
   String bearerToken='';
 
-  int? defaultCurrenceyId;
-  String? defaultCurrenceyName;
-  String? defaultCurrenceySymbol;
-  String? listData;
-  List<UserWalletsModel>? list;
+
 
 
 
 
   startApp() async {
 
-
+    await getNotificationSettings();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     // initScreen = await preferences.getInt('initScreen');
     // roleId=await preferences.getInt(SharedPreference.roleIdKey);
@@ -78,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getNotificationSettings();
+
     startApp();
     //setupInteractedMessage();
   }
@@ -86,13 +90,26 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _handleMessage(RemoteMessage message) async{
   print('notification opened');
   }
-  void getNotificationSettings() async{
+  Future getNotificationSettings() async{
+
+    if(Platform.isIOS) {
+      await getIosNotificationsPermissions();
+    }else{
+
+        deviceToken = (await FirebaseMessaging.instance.getToken())!;
+
+    }
+
+    print(deviceToken);
+
+    await Provider.of<ApiDataProvider>(context,listen: false).setToken(deviceToken);
+    await SharedPreference.saveDeviceToken(deviceToken);
 
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-        print('data from get initial message ${message.data['type']}');
+        print('data from get initial message ${message.messageId}');
         // Navigator.pushNamed(
         //   context,
         //   ChatScreen.id
@@ -178,6 +195,25 @@ class _SplashScreenState extends State<SplashScreen> {
     //   },
     // );
 
+  }
+  getIosNotificationsPermissions() {
+    Future<PermissionStatus> permissionStatus =
+    NotificationPermissions.getNotificationPermissionStatus();
+
+    permissionStatus.then((value) async => {
+      if (value == PermissionStatus.unknown)
+        {NotificationPermissions.requestNotificationPermissions()}
+      else if (value == PermissionStatus.denied)
+        {
+          NotificationPermissions.requestNotificationPermissions(
+              openSettings: true)
+        }
+      else if(value == PermissionStatus.granted){
+          // saveToken()
+          deviceToken = (await FirebaseMessaging.instance.getToken())!
+
+        }
+    });
   }
   Future<void> setupInteractedMessage() async {
     // Get any messages which caused the application to open from

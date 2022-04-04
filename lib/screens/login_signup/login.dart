@@ -34,12 +34,12 @@ class _LoginState extends State<Login> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getDeviceToken();
+    //getDeviceToken();
   }
 
-  getDeviceToken() async {
-    deviceToken = (await FirebaseMessaging.instance.getToken())!;
-  }
+  // getDeviceToken() async {
+  //   deviceToken = (await FirebaseMessaging.instance.getToken())!;
+  // }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -173,7 +173,9 @@ class _LoginState extends State<Login> {
 
                         });
 
-                       Provider.of<ApiDataProvider>(context,listen: false).loginRequest(context, email.trim(), password, deviceToken);
+                       Provider.of<ApiDataProvider>(context,listen: false).loginRequest(context, email.trim(),
+                           password,
+                           Provider.of<ApiDataProvider>(context,listen: false).deviceToken);
                        setState(() {
                          Provider.of<ApiDataProvider>(context,listen: false).check=false;
                        });
