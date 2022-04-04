@@ -52,143 +52,150 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
-    return WillPopScope(
-      onWillPop: () async
-      {
-        if(_controller.index==0){
-          if(Provider.of<ApiDataProvider>(context,listen: false).screenIndex==0){
+    return Scaffold(
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: SafeArea(
+            child: WillPopScope(
+              onWillPop: () async
+              {
+                if(_controller.index==0){
+                  if(Provider.of<ApiDataProvider>(context,listen: false).screenIndex==0){
 
-          return false;
-          }else{
-            setState(() {
+                    return false;
+                  }else{
+                    setState(() {
 
-            });
-            return true;
-          }
+                    });
+                    return true;
+                  }
 
-        }else{
+                }else{
 
-          setState(() {
+                  setState(() {
 
-          });
-          //Get.back();
-          return true;
-        }
-      },
-      child: PersistentTabView.custom(
-        context,
-        controller: _controller,
-        itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
-        screens: _buildScreens(),
-        confineInSafeArea: false,
-        handleAndroidBackButtonPress: true,
-        stateManagement: true,
-        onWillPop: (value) async{
-          showDialog(context: context,barrierDismissible: false, builder: (context){
-            return AlertDialog(
-              title: Text('Are you sure you want to close the app'),
-              actions: [
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlatButton(
-                        onPressed: (){
-                          SystemNavigator.pop();
-                        },
-                        child: Text('Yes'),
-                      ),
+                  });
+                  //Get.back();
+                  return true;
+                }
+              },
+              child: PersistentTabView.custom(
+                context,
+                controller: _controller,
+                itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
+                screens: _buildScreens(),
+                confineInSafeArea: false,
+                handleAndroidBackButtonPress: true,
+                stateManagement: true,
+                onWillPop: (value) async{
+                  showDialog(context: context,barrierDismissible: false, builder: (context){
+                    return AlertDialog(
+                      title: Text('Are you sure you want to close the app'),
+                      actions: [
+                        Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FlatButton(
+                                onPressed: (){
+                                  SystemNavigator.pop();
+                                },
+                                child: Text('Yes'),
+                              ),
 
-                      FlatButton(
-                        onPressed: (){
-                          exit=false;
-                          Get.back();
-                        },
-                        child: Text('No'),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            );
+                              FlatButton(
+                                onPressed: (){
+                                  exit=false;
+                                  Get.back();
+                                },
+                                child: Text('No'),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    );
 
-          });
-          return exit;
-        },
+                  });
+                  return exit;
+                },
 
-        // onItemSelected: (int) {
-        //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
-        // },
-        customWidget: CustomNavBarWidget( // Your custom widget goes here
+                // onItemSelected: (int) {
+                //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
+                // },
+                customWidget: CustomNavBarWidget( // Your custom widget goes here
 
-          items: [
-            PersistentBottomNavBarItem(
+                  items: [
+                    PersistentBottomNavBarItem(
 
-              icon: Image.asset(_controller.index==0?'assets/images/bhome.png':'assets/images/home.png',
-                height: size.height * 0.04,
-                width: size.width * 0.07,),
-              title: ("Home"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-              icon: Image.asset(_controller.index==1?'assets/images/brequest.png':'assets/images/request.png',
-                height: size.height * 0.04,
-                width: size.width * 0.06,),
-              title: ("Requests"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-              icon: Image.asset(_controller.index==2?'assets/images/bwallet.png':'assets/images/wallet.png',
-                height: size.height * 0.04,
-                width: size.width * 0.07,),
-              title: ("Wallet"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-              icon: Image.asset(_controller.index==3?'assets/images/bmessage.png':'assets/images/message.png',
-                height: size.height * 0.04,
-                width: size.width * 0.07,),
-              title: ("Message\'s"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
+                      icon: Image.asset(_controller.index==0?'assets/images/bhome.png':'assets/images/home.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.07,),
+                      title: ("Home"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
+                    PersistentBottomNavBarItem(
+                      icon: Image.asset(_controller.index==1?'assets/images/brequest.png':'assets/images/request.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.06,),
+                      title: ("Requests"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
+                    PersistentBottomNavBarItem(
+                      icon: Image.asset(_controller.index==2?'assets/images/bwallet.png':'assets/images/wallet.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.07,),
+                      title: ("Wallet"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
+                    PersistentBottomNavBarItem(
+                      icon: Image.asset(_controller.index==3?'assets/images/bmessage.png':'assets/images/message.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.07,),
+                      title: ("Message\'s"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
 
-          ],
-          selectedIndex: _controller.index,
-          onItemSelected: (index) async{
+                  ],
+                  selectedIndex: _controller.index,
+                  onItemSelected: (index) async{
 
 
 
-    if(_controller.index == index) {
-      int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
-    if(screen != index) {
+                    if(_controller.index == index) {
+                      int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
+                      if(screen != index) {
 
-      await Provider.of<ApiDataProvider>(context, listen: false)
-          .setScreenIndex(index);
-      if (index == 0 || index == 1) {
-        await getData();
-      }
+                        await Provider.of<ApiDataProvider>(context, listen: false)
+                            .setScreenIndex(index);
+                        if (index == 0 || index == 1) {
+                          await getData();
+                        }
 
-        Navigator.pushAndRemoveUntil(
-            Get.context!, MaterialPageRoute(builder: (context) {
-          return MBottomNavigationBar(index: index);
-        }), (route) => false);
+                        Navigator.pushAndRemoveUntil(
+                            Get.context!, MaterialPageRoute(builder: (context) {
+                          return MBottomNavigationBar(index: index);
+                        }), (route) => false);
 
-    }
-    }else{
-      print("different tab");
-      _controller.index =
-          index;
+                      }
+                    }else{
+                      print("different tab");
+                      _controller.index =
+                          index;
 
-      setState(() {
+                      setState(() {
 
-      });
-    }
+                      });
+                    }
 
-          },
+                  },
+                ),
+              ),
+            )
         ),
       ),
     );

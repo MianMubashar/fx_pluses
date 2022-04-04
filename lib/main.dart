@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -68,6 +69,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firbaseHandler);
+
   var initilizationsSettings =
   InitializationSettings(android: AndroidInitializationSettings('ic_launcher'),iOS: IOSInitializationSettings());
   await flutterLocalNotificationsPlugin.initialize(initilizationsSettings,
@@ -166,7 +168,6 @@ class MyApp extends StatelessWidget {
         HelpSupport.id: (context) => HelpSupport(),
         TermsConditions.id: (context) => TermsConditions(),
         TransactionHistory.id: (context) => TransactionHistory()
-
       },
       //home: SplashScreen(),
       //navigatorObservers: [NavigationHistoryObserver()],

@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
   // String? defaultCurrenceySymbol;
   // String? listData;
   // List<UserWalletsModel>? list;
-  String deviceToken='';
+  String deviceToken='test';
   String bearerToken='';
 
 

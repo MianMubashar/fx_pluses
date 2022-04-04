@@ -73,181 +73,188 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
-    Widget child;
-    return WillPopScope(
-      onWillPop: () async
-    {
-      if(_controller.index==0){
-        if(Provider.of<ApiDataProvider>(context,listen: false).screenIndex==0){
+    // Widget child;
+    return Scaffold(
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: SafeArea(
+            child: WillPopScope(
+              onWillPop: () async
+              {
+                if(_controller.index==0){
+                  if(Provider.of<ApiDataProvider>(context,listen: false).screenIndex==0){
 
-          return false;
-        }else {
-          setState(() {
+                    return false;
+                  }else {
+                    setState(() {
 
-          });
-          return true;
-        }
-      }else{
+                    });
+                    return true;
+                  }
+                }else{
 
-        setState(() {
+                  setState(() {
 
-        });
-        //Get.back();
-        return true;
-      }
-      },
-      child: PersistentTabView.custom(
+                  });
+                  //Get.back();
+                  return true;
+                }
+              },
+              child: PersistentTabView.custom(
 
-        context,
-        controller: _controller,
-        itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
-        screens: _buildScreens(),
-        confineInSafeArea: false,
-        handleAndroidBackButtonPress: true,
-        stateManagement: true,
-        // selectedTabScreenContext: (selectedTabContext) {
-        //   Future.delayed(Duration.zero, () {
-        //     Navigator.of(selectedTabContext!).popUntil((route) {
-        //       return route.isFirst;
-        //     });
-        //   });
-        //
-        // },
-        // routeAndNavigatorSettings: CutsomWidgetRouteAndNavigatorSettings(
-        //   initialRoute: CHome.id,
-        //   // navigatorObservers: [NavigationHistoryObserver()],
-        //
-        //   routes: {
-        //     CHome.id: (context) => CHome(),
-        //     CWallet.id: (context) => CWallet(),
-        //     CMessages.id: (context) => CMessages(),
-        //     CProfile.id: (context) => CProfile(backButtonEnabled: false,),
-        //   }
-        //
-        // ),
-        onWillPop: (value) async{
-          showDialog(context: context,barrierDismissible: false, builder: (context){
-            return AlertDialog(
-              title: Text('Are you sure you want to close the app'),
-              actions: [
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FlatButton(
-                        onPressed: (){
-                          SystemNavigator.pop();
-                        },
-                        child: Text('Yes'),
-                      ),
+                context,
+                controller: _controller,
+                itemCount: _buildScreens().length, // This is required in case of custom style! Pass the number of items for the nav bar.
+                screens: _buildScreens(),
+                confineInSafeArea: false,
+                handleAndroidBackButtonPress: true,
+                stateManagement: true,
+                // selectedTabScreenContext: (selectedTabContext) {
+                //   Future.delayed(Duration.zero, () {
+                //     Navigator.of(selectedTabContext!).popUntil((route) {
+                //       return route.isFirst;
+                //     });
+                //   });
+                //
+                // },
+                // routeAndNavigatorSettings: CutsomWidgetRouteAndNavigatorSettings(
+                //   initialRoute: CHome.id,
+                //   // navigatorObservers: [NavigationHistoryObserver()],
+                //
+                //   routes: {
+                //     CHome.id: (context) => CHome(),
+                //     CWallet.id: (context) => CWallet(),
+                //     CMessages.id: (context) => CMessages(),
+                //     CProfile.id: (context) => CProfile(backButtonEnabled: false,),
+                //   }
+                //
+                // ),
+                onWillPop: (value) async{
+                  showDialog(context: context,barrierDismissible: false, builder: (context){
+                    return AlertDialog(
+                      title: Text('Are you sure you want to close the app'),
+                      actions: [
+                        Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              FlatButton(
+                                onPressed: (){
+                                  SystemNavigator.pop();
+                                },
+                                child: Text('Yes'),
+                              ),
 
-                      FlatButton(
-                        onPressed: (){
-                          exit=false;
-                          Get.back();
-                        },
-                        child: Text('No'),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            );
+                              FlatButton(
+                                onPressed: (){
+                                  exit=false;
+                                  Get.back();
+                                },
+                                child: Text('No'),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    );
 
-          });
-          return exit;
-        },
-
-
-        //stateManagement: false,
-        // onWillPop: (value) async{
-        //   Provider.of<ApiDataProvider>(context,listen: false).chatMenu(
-        //     context,
-        //     Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-        //   ).listen((event) {}).cancel();
-        //   return true;
-        // },
+                  });
+                  return exit;
+                },
 
 
-
-
-        // onItemSelected: (int) {
-        //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
-        // },
-        customWidget: CustomNavBarWidget(
-          // Your custom widget goes here
-
-          items: [
-            PersistentBottomNavBarItem(
-
-              icon: Image.asset(_controller.index==0?'assets/images/bhome.png':'assets/images/home.png',
-                height: size.height * 0.04,
-                width: size.width * 0.07,),
-              title: ("Home"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-              icon: Image.asset(_controller.index==1?'assets/images/bwallet.png':'assets/images/wallet.png',
-                height: size.height * 0.04,
-                width: size.width * 0.06,),
-              title: ("Wallet"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-              icon: Image.asset(_controller.index==2?'assets/images/bmessage.png':'assets/images/message.png',
-                height: size.height * 0.04,
-                width: size.width * 0.07,),
-              title: ("Message\'s"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-              icon: Image.asset(_controller.index==3?'assets/images/bprofile.png':'assets/images/profile.png',
-                height: size.height * 0.04,
-                width: size.width * 0.07,),
-              title: ("Profile"),
-              activeColorPrimary: CupertinoColors.activeBlue,
-              inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-
-          ],
-          selectedIndex: _controller.index,
-          onItemSelected: (index) async{
+                //stateManagement: false,
+                // onWillPop: (value) async{
+                //   Provider.of<ApiDataProvider>(context,listen: false).chatMenu(
+                //     context,
+                //     Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                //   ).listen((event) {}).cancel();
+                //   return true;
+                // },
 
 
 
 
-            if(_controller.index == index){
-              int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
-              print("same tab");
-              if(screen != index) {
-                print("pop now");
-                await Provider.of<ApiDataProvider>(context, listen: false)
-                    .setScreenIndex(index);
+                // onItemSelected: (int) {
+                //   setState(() {}); // This is required to update the nav bar if Android back button is pressed
+                // },
+                customWidget: CustomNavBarWidget(
+                  // Your custom widget goes here
 
-                  // NOTE: THIS IS CRITICAL!! Don't miss it!
+                  items: [
+                    PersistentBottomNavBarItem(
 
-                  Navigator.pushAndRemoveUntil(
-                    Get.context!, MaterialPageRoute(builder: (context) {
-                    return CBottomNavigationBar(index: index);
-                  }), (route) => false,);
+                      icon: Image.asset(_controller.index==0?'assets/images/bhome.png':'assets/images/home.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.07,),
+                      title: ("Home"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
+                    PersistentBottomNavBarItem(
+                      icon: Image.asset(_controller.index==1?'assets/images/bwallet.png':'assets/images/wallet.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.06,),
+                      title: ("Wallet"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
+                    PersistentBottomNavBarItem(
+                      icon: Image.asset(_controller.index==2?'assets/images/bmessage.png':'assets/images/message.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.07,),
+                      title: ("Message\'s"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
+                    PersistentBottomNavBarItem(
+                      icon: Image.asset(_controller.index==3?'assets/images/bprofile.png':'assets/images/profile.png',
+                        height: size.height * 0.04,
+                        width: size.width * 0.07,),
+                      title: ("Profile"),
+                      activeColorPrimary: CupertinoColors.activeBlue,
+                      inactiveColorPrimary: CupertinoColors.systemGrey,
+                    ),
 
-              }
-            }else{
-              print("different tab");
-              _controller.index =
-                  index;
-
-              setState(() {
-
-              });
-            }
+                  ],
+                  selectedIndex: _controller.index,
+                  onItemSelected: (index) async{
 
 
 
-          },
+
+                    if(_controller.index == index){
+                      int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;
+                      print("same tab");
+                      if(screen != index) {
+                        print("pop now");
+                        await Provider.of<ApiDataProvider>(context, listen: false)
+                            .setScreenIndex(index);
+
+                        // NOTE: THIS IS CRITICAL!! Don't miss it!
+
+                        Navigator.pushAndRemoveUntil(
+                          Get.context!, MaterialPageRoute(builder: (context) {
+                          return CBottomNavigationBar(index: index);
+                        }), (route) => false,);
+
+                      }
+                    }else{
+                      print("different tab");
+                      _controller.index =
+                          index;
+
+                      setState(() {
+
+                      });
+                    }
+
+
+
+                  },
+                ),
+              ),
+            )
         ),
       ),
     );
