@@ -85,9 +85,14 @@ class EnterAmountToTransferDialog extends StatelessWidget {
                     if(amountController.text.isEmpty){
                       Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount',redColor);
                     }else {
-                      Navigator.pop(context);
-                      await makePayment(
-                          context, amountController.text, currency_name, size);
+                      if(amountController.text.contains('.')){
+                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount in digits format',redColor);
+                      }else{
+                        Navigator.pop(context);
+                        await makePayment(
+                            context, amountController.text, currency_name, size);
+                      }
+
 
 
                     }

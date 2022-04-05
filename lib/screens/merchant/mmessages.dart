@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
 
+List<ListOfUsersHavingChat> list=[];
+List<ListOfUsersHavingChat> searchList=[];
 class MMessages extends StatefulWidget {
   static final String id = 'CMessages_Screen';
   const MMessages({Key? key}) : super(key: key);
@@ -77,7 +79,19 @@ class _MMessagesState extends State<MMessages> with AutomaticKeepAliveClientMixi
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onChanged: (value) {},
+                onChanged: (value) {
+                  searchList.clear();
+                  if(searcchFieldController.text.isNotEmpty){
+                    for(int i=0; i< list.length; i++){
+                      ListOfUsersHavingChat item=list[i];
+                      String name=item.firstName +" "+item.lastName;
+                      if(name.toLowerCase().contains(searcchFieldController.text.toLowerCase())){
+                        searchList.add(item);
+                      }
+
+                    }
+                  }
+                },
               ),
             ),
             Stream_Builder(size: size)
@@ -114,7 +128,8 @@ class Stream_Builder extends StatelessWidget {
               );
             }else{
               var response= snapshot.data!;
-              List<ListOfUsersHavingChat> list=[];
+
+              list.clear();
               ApiDataProvider provider=Provider.of<ApiDataProvider>(context,listen: false);
               print('stream builder 1');
               if(response.statusCode==200){
@@ -184,7 +199,7 @@ class Stream_Builder extends StatelessWidget {
               print('stream builder 3');
 
               return list.isEmpty?Center(child: Text('No Active Transaction Chat Exists'),):ListView(
-                children: list,
+                children: searchList.length != 0 ? searchList :list,
               );
             }
           },

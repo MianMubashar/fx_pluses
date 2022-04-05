@@ -131,16 +131,20 @@ class _CWithdrawState extends State<CWithdraw> {
     if(accountHolderName.text.isNotEmpty &&
     accountNumber.text.isNotEmpty &&
     amount.text.isNotEmpty) {
+    if(amount.text.contains('.')){
+    Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
+    context, 'Please enter valid amount to proceed',redColor);
+    }else {
       int balance = int.parse(amount.text);
-      List a = Provider
+      //List a = Provider.of<ApiDataProvider>(context, listen: false).balance.split('.');
+      double b = double.parse(Provider
           .of<ApiDataProvider>(context, listen: false)
-          .balance
-          .split('.');
-      int balance2 = int.parse(a[0]);
+          .balance);
+      int balance2 = b.round();
       if (balance2 >= balance) {
         if (balance2 == 0) {
           Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
-              context, 'Add balance in your wallet for withdraw',redColor);
+              context, 'Add balance in your wallet for withdraw', redColor);
         } else {
           if (accountHolderName.text.isNotEmpty &&
               accountNumber.text.isNotEmpty && amount.text.isNotEmpty) {
@@ -162,13 +166,14 @@ class _CWithdrawState extends State<CWithdraw> {
             amount.clear();
           } else {
             Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
-                context, 'Please enter valid data to proceed',redColor);
+                context, 'Please enter valid data to proceed', redColor);
           }
         }
       } else {
         Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
-            context, 'Your wallet balance is insufficient',redColor);
+            context, 'Your wallet balance is insufficient', redColor);
       }
+    }
     }else{
       Provider.of<ApiDataProvider>(context, listen: false)
           .showSnackbar(

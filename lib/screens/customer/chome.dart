@@ -354,25 +354,35 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                   listen: false).showSnackbar(context, 'Please enter amount', redColor);
                             }else{
                               if(from_country_id != null && to_counntry_id != null){
-                                FocusScope.of(context).requestFocus(FocusNode());
+                                if(amount.text.contains('.')) {
+                                  Provider
+                                      .of<ApiDataProvider>(context,
+                                      listen: false).showSnackbar(context,'Please enter amount in digits format',redColor);
+                                }else{
+                                  FocusScope.of(context).requestFocus(
+                                      FocusNode());
 
-                                await Provider.of<ApiDataProvider>(context, listen: false).getMercchantes(context,
-                                    token!,
-                                    amount.text,
-                                    element.country_code,
-                                    Provider
-                                        .of<ApiDataProvider>(context,
-                                        listen: false)
-                                        .selectedCurrencyId,
-                                    from_country_id!,to_counntry_id!);
+                                  await Provider.of<ApiDataProvider>(
+                                      context, listen: false).getMercchantes(
+                                      context,
+                                      token!,
+                                      amount.text,
+                                      element.country_code,
+                                      Provider
+                                          .of<ApiDataProvider>(context,
+                                          listen: false)
+                                          .selectedCurrencyId,
+                                      from_country_id!,
+                                      to_counntry_id!);
 
-                                amount.clear();
+                                  amount.clear();
 
 
-                                setState(() {
-                                  check = true;
-                                });
+                                  setState(() {
+                                    check = true;
+                                  });
 
+                                }
                               }else{
                                 Provider
                                     .of<ApiDataProvider>(context,
@@ -605,6 +615,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                           //       .showSnackbar(context,
                                           //           'Account balance is insuffcient',redColor);
                                           // } else {
+
 
                                             await Provider.of<ApiDataProvider>(
                                                     Get.context!,

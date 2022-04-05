@@ -164,6 +164,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                 margin: EdgeInsets.only(bottom: 30),
                 child: TextField(
                   controller: amountController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       hintText: 'Amount',
                       helperStyle: TextStyle(color: blackColor),
@@ -182,19 +183,23 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
               MainButton(text: "Send", onPress: () async{
                 if(firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty && accountNumberController.text.isNotEmpty
                     && swiftCodeController.text.isNotEmpty && amountController.text.isNotEmpty){
-                 await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
-                      Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                      widget.reciever_id,
-                      "Name: "+firstNameController.text +" "+lastNameController.text +'\n'+
-                      "Account Number: "+accountNumberController.text + "\n"+
-                      "Swift Code: "+swiftCodeController.text + "\n"+
-                      "Amount: "+amountController.text,
-                      '',
-                      '',
-                      widget.transaction_id);
-                 Navigator.pop(context);
+                  if(!amountController.text.contains('.')) {
+                    await Provider.of<ApiDataProvider>(context, listen: false).sendMessage(context,
+                        Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
+                        widget.reciever_id,
+                        "Name: " + firstNameController.text + " " + lastNameController.text + '\n' +
+                            "Account Number: " + accountNumberController.text + "\n" +
+                            "Swift Code: " + swiftCodeController.text + "\n" +
+                            "Amount: " + amountController.text,
+                        '',
+                        '',
+                        widget.transaction_id);
+                    Navigator.pop(context);
+                  }else{
+                    Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);
+                  }
                 }else{
-
+                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter complete data to proceed',redColor);
                 }
               })
             ],

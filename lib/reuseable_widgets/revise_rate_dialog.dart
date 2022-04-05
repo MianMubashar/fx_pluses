@@ -130,7 +130,8 @@ class ReviseRateDialog extends StatelessWidget {
               onTap:(){
                 if(fromCountry !=''){
                   if(toCountry !=''){
-                    if(rate !=''){
+                    if(rate !='' && !rate.contains('.')){
+
                       Navigator.pop(context);
                       Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                           Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
@@ -139,7 +140,7 @@ class ReviseRateDialog extends StatelessWidget {
 
                           '','',transaction_id );
                     }else{
-                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter rate',redColor);
+                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);
                     }
                   }else{
                     Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please select to currency',redColor);

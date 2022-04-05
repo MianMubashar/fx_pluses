@@ -72,16 +72,30 @@ class CTransferDialog extends StatelessWidget {
                 onTap: () async{
                   if(amountController.text.isEmpty){
                     Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount',redColor);
-                  }else{
-                    Navigator.pop(context);
+                  }else {
+                    if (amountController.text.contains('.')) {
+                      Provider.of<ApiDataProvider>(context, listen: false)
+                          .showSnackbar(
+                          context, 'Please enter valid amount', redColor);
+                    } else {
+                      Navigator.pop(context);
 
-                    await Provider.of<ApiDataProvider>(context,listen: false).updateWallet(context,
-                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                        3, amountController.text,
-                        Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['id'],
-                        '', '',currency_id);
-
-
+                      await Provider.of<ApiDataProvider>(context, listen: false)
+                          .updateWallet(
+                          context,
+                          Provider
+                              .of<ApiDataProvider>(context, listen: false)
+                              .bearerToken,
+                          3,
+                          amountController.text,
+                          Provider
+                              .of<ApiDataProvider>(context, listen: false)
+                              .acceptedRequestMerchantsList[index]
+                              .from_user['id'],
+                          '',
+                          '',
+                          currency_id);
+                    }
                   }
 
 

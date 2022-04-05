@@ -18,7 +18,7 @@ class UpdateProfile extends StatelessWidget {
   PhoneNumber? phoneNumber;
   bool numberValid=false;
   String countryCode='';
-  FilePickerResult? result;
+  XFile? result;
   String? buisnessName;
   PhoneNumber? mobileNummber;
   String code='';
@@ -163,12 +163,12 @@ class UpdateProfile extends StatelessWidget {
               InkWell(
                 onTap: ()async{
                   final ImagePicker _picker = ImagePicker();
-                  final XFile? result=await _picker.pickImage(source: ImageSource.gallery);
+                   result=await _picker.pickImage(source: ImageSource.gallery);
                  // result=await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
                   if (result == null) {
                   print("No file selected");
                   }else{
-                    Provider.of<ApiDataProvider>(context,listen: false).setIdFileForLocal(result.path.toString());
+                    Provider.of<ApiDataProvider>(context,listen: false).setIdFileForLocal(result!.path.toString());
                   }
                 },
                 child: Column(
@@ -203,8 +203,11 @@ class UpdateProfile extends StatelessWidget {
                 ),
               )
                   : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Selected Id'),
+                      Text('Selected Id',textAlign: TextAlign.start,style: TextStyle(
+                        color: greyColor
+                      ),),
                       SizedBox(height: 5,),
                       Container(
                 height: size.height * 0.35,
@@ -216,7 +219,7 @@ class UpdateProfile extends StatelessWidget {
               SizedBox(height: 20,),
               MainButton(text: 'Update', onPress: () async{
                 print('abcd ${phoneNumbercontroller.text.isEmpty}');
-                if(buisnessName == null && result == null && mobileNummber==null){
+                if(result == null && buisnessName == null &&  mobileNummber==null){
                   Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Enter data to update', redColor);
                 }else{
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -224,7 +227,7 @@ class UpdateProfile extends StatelessWidget {
                     await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                         '', '',
-                        result == null ? null: result!.files.single.path.toString(),
+                        result == null ? null: result!.path.toString(),
                         'id_file',
                         null,
                         buisnessName==null ? null : buisnessName,

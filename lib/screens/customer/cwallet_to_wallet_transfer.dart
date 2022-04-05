@@ -18,15 +18,19 @@ class CWalletToWalletTransfer extends StatefulWidget {
 class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
   TextEditingController searcchFieldController=TextEditingController();
 
-  List<AcceptedRequestMerchantsModel> originaldata=[];
+   List<AcceptedRequestMerchantsModel> originaldata=[];
   List<AcceptedRequestMerchantsModel> searchdata=[];
+
+  getData() async{
+    originaldata = await Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    searchdata = Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
+    getData();
+    //searchdata = Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
   }
 
   @override
@@ -63,27 +67,27 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
               ),
                 onChanged: (value){
                   print(value);
-                  setState(() async{
+
                     searchdata.clear();
                     if(searcchFieldController.text.isNotEmpty) {
                      // print(originaldata.length);
-                      for (int i = 0; i <= Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList.length; i++) {
-                        AcceptedRequestMerchantsModel item = await Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[i];
-                        print(item.from_user['first_name']);
-                        if ('${item.from_user['first_name'] + " " +
-                            item.from_user['last_name']}'
-                            .toLowerCase()
-                            .contains(searcchFieldController.text
-                            .toLowerCase())) {
-                          print(item.from_user['first_name']);
+                      for (int i = 0; i < originaldata.length; i++) {
+                        AcceptedRequestMerchantsModel item = originaldata[i];
+                        String name=item.from_user['first_name']+" "+item.from_user["last_name"];
+                        print('$name');
+
+                        if (name.toLowerCase().contains(searcchFieldController.text.toLowerCase())) {
+                          //print(item.from_user['first_name']);
                           searchdata.add(item);
+                          setState(() {
+                        });
                         }
                       }
                     }
-                    else{
-                      searchdata = Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
-                    }
-                  });
+                    // else{
+                    //   searchdata = Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
+                    // }
+
 
                 },
             ),
@@ -100,6 +104,7 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
 
             Expanded(
               child:
+                  searchdata.length != 0 || searcchFieldController.text.isNotEmpty ?
               ListView.builder(
                   itemCount: searchdata.length,
                   itemBuilder: (context, index) {
@@ -165,7 +170,7 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                                       ],
                                     ),
                                     Text(
-                                      '${CountryPickerUtils.getCountryByIsoCode(Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['country_code']).name}',
+                                      '${CountryPickerUtils.getCountryByIsoCode(searchdata[index].from_user['country_code']).name}',
                                       style: TextStyle(
                                           color: greyColor,
                                           fontSize: 12,
@@ -209,7 +214,119 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                         ],
                       ),
                     );
-                  }),
+                  }):
+                  ListView.builder(
+                      itemCount: Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          height: size.height * 0.13,
+                          width: size.width,
+                          margin: EdgeInsets.only(
+                              bottom: 1, left: 10, right: 10, top: 10),
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 0.5,
+                                spreadRadius: 0.5,
+                                offset: Offset(
+                                  1,
+                                  0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 30,
+                                    backgroundImage: NetworkImage((Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['profile_photo_path'].toString().contains('https') ||
+                                        Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['profile_photo_path'].toString().contains('http'))?
+                                    Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['profile_photo_path']:
+                                    profile_url + Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['profile_photo_path']),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            SizedBox(
+                                              width:size.width * 0.2,
+                                              child: Text(
+                                                Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['first_name']
+                                                    +" "+
+                                                    Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['last_name'],
+                                                maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
+                                                  color: textBlackColor,
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500),
+                                              ),
+                                            ),
+                                            Image.asset(
+                                              'icons/flags/png/${Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['country_code'].toLowerCase()}.png',
+                                              package: 'country_icons',
+                                              height: 20,
+                                              width: 20,
+                                            )
+                                          ],
+                                        ),
+                                        Text(
+                                          '${CountryPickerUtils.getCountryByIsoCode(Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['country_code']).name}',
+                                          style: TextStyle(
+                                              color: greyColor,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              InkWell(
+                                onTap:(){
+                                  setState(() {
+                                    showDialog(context: context, builder: (BuildContext context)=>Dialog(
+
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
+                                      child: CTransferDialog(size:size,index:index,
+                                        currency_id: Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,),
+                                    ));
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  height: size.height * 0.05,
+                                  width: size.width * 0.26,
+                                  decoration: BoxDecoration(
+                                      color: buttonColor,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'Transfer',
+                                          style: TextStyle(
+                                              color: Colors.white, fontSize: 14),
+                                        )
+                                      ]),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }),
             )
           ],
 
