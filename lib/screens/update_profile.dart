@@ -234,7 +234,7 @@ class UpdateProfile extends StatelessWidget {
                         null,
                         null);
                   }else{
-                    //await Provider.of<ApiDataProvider>(context,listen: false).otpRequest(phoneNumber, context, 1);
+                    await Provider.of<ApiDataProvider>(context,listen: false).otpRequest(phoneNumber, context, 1);
 
                     // await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                     //     Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
