@@ -26,6 +26,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
   bool get wantKeepAlive => true;
 
   TextEditingController amount = TextEditingController();
+  ScrollController scrollController=ScrollController();
   String? amountWritten;
   final List<String> genderItems = [
     'England',
@@ -453,263 +454,271 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                           ),),
                         ),
                       )
-                          : ListView.builder(
-                          itemCount: Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list
-                              .length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: size.height * 0.17,
-                              width: size.width,
-                              margin: EdgeInsets.only(
-                                  bottom: 1, left: 10, right: 10, top: 10),
-                              padding: EdgeInsets.only(left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 0.5,
-                                    spreadRadius: 0.5,
-                                    offset: Offset(
-                                      1,
-                                      0,
+                          : Scrollbar(
+                        controller: scrollController,
+                        isAlwaysShown: true,
+                            child: ListView.builder(
+                              controller: scrollController,
+                            itemCount: Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list
+                                .length<=5 ? Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list
+                                .length : 5 ,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: size.height * 0.17,
+                                width: size.width,
+                                margin: EdgeInsets.only(
+                                    bottom: 1, left: 10, right: 10, top: 10),
+                                padding: EdgeInsets.only(left: 10, right: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 0.5,
+                                      spreadRadius: 0.5,
+                                      offset: Offset(
+                                        1,
+                                        0,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             CMerchantProfile(name:  Provider.of<ApiDataProvider>(
-                                              //                 context,
-                                              //                 listen: false)
-                                              //                 .top_five_merchant_list[
-                                              //             index]
-                                              //                 .first_name +
-                                              //                 Provider.of<ApiDataProvider>(
-                                              //                     context,
-                                              //                     listen: false)
-                                              //                     .top_five_merchant_list[
-                                              //                 index]
-                                              //                     .last_name,
-                                              //               country: country,
-                                              //               profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
-                                            },
-                                            child: CircleAvatar(
-                                              radius: 30,
-                                              backgroundImage: NetworkImage(
-                                                  (Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('http') ||
-                                                      Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('https'))?
-                                                  Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'] :
-                                              profile_url+Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path']),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                // Navigator.push(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             CMerchantProfile(name:  Provider.of<ApiDataProvider>(
+                                                //                 context,
+                                                //                 listen: false)
+                                                //                 .top_five_merchant_list[
+                                                //             index]
+                                                //                 .first_name +
+                                                //                 Provider.of<ApiDataProvider>(
+                                                //                     context,
+                                                //                     listen: false)
+                                                //                     .top_five_merchant_list[
+                                                //                 index]
+                                                //                     .last_name,
+                                                //               country: country,
+                                                //               profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
+                                              },
+                                              child: CircleAvatar(
+                                                radius: 30,
+                                                backgroundImage: NetworkImage(
+                                                    (Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('http') ||
+                                                        Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('https'))?
+                                                    Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'] :
+                                                profile_url+Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path']),
+                                              ),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) =>
-                                              //             CMerchantProfile(name:  Provider.of<ApiDataProvider>(
-                                              //                 context,
-                                              //                 listen: false)
-                                              //                 .top_five_merchant_list[
-                                              //             index]
-                                              //                 .first_name +
-                                              //                 Provider.of<ApiDataProvider>(
-                                              //                     context,
-                                              //                     listen: false)
-                                              //                     .top_five_merchant_list[
-                                              //                 index]
-                                              //                     .last_name,
-                                              //               country: country,
-                                              //               profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
-                                            },
-                                            child: Container(
-                                              padding: EdgeInsets.only(left: 10),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets.only(
-                                                                right: 5.0),
-                                                        child: SizedBox(
-                                                          width:size.width * 0.25,
-                                                          child: Text(
-                                                            Provider.of<ApiDataProvider>(context, listen: false)
-                                                                .top_five_merchant_list[index].user['business']==null?
-                                                            Provider.of<ApiDataProvider>(context, listen: false)
-                                                                    .top_five_merchant_list[index].user['first_name'] +
-                                                                Provider.of<ApiDataProvider>(context, listen: false)
-                                                                    .top_five_merchant_list[index].user['last_name']:
-                                                            Provider.of<ApiDataProvider>(context, listen: false)
-                                                                .top_five_merchant_list[index].user['business'],
-                                                            style: TextStyle(
-                                                                color: textBlackColor,
-                                                                fontSize: 15,
-                                                                fontWeight:
-                                                                    FontWeight.w500),maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,
+                                            InkWell(
+                                              onTap: () {
+                                                // Navigator.push(
+                                                //     context,
+                                                //     MaterialPageRoute(
+                                                //         builder: (context) =>
+                                                //             CMerchantProfile(name:  Provider.of<ApiDataProvider>(
+                                                //                 context,
+                                                //                 listen: false)
+                                                //                 .top_five_merchant_list[
+                                                //             index]
+                                                //                 .first_name +
+                                                //                 Provider.of<ApiDataProvider>(
+                                                //                     context,
+                                                //                     listen: false)
+                                                //                     .top_five_merchant_list[
+                                                //                 index]
+                                                //                     .last_name,
+                                                //               country: country,
+                                                //               profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.only(left: 10),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets.only(
+                                                                  right: 5.0),
+                                                          child: SizedBox(
+                                                            width:size.width * 0.25,
+                                                            child: Text(
+                                                              Provider.of<ApiDataProvider>(context, listen: false)
+                                                                  .top_five_merchant_list[index].user['business']==null ||
+                                                                  Provider.of<ApiDataProvider>(context, listen: false)
+                                                                      .top_five_merchant_list[index].user['business']=='null'?
+                                                              Provider.of<ApiDataProvider>(context, listen: false)
+                                                                      .top_five_merchant_list[index].user['first_name'] +
+                                                                  Provider.of<ApiDataProvider>(context, listen: false)
+                                                                      .top_five_merchant_list[index].user['last_name']:
+                                                              Provider.of<ApiDataProvider>(context, listen: false)
+                                                                  .top_five_merchant_list[index].user['business'],
+                                                              style: TextStyle(
+                                                                  color: textBlackColor,
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight.w500),maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                      Image.asset(
-                                                        'icons/flags/png/${Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['country_code'].toLowerCase()}.png',
-                                                        package: 'country_icons',
-                                                        height: 20,
-                                                        width: 20,
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Text(
-                                                    Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['country_name'],
+                                                        Image.asset(
+                                                          'icons/flags/png/${Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['country_code'].toLowerCase()}.png',
+                                                          package: 'country_icons',
+                                                          height: 20,
+                                                          width: 20,
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['country_name'],
+                                                      style: TextStyle(
+                                                          color: greyColor,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                    Text(double.parse(Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['rating']).toStringAsFixed(2),
                                                     style: TextStyle(
                                                         color: greyColor,
                                                         fontSize: 12,
                                                         fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                  Text(double.parse(Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['rating']).toStringAsFixed(2),
-                                                  style: TextStyle(
-                                                      color: greyColor,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                      FontWeight.bold),),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      InkWell(
-                                        onTap: () async {
-                                          // SharedPreferences prefs =
-                                          //     await SharedPreferences.getInstance();
-                                          // String amount1 = Provider.of<ApiDataProvider>(context,listen: false).balance;
-                                          // //String? token=await prefs.getString(SharedPreference.bearerTokenKey);
-                                          // List a = amount1.split('.');
-                                          // int amount2 = int.parse(a[0]);
-                                          // int amount3 = int.parse(amountWritten!);
-                                          // if (amount2 < amount3) {
-                                          //   Provider.of<ApiDataProvider>(context,
-                                          //           listen: false)
-                                          //       .showSnackbar(context,
-                                          //           'Account balance is insuffcient',redColor);
-                                          // } else {
-
-
-                                            await Provider.of<ApiDataProvider>(
-                                                    Get.context!,
-                                                    listen: false)
-                                                .requestTransaction(Get.context!, amountWritten!,
-                                                    Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user_id,
-                                                    token!,
-                                                Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user['first_name'] +
-                                                   " "+ Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user['last_name'],
-                                                Provider.of<ApiDataProvider>(Get.context!, listen: false).selectedCurrencyId,
-                                                Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].id);
-                                            setState(() {
-                                              check = true;
-                                            });
-                                         // }
-
-                                        },
-                                        child: Container(
-                                          padding:
-                                              EdgeInsets.only(left: 10, right: 10),
-                                          height: size.height * 0.05,
-                                          width: size.width * 0.26,
-                                          decoration: BoxDecoration(
-                                              color: buttonColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
-                                          child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Image.asset(
-                                                  'assets/images/messageicon.png',
-                                                  height: size.height * 0.02,
+                                                        FontWeight.bold),),
+                                                  ],
                                                 ),
-                                                Text(
-                                                  'Chat Now',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12),
-                                                )
-                                              ]),
+                                              ),
+                                            )
+                                          ],
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: size.height * 0.009,),
-                                  Center(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Container(
+                                        InkWell(
+                                          onTap: () async {
+                                            // SharedPreferences prefs =
+                                            //     await SharedPreferences.getInstance();
+                                            // String amount1 = Provider.of<ApiDataProvider>(context,listen: false).balance;
+                                            // //String? token=await prefs.getString(SharedPreference.bearerTokenKey);
+                                            // List a = amount1.split('.');
+                                            // int amount2 = int.parse(a[0]);
+                                            // int amount3 = int.parse(amountWritten!);
+                                            // if (amount2 < amount3) {
+                                            //   Provider.of<ApiDataProvider>(context,
+                                            //           listen: false)
+                                            //       .showSnackbar(context,
+                                            //           'Account balance is insuffcient',redColor);
+                                            // } else {
 
-                                          margin: EdgeInsets.only(left: 30),
-                                          height: size.height * 0.03,
-                                          width: size.width * 0.2,
-                                          decoration: BoxDecoration(
 
-                                              color: buttonColor,
-                                              borderRadius: BorderRadius.circular(5
-                                              )
-                                          ),
-                                          child: Center(
-                                            child: Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].fromCurrency['symbol']}'+
-                                                ' 1',style: TextStyle(
-                                                color: textWhiteColor
-                                            ),),
-                                          ),
-                                        ),
-                                        Text(' =',style: TextStyle(
-                                            fontSize: 15
-                                        ),),
-                                        Container(
-                                          padding: EdgeInsets.only(left:3),
-                                          decoration:BoxDecoration(
-                                              color: whiteColor,
-                                              borderRadius: BorderRadius.circular(5)
-                                          ),
-                                          height: size.height * 0.03,
-                                          width: size.width * 0.2,
-                                          child: Row(
-                                            children: [
-                                              Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].exchange_rate}'),
-                                              Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].toCurrency['symbol']}')
-                                            ],
+                                              await Provider.of<ApiDataProvider>(
+                                                      Get.context!,
+                                                      listen: false)
+                                                  .requestTransaction(Get.context!, amountWritten!,
+                                                      Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user_id,
+                                                      token!,
+                                                  Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user['first_name'] +
+                                                     " "+ Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user['last_name'],
+                                                  Provider.of<ApiDataProvider>(Get.context!, listen: false).selectedCurrencyId,
+                                                  Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].id);
+                                              setState(() {
+                                                check = true;
+                                              });
+                                           // }
+
+                                          },
+                                          child: Container(
+                                            padding:
+                                                EdgeInsets.only(left: 10, right: 10),
+                                            height: size.height * 0.05,
+                                            width: size.width * 0.26,
+                                            decoration: BoxDecoration(
+                                                color: buttonColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/messageicon.png',
+                                                    height: size.height * 0.02,
+                                                  ),
+                                                  Text(
+                                                    'Chat Now',
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12),
+                                                  )
+                                                ]),
                                           ),
                                         )
-
                                       ],
                                     ),
-                                  )
-                                ],
-                              ),
-                            );
-                          }),
+                                    SizedBox(height: size.height * 0.009,),
+                                    Center(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+
+                                            margin: EdgeInsets.only(left: 30),
+                                            height: size.height * 0.03,
+                                            width: size.width * 0.2,
+                                            decoration: BoxDecoration(
+
+                                                color: buttonColor,
+                                                borderRadius: BorderRadius.circular(5
+                                                )
+                                            ),
+                                            child: Center(
+                                              child: Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].fromCurrency['symbol']}'+
+                                                  ' 1',style: TextStyle(
+                                                  color: textWhiteColor
+                                              ),),
+                                            ),
+                                          ),
+                                          Text(' =',style: TextStyle(
+                                              fontSize: 15
+                                          ),),
+                                          Container(
+                                            padding: EdgeInsets.only(left:3),
+                                            decoration:BoxDecoration(
+                                                color: whiteColor,
+                                                borderRadius: BorderRadius.circular(5)
+                                            ),
+                                            height: size.height * 0.03,
+                                            width: size.width * 0.2,
+                                            child: Row(
+                                              children: [
+                                                Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].exchange_rate}'),
+                                                Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].toCurrency['symbol']}')
+                                              ],
+                                            ),
+                                          )
+
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              );
+                            }),
+                          ),
                     ),
                   ],
                 ),

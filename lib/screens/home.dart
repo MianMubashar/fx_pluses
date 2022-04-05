@@ -104,7 +104,7 @@ class _HomeState extends State<Home> {
                 MainButton(
                     text: 'Get Started',
                     onPress: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => Signup(),

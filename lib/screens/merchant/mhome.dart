@@ -3,6 +3,7 @@ import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/merchant/mprofile.dart';
 import 'package:provider/provider.dart';
 import '../../constants.dart';
+import '../../reuseable_widgets/enter_amout_to_transfer_dialog.dart';
 import 'mtransaction_requests.dart';
 
 
@@ -194,25 +195,31 @@ class _MHomeState extends State<MHome> {
                     ),
 
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Flexible(
-                          child: Text('Please add balance to proceed transaction',style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 15
-                          ),maxLines: 2,),
-                        ),
-                        // SizedBox(width: 10,),
-                        // InkWell(
-                        //   onTap: (){
-                        //     print('add balance clicked');
-                        //     print(Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length);
-                        //   },
-                        //   child: Text('Add Balance +',style: TextStyle(
+                        // Flexible(
+                        //   child: Text('Please add balance to proceed transaction',style: TextStyle(
                         //       color: whiteColor,
-                        //       fontSize: 15,
-                        //       fontWeight: FontWeight.w500
-                        //   ),),
-                        // )
+                        //       fontSize: 15
+                        //   ),maxLines: 2,),
+                        // ),
+                        // SizedBox(width: 10,),
+                        InkWell(
+                          onTap: () async{
+                            showDialog(context: context, builder: (context){
+                              return EnterAmountToTransferDialog(size: size,
+                                currency_id: Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,
+                                currency_name: Provider.of<ApiDataProvider>(context,listen: false).defaultCurrencyName,);
+                            });
+                            // await makePayment('20', 'USD',size);
+                            print('add balance clicked');
+                          },
+                          child: Text('Add Balance +',style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500
+                          ),),
+                        )
                       ],
                     ),
 

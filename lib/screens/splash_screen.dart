@@ -21,6 +21,7 @@ import 'package:get/get.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 import '../main.dart';
 
@@ -58,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
   startApp() async {
-
+    FlutterAppBadger.removeBadge();
     await getNotificationSettings();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     // initScreen = await preferences.getInt('initScreen');
@@ -76,6 +77,8 @@ class _SplashScreenState extends State<SplashScreen> {
       }else{
         await Provider.of<ApiDataProvider>(context,listen: false).validateToken(context, bearerToken);
       }
+
+
   }
 
   @override
@@ -170,18 +173,20 @@ class _SplashScreenState extends State<SplashScreen> {
                 channelDescription: channel.description,
                 color: buttonColor,
                   playSound: true,
-                icon: '@mipmap/ic_launcher'
+                icon: '@mipmap/ic_launcher',
                 //icon: android.smallIcon,
                 // other properties...
               ),
             ));
       }
+      FlutterAppBadger.removeBadge();
       print('Notification recieved');
       // Local Notifications Library will be showing with event.notification.title & event.notification.body
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('A new onMessageOpenedApp event was published!');
+      FlutterAppBadger.removeBadge();
     });
     // FirebaseMessaging.configure(
     //   onMessage: (Map<String, dynamic> message) async {

@@ -216,7 +216,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 showDialog(context: context,barrierDismissible: true, builder: (dialogContext){
                   return ReviseRateDialog(reciever_id: widget.reciever_id,transaction_id: widget.transactionId,);
                 });
-              }, icon: Image.asset('assets/icons/dollar_icon.png'),
+              }, icon: Icon(Icons.local_offer_outlined,color: whiteColor,),
               ):Container()
 
             ],
@@ -358,7 +358,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           });
                           await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                               Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                              widget.reciever_id, messageText.text,'','',widget.transactionId );
+                              widget.reciever_id, messageText.text,'','',widget.transactionId,null );
                           messageText.clear();
                           messageSentCheck=false;
                           setState(() {

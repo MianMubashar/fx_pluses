@@ -78,23 +78,33 @@ class CTransferDialog extends StatelessWidget {
                           .showSnackbar(
                           context, 'Please enter valid amount', redColor);
                     } else {
-                      Navigator.pop(context);
+                      int balance = int.parse(amountController.text);
+                      //List a = Provider.of<ApiDataProvider>(context, listen: false).balance.split('.');
+                      double b = double.parse(Provider.of<ApiDataProvider>(context, listen: false).balance);
+                      int balance2 = b.round();
+                      if(balance2>= balance) {
+                        Navigator.pop(context);
 
-                      await Provider.of<ApiDataProvider>(context, listen: false)
-                          .updateWallet(
-                          context,
-                          Provider
-                              .of<ApiDataProvider>(context, listen: false)
-                              .bearerToken,
-                          3,
-                          amountController.text,
-                          Provider
-                              .of<ApiDataProvider>(context, listen: false)
-                              .acceptedRequestMerchantsList[index]
-                              .from_user['id'],
-                          '',
-                          '',
-                          currency_id);
+                        await Provider.of<ApiDataProvider>(
+                            context, listen: false)
+                            .updateWallet(
+                            context,
+                            Provider
+                                .of<ApiDataProvider>(context, listen: false)
+                                .bearerToken,
+                            3,
+                            amountController.text,
+                            Provider
+                                .of<ApiDataProvider>(context, listen: false)
+                                .acceptedRequestMerchantsList[index]
+                                .from_user['id'],
+                            '',
+                            '',
+                            currency_id);
+                      }else{
+                        Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
+                            context, 'Your wallet balance is insufficient', redColor);
+                      }
                     }
                   }
 

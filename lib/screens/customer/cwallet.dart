@@ -213,17 +213,18 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
                       ],
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Flexible(
-                          child: Text(
-                            'Please add balance to proceed transaction',
-                            style: TextStyle(color: whiteColor, fontSize: 15),
-                            maxLines: 2,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        // Flexible(
+                        //   child: Text(
+                        //     'Please add balance to proceed transaction',
+                        //     style: TextStyle(color: whiteColor, fontSize: 15),
+                        //     maxLines: 2,
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
                         InkWell(
                           onTap: () async{
                             showDialog(context: context, builder: (context){

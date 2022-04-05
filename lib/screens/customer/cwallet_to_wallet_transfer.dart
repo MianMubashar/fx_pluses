@@ -79,14 +79,17 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                         if (name.toLowerCase().contains(searcchFieldController.text.toLowerCase())) {
                           //print(item.from_user['first_name']);
                           searchdata.add(item);
-                          setState(() {
-                        });
+
                         }
+                        setState(() {
+                        });
                       }
                     }
-                    // else{
-                    //   searchdata = Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList;
-                    // }
+                    else{
+                      setState(() {
+
+                      });
+                    }
 
 
                 },
@@ -104,7 +107,7 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
 
             Expanded(
               child:
-                  searchdata.length != 0 || searcchFieldController.text.isNotEmpty ?
+              searcchFieldController.text.isNotEmpty || searchdata.length != 0  ?
               ListView.builder(
                   itemCount: searchdata.length,
                   itemBuilder: (context, index) {
@@ -297,7 +300,7 @@ class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
                                 onTap:(){
                                   setState(() {
                                     showDialog(context: context, builder: (BuildContext context)=>Dialog(
-
+                                      //zzzzzz
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)), //this right here
                                       child: CTransferDialog(size:size,index:index,
                                         currency_id: Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,),

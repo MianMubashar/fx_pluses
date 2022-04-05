@@ -210,35 +210,36 @@ class _MWalletState extends State<MWallet> with AutomaticKeepAliveClientMixin{
                       ],
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Flexible(
-                          child: Text(
-                            'Please add balance to proceed transaction',
-                            style: TextStyle(color: whiteColor, fontSize: 15),
-                            maxLines: 2,
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        // InkWell(
-                        //   onTap: () async{
-                        //     showDialog(context: context, builder: (context){
-                        //       return EnterAmountToTransferDialog(size: size,
-                        //         currency_id: Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,
-                        //         currency_name: Provider.of<ApiDataProvider>(context,listen: false).defaultCurrencyName,);
-                        //     });
-                        //     // await makePayment('20', 'USD',size);
-                        //     print('add balance clicked');
-                        //   },
+                        // Flexible(
                         //   child: Text(
-                        //     'Add Balance +',
-                        //     style: TextStyle(
-                        //         color: whiteColor,
-                        //         fontSize: 15,
-                        //         fontWeight: FontWeight.w500),
+                        //     'Please add balance to proceed transaction',
+                        //     style: TextStyle(color: whiteColor, fontSize: 15),
+                        //     maxLines: 2,
                         //   ),
-                        // )
+                        // ),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        InkWell(
+                          onTap: () async{
+                            showDialog(context: context, builder: (context){
+                              return EnterAmountToTransferDialog(size: size,
+                                currency_id: Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencyId,
+                                currency_name: Provider.of<ApiDataProvider>(context,listen: false).defaultCurrencyName,);
+                            });
+                            // await makePayment('20', 'USD',size);
+                            print('add balance clicked');
+                          },
+                          child: Text(
+                            'Add Balance +',
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        )
                       ],
                     ),
                   ],

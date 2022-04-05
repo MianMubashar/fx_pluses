@@ -106,7 +106,7 @@ class _CMessagesState extends State<CMessages> with AutomaticKeepAliveClientMixi
                 },
               ),
             ),
-            Stream_Builder(size: size,)
+            Stream_Builder(size: size,searcchFieldController: searcchFieldController,)
           ],
         ),
       ),
@@ -114,9 +114,10 @@ class _CMessagesState extends State<CMessages> with AutomaticKeepAliveClientMixi
   }
 }
 class Stream_Builder extends StatelessWidget {
-   Stream_Builder({Key? key,required this.size
+   Stream_Builder({Key? key,required this.size,required this.searcchFieldController
   }) : super(key: key);
 var size;
+TextEditingController searcchFieldController;
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +212,7 @@ var size;
 
               return
                 list.isEmpty?Center(child: Text('No Active Transaction Chat Exists'),):ListView(
-                children: searchList.length != 0 ? searchList :list,
+                children: searcchFieldController.text.isNotEmpty || searchList.length != 0 ? searchList :list,
               );
             }
           },

@@ -138,7 +138,7 @@ class ReviseRateDialog extends StatelessWidget {
                           reciever_id,
                           fromCountry+' to '+ toCountry +'\n'+'Rate: '+rate,
 
-                          '','',transaction_id );
+                          '','',transaction_id ,1);
                     }else{
                       Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);
                     }

@@ -64,7 +64,7 @@ class _LoginState extends State<Login> {
                       ),
                     );
                   },
-                  description2: 'Create an accounnt',
+                  description2: 'Create one',
                 ),
                 Text(
                   'Email Address',

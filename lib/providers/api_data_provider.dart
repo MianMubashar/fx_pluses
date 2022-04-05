@@ -40,10 +40,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
 class ApiDataProvider extends ChangeNotifier {
-  // static const String BASE_URL =
-  //     'http://console.fxpluses.com/';
   static const String BASE_URL =
-      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+      'http://console.fxpluses.com/';
+  // static const String BASE_URL =
+  //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 
@@ -853,7 +853,7 @@ setRegisterUserCountryName(String n){
 
 
   Future requestTransaction(BuildContext context, String amount, int id,
-      String token, String name, int currency_id,int merchant_rate_id) async {
+      String token, String name, int currency_id,int merchant_rate_id,) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'request-transaction');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
@@ -882,12 +882,12 @@ setRegisterUserCountryName(String n){
           Map transaction = apiResponse['transaction'];
           setScreenIndex(6);
 
-          Get.showSnackbar(GetSnackBar(
-            backgroundColor: buttonColor,
-            message: apiResponse['message'],
-            duration: Duration(seconds: 2),
-            animationDuration: Duration(milliseconds: 100),
-          ),);
+          // Get.showSnackbar(GetSnackBar(
+          //   backgroundColor: buttonColor,
+          //   message: apiResponse['message'],
+          //   duration: Duration(seconds: 2),
+          //   animationDuration: Duration(milliseconds: 100),
+          // ),);
 
 
           pushNewScreen(context,
@@ -898,7 +898,15 @@ setRegisterUserCountryName(String n){
               PageTransitionAnimation.cupertino);
         } else {
           Get.back(closeOverlays: true);
-          showSnackbar(context, apiResponse['message'], redColor);
+          Map transaction = apiResponse['transaction'];
+          setScreenIndex(6);
+          pushNewScreen(context,
+              screen: ChatScreen(
+                reciever_id: id, name: name, transactionId: transaction['id'],),
+              withNavBar: false,
+              pageTransitionAnimation:
+              PageTransitionAnimation.cupertino);
+         // showSnackbar(context, apiResponse['message'], redColor);
         }
       } else {
         Get.back();
@@ -1151,7 +1159,7 @@ setRegisterUserCountryName(String n){
   }
 
   Future sendMessage(BuildContext context, String token, int recieverid,
-      String message, String filePath, String name, int? transacion_id) async {
+      String message, String filePath, String name, int? transacion_id,int? is_rate_msg) async {
     Uri url = Uri.parse(SERVER_URL + "send-message");
     try {
       var header = {
@@ -1162,7 +1170,8 @@ setRegisterUserCountryName(String n){
       Map bodyData = {
         "receiver_id": recieverid,
         "message": message,
-        "transaction_id": transacion_id
+        "transaction_id": transacion_id,
+        "is_rate_msg":is_rate_msg
       };
       Map bodyData2 = {
         "receiver_id": recieverid,

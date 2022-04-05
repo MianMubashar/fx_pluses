@@ -127,7 +127,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                 ),
               ),
               Text(
-                'Swift Code',
+                'Bank Name',
                 textAlign: TextAlign.start,
                 style: TextStyle(color: greyColor),
               ),
@@ -139,7 +139,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                 child: TextField(
                   controller: swiftCodeController,
                   decoration: InputDecoration(
-                      hintText: 'Swift Code',
+                      hintText: 'Bank Name',
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,
@@ -189,11 +189,11 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                         widget.reciever_id,
                         "Name: " + firstNameController.text + " " + lastNameController.text + '\n' +
                             "Account Number: " + accountNumberController.text + "\n" +
-                            "Swift Code: " + swiftCodeController.text + "\n" +
+                            "Bank Name: " + swiftCodeController.text + "\n" +
                             "Amount: " + amountController.text,
                         '',
                         '',
-                        widget.transaction_id);
+                        widget.transaction_id,null);
                     Navigator.pop(context);
                   }else{
                     Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);
