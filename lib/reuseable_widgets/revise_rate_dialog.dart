@@ -12,7 +12,10 @@ class ReviseRateDialog extends StatelessWidget {
    int? transaction_id;
 
    String fromCountry='';
+   String fromCountryId='';
+   String fromSymbol='';
    String toCountry='';
+   String toCountryId='';
    String rate='';
 
   @override
@@ -29,7 +32,6 @@ class ReviseRateDialog extends StatelessWidget {
         child: Column(
           children: [
             Container(
-
               decoration: BoxDecoration(
                   color: Colors.black12.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(20)),
@@ -54,6 +56,8 @@ class ReviseRateDialog extends StatelessWidget {
                 hint: Text('From currency'),
                 onChanged: (GetCurrenciesModel? value) {
                   fromCountry=value!.name;
+                  fromSymbol = value.symbol;
+                  fromCountryId = value.id.toString();
                   // fromCountryId=value!.id;
                   // print('fromcountryId is $fromCountryId');
                 },
@@ -89,8 +93,8 @@ class ReviseRateDialog extends StatelessWidget {
                 hint: Text('To currency'),
                 onChanged: (GetCurrenciesModel? value) {
                   toCountry=value!.name;
-                  // toCountryId=value!.id;
-                  // Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.symbol);
+                  toCountryId=value.id.toString();
+                  Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.symbol);
                   // print('tocountryId is $toCountryId');
 
                 },
@@ -138,7 +142,7 @@ class ReviseRateDialog extends StatelessWidget {
                           reciever_id,
                           fromCountry+' to '+ toCountry +'\n'+'Rate: '+rate,
 
-                          '','',transaction_id ,1);
+                          '','',transaction_id ,1,fromCountryId,toCountryId,rate);
                     }else{
                       Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);
                     }

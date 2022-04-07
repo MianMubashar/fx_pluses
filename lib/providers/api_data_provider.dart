@@ -78,6 +78,7 @@ class ApiDataProvider extends ChangeNotifier {
   List<CustomerTransactionHistoryModel> customerTransactionHistoryList = [];
   List<FaqsModel> faqsList = [];
   List<ShowChatModel> showChatList = [];
+  Map<String,dynamic> chatOffers = new Map<String,dynamic>();
   List<GetCurrenciesModel> getCurrenciesList = [];
   List<UserWalletsModel> _userWalletModelList = [];
   List<GetCurrencyRatesModel> getCurrencyRateModelList=[];
@@ -1159,7 +1160,8 @@ setRegisterUserCountryName(String n){
   }
 
   Future sendMessage(BuildContext context, String token, int recieverid,
-      String message, String filePath, String name, int? transacion_id,int? is_rate_msg) async {
+      String message, String filePath, String name, int? transacion_id
+      ,int? is_rate_msg,String? from_country_id,String? to_country_id,String? rate) async {
     Uri url = Uri.parse(SERVER_URL + "send-message");
     try {
       var header = {
@@ -1173,6 +1175,14 @@ setRegisterUserCountryName(String n){
         "transaction_id": transacion_id,
         "is_rate_msg":is_rate_msg
       };
+
+      if(is_rate_msg != null && is_rate_msg == 1){
+        bodyData['from_country_id'] = from_country_id;
+        bodyData['to_country_id'] = to_country_id;
+        bodyData['rate'] = rate;
+      }
+
+
       Map bodyData2 = {
         "receiver_id": recieverid,
       };

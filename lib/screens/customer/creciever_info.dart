@@ -193,7 +193,7 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                             "Amount: " + amountController.text,
                         '',
                         '',
-                        widget.transaction_id,null);
+                        widget.transaction_id,null,null,null,null);
                     Navigator.pop(context);
                   }else{
                     Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);

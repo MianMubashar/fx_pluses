@@ -359,7 +359,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             });
                             await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                                 Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                widget.reciever_id, messageText.text,'','',widget.transactionId,null );
+                                widget.reciever_id, messageText.text,'','',widget.transactionId,null,null,null,null);
                             messageText.clear();
                             messageSentCheck=false;
                             setState(() {
@@ -440,6 +440,7 @@ class Stream_Builder extends StatelessWidget {
                      data=apiResponse['messages'];
                   }else{
                     List<dynamic> data1=apiResponse['messages'];
+                    Provider.of<ApiDataProvider>(context,listen: false).chatOffers = apiResponse['rate_offer'];
                     data1.removeLast();
                     data=data1;
                   }
