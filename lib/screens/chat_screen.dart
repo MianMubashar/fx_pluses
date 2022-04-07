@@ -222,118 +222,100 @@ class _ChatScreenState extends State<ChatScreen> {
             ],
           ),
       ),
-      body: Column(
+      body: SafeArea(
+        child: Column(
 
-        children: [
-          Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
-          widget.transactionId != null?
-          InkWell(
-            onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo(transaction_id: widget.transactionId,reciever_id: widget.reciever_id,)));
-            },
-            child: Container(
-              height: size.height * 0.05,
-              width: size.width,
-              decoration: BoxDecoration(
-                color: buttonColor
-              ),
-              child: Center(child: Text('Enter Receiver Detail',style: TextStyle(
-                color: whiteColor,
-
-              ),)),
-            ),
-          )
-              :Container()
-              :Container(),
-          Stream_Builder(recieverId: widget.reciever_id,transactionId: widget.transactionId,),
-          Container(
-            padding: EdgeInsets.only(left: 10,right: 10),
-            decoration: BoxDecoration(
-
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                // Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?
-                // IconButton(
-                //   padding: EdgeInsets.zero,
-                //   splashRadius: 1,
-                //   onPressed: () async{
-                //       FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
-                //       if (result == null) {
-                //         print("No file selected");
-                //       } else {
-                //         Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
-                //             Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                //             widget.reciever_id, '',result.files.single.path.toString(),'image',widget.transactionId );
-                //         print(result.files.single.name);
-                //         print(result.files.single.path);
-                //       }
-                //
-                //   },
-                //   icon: Image.asset('assets/icons/attach_fileicon.png',height: size.height * 0.03,),
-                // ):Container(),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.05,
+          children: [
+            Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
+            widget.transactionId != null?
+            InkWell(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>CRecieverInfo(transaction_id: widget.transactionId,reciever_id: widget.reciever_id,)));
+              },
+              child: Container(
+                height: size.height * 0.05,
+                width: size.width,
+                decoration: BoxDecoration(
+                    color: buttonColor
                 ),
-                Expanded(
-                  child: TextField(
-                    controller: messageText,
-                    maxLines: null,
-                   minLines:1,
-                   // controller: textEditingController,
-                    onChanged: (value) {
-                      //text = value;
-                    },
-                    decoration: InputDecoration(
-                      filled: true,
-                      border: InputBorder.none,
-                      isDense: true
+                child: Center(child: Text('Enter Receiver Detail',style: TextStyle(
+                  color: whiteColor,
+
+                ),)),
+              ),
+            )
+                :Container()
+                :Container(),
+            Stream_Builder(recieverId: widget.reciever_id,transactionId: widget.transactionId,),
+            Container(
+              padding: EdgeInsets.only(left: 10,right: 10),
+              decoration: BoxDecoration(
+
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  // Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?
+                  // IconButton(
+                  //   padding: EdgeInsets.zero,
+                  //   splashRadius: 1,
+                  //   onPressed: () async{
+                  //       FilePickerResult? result = await FilePicker.platform.pickFiles(type: FileType.any,allowedExtensions: null,allowMultiple: false);
+                  //       if (result == null) {
+                  //         print("No file selected");
+                  //       } else {
+                  //         Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
+                  //             Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                  //             widget.reciever_id, '',result.files.single.path.toString(),'image',widget.transactionId );
+                  //         print(result.files.single.name);
+                  //         print(result.files.single.path);
+                  //       }
+                  //
+                  //   },
+                  //   icon: Image.asset('assets/icons/attach_fileicon.png',height: size.height * 0.03,),
+                  // ):Container(),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.05,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      controller: messageText,
+                      maxLines: null,
+                      minLines:1,
+                      // controller: textEditingController,
+                      onChanged: (value) {
+                        //text = value;
+                      },
+                      decoration: InputDecoration(
+                          filled: true,
+                          border: InputBorder.none,
+                          isDense: true
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () async {
-                    if(messageText.text.isNotEmpty){
+                  IconButton(
+                    onPressed: () async {
+                      if(messageText.text.isNotEmpty){
 
 
 
-                      // String pattern = r'\b[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*\b';
-                      String pattern = r'\b[+]*[(]{0,1}[6-9]{1,4}[)]{0,1}[-\s\.0-9]*\b';
-                      RegExp regExp = new RegExp(pattern,caseSensitive: false,multiLine: false);
+                        // String pattern = r'\b[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*\b';
+                        String pattern = r'\b[+]*[(]{0,1}[6-9]{1,4}[)]{0,1}[-\s\.0-9]*\b';
+                        RegExp regExp = new RegExp(pattern,caseSensitive: false,multiLine: false);
 
-                      final phoneNumberMatches=regExp.allMatches(messageText.text);
-                      List<String> phoneNumbers=[];
-                      if(phoneNumberMatches != null){
-                        for(final Match match in phoneNumberMatches){
-                          phoneNumbers.add(messageText.text.substring(match.start,match.end));
+                        final phoneNumberMatches=regExp.allMatches(messageText.text);
+                        List<String> phoneNumbers=[];
+                        if(phoneNumberMatches != null){
+                          for(final Match match in phoneNumberMatches){
+                            phoneNumbers.add(messageText.text.substring(match.start,match.end));
+                          }
                         }
-                      }
-                      print('number is ${phoneNumberMatches}');
+                        print('number is ${phoneNumberMatches}');
 
 
-                      List<String> emails=emailCheck(messageText.text);
-                      print('email is is $emails');
-                      if(emails.isNotEmpty){
-                        showDialog(context: context, builder: (dialogContext){
-                          return AlertDialog(
-                            title: Text('You cannot send email or phone number here',style: TextStyle(
-                              color: buttonColor
-                            ),),
-                            backgroundColor: whiteColor,
-                            actions: [
-                              Center(
-                                child: ElevatedButton(onPressed: (){
-                                  Navigator.pop(dialogContext);
-                                },child: Text('Close'),style: ElevatedButton.styleFrom(
-                                  primary: buttonColor
-                                ),),
-                              )
-                            ],
-                          );
-                        });
-                      }else{
-                        if(phoneNumbers.isNotEmpty){
+                        List<String> emails=emailCheck(messageText.text);
+                        print('email is is $emails');
+                        if(emails.isNotEmpty){
                           showDialog(context: context, builder: (dialogContext){
                             return AlertDialog(
                               title: Text('You cannot send email or phone number here',style: TextStyle(
@@ -352,46 +334,66 @@ class _ChatScreenState extends State<ChatScreen> {
                             );
                           });
                         }else{
-                          messageSentCheck=true;
-                          setState(() {
+                          if(phoneNumbers.isNotEmpty){
+                            showDialog(context: context, builder: (dialogContext){
+                              return AlertDialog(
+                                title: Text('You cannot send email or phone number here',style: TextStyle(
+                                    color: buttonColor
+                                ),),
+                                backgroundColor: whiteColor,
+                                actions: [
+                                  Center(
+                                    child: ElevatedButton(onPressed: (){
+                                      Navigator.pop(dialogContext);
+                                    },child: Text('Close'),style: ElevatedButton.styleFrom(
+                                        primary: buttonColor
+                                    ),),
+                                  )
+                                ],
+                              );
+                            });
+                          }else{
+                            messageSentCheck=true;
+                            setState(() {
 
-                          });
-                          await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
-                              Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                              widget.reciever_id, messageText.text,'','',widget.transactionId,null );
-                          messageText.clear();
-                          messageSentCheck=false;
-                          setState(() {
+                            });
+                            await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
+                                Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                                widget.reciever_id, messageText.text,'','',widget.transactionId,null );
+                            messageText.clear();
+                            messageSentCheck=false;
+                            setState(() {
 
-                          });
+                            });
+                          }
+
                         }
+
+                      }else{
 
                       }
 
-                    }else{
-
-                    }
-
-                    // showDialog(context: context, builder: (context){
-                    //   return TextBubble();
-                    // });
-                    // createChatMessages();
-                    // String chatId=Provider.of<ProviderClass>(context,listen: false).chatRoomId;
-                    // databaseMethods.createFriends(chatId,widget.email, widget.image, widget.friendName, text);
-                    // // Provider.of<ProviderClass>(context, listen: false)
-                    // //             .dataCame ==
-                    // //         true
-                    // //     ? CircularProgressIndicator()
-                    // //     : Provider.of<ProviderClass>(context, listen: false)
-                    // //         .getMessageData();
-                    // textEditingController.clear();
-                  },
-                  icon: messageSentCheck?CircularProgressIndicator(color: buttonColor,):Image.asset('assets/icons/sendicon.png',height: size.height * 0.03,),
-                )
-              ],
+                      // showDialog(context: context, builder: (context){
+                      //   return TextBubble();
+                      // });
+                      // createChatMessages();
+                      // String chatId=Provider.of<ProviderClass>(context,listen: false).chatRoomId;
+                      // databaseMethods.createFriends(chatId,widget.email, widget.image, widget.friendName, text);
+                      // // Provider.of<ProviderClass>(context, listen: false)
+                      // //             .dataCame ==
+                      // //         true
+                      // //     ? CircularProgressIndicator()
+                      // //     : Provider.of<ProviderClass>(context, listen: false)
+                      // //         .getMessageData();
+                      // textEditingController.clear();
+                    },
+                    icon: messageSentCheck?CircularProgressIndicator(color: buttonColor,):Image.asset('assets/icons/sendicon.png',height: size.height * 0.03,),
+                  )
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -416,7 +418,7 @@ class Stream_Builder extends StatelessWidget {
               return Center(
                 child: Container(
                   height: 40,width: 40,
-                  child: Center(
+                  child: const Center(
                     child: CircularProgressIndicator(
                       color: Colors.black,
                     ),
@@ -439,7 +441,7 @@ class Stream_Builder extends StatelessWidget {
                   }else{
                     List<dynamic> data1=apiResponse['messages'];
                     data1.removeLast();
-                     data=data1;
+                    data=data1;
                   }
 
 

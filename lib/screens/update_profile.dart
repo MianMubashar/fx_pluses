@@ -50,8 +50,8 @@ class UpdateProfile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?
-              Text(
-                'Buisness Name',
+              const Text(
+                'Business Name',
                 textAlign: TextAlign.start,
                 style: TextStyle(color: greyColor),
               ):Container(),
@@ -76,7 +76,6 @@ class UpdateProfile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       )),
                   onChanged: (value) {
-
                     buisnessName = value;
                     Provider.of<ApiDataProvider>(context,listen: false).setBuisnessName(buisnessName);
                     print(value);
@@ -190,7 +189,7 @@ class UpdateProfile extends StatelessWidget {
                               Icon(Icons.camera_alt_outlined,color: whiteColor,),
                               Text(Provider.of<ApiDataProvider>(context,listen: true).idFileForlocal == null
                                   ?'Select'
-                                  :'Selected',style: TextStyle(
+                                  :'Selected',style: const TextStyle(
                                 color: textWhiteColor
                               ),)
                             ],
@@ -205,7 +204,7 @@ class UpdateProfile extends StatelessWidget {
                   : Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Selected Id',textAlign: TextAlign.start,style: TextStyle(
+                      const Text('Selected Id',textAlign: TextAlign.start,style: TextStyle(
                         color: greyColor
                       ),),
                       SizedBox(height: 5,),
