@@ -19,10 +19,11 @@ import '../model/get_currencies_model.dart';
 
 class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
-   ChatScreen({Key? key,required this.reciever_id,required this.name,required this.transactionId,required this.rateOffer}) : super(key: key);
+   ChatScreen({Key? key,required this.reciever_id,required this.name,required this.transactionId,required this.transaction,required this.rateOffer}) : super(key: key);
   int reciever_id;
   String name;
   Map<String,dynamic>? rateOffer;
+  Map<dynamic,dynamic>? transaction;
   int? transactionId;
 
 
@@ -54,6 +55,22 @@ class _ChatScreenState extends State<ChatScreen> {
     return emails;
   }
 
+  Widget getAppropriateAction(){
+    if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 5){
+
+    }else{
+      if(widget.transactionId != null){
+        IconButton(onPressed: (){
+          showDialog(context: context,barrierDismissible: true, builder: (dialogContext){
+            return ReviseRateDialog(reciever_id: widget.reciever_id,transaction_id: widget.transactionId,);
+          });
+        }, icon: Icon(Icons.local_offer_outlined,color: whiteColor,));
+      }
+    }
+
+    return Container();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,8 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
             actions: [
 
-
-              Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
+              Provider.of<ApiDataProvider>(context,listen: false).roleId == 5 && widget.transactionId != null && widget.rateOffer != null?
               widget.transactionId != null?
               IconButton(
                 icon: Icon(Icons.check,color: whiteColor,),
@@ -209,9 +225,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 },
               )
-                  :IconButton(onPressed: (){
+                  : widget.rateOffer != null ?  IconButton(onPressed: (){
 
-                  }, icon: Icon(Icons.thumbs_up_down))
+                  }, icon: Icon(Icons.thumbs_up_down)) : Container()
                   :
               widget.transactionId != null?
               IconButton(onPressed: (){

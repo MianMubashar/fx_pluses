@@ -6,20 +6,21 @@ import 'package:provider/provider.dart';
 import '../constants.dart';
 import '../providers/api_data_provider.dart';
 class ListOfUsersHavingChat extends StatelessWidget {
-  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId,required this.profile,required this.transaction_id}) : super(key: key);
+  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId,required this.profile,required this.transaction_id,required this.transaction}) : super(key: key);
   final String firstName;
   final String lastName;
    String? message;
   final int recieverId;
   String? profile; 
   int? transaction_id;
+  Map<dynamic,dynamic>? transaction;
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
     return InkWell(
       onTap: () async{
         pushNewScreen(context,
-            screen: ChatScreen(reciever_id: recieverId,name: firstName+" "+lastName,transactionId: transaction_id,rateOffer: null,),
+            screen: ChatScreen(reciever_id: recieverId,name: firstName+" "+lastName,transactionId: transaction_id,rateOffer: null,transaction: transaction,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);

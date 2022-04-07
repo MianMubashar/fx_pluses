@@ -893,7 +893,7 @@ setRegisterUserCountryName(String n){
 
           pushNewScreen(context,
               screen: ChatScreen(
-                reciever_id: id, name: name, transactionId: transaction['id'],rateOffer: rateOffer,),
+                reciever_id: id, name: name, transactionId: transaction['id'],transaction: transaction,rateOffer: rateOffer,),
               withNavBar: false,
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);
@@ -904,7 +904,7 @@ setRegisterUserCountryName(String n){
           setScreenIndex(6);
           pushNewScreen(context,
               screen: ChatScreen(
-                reciever_id: id, name: name, transactionId: transaction['id'],rateOffer: rateOffer),
+                reciever_id: id, name: name, transactionId: transaction['id'],transaction: transaction,rateOffer: rateOffer),
               withNavBar: false,
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);

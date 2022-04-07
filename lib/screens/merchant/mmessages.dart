@@ -152,7 +152,7 @@ class Stream_Builder extends StatelessWidget {
                       final recieverId=provider.usersHavingChatList[i].sender_id;
                       final profile_url=provider.usersHavingChatList[i].sender['profile_photo_path'];
                       final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
-                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
+                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,);
                       list.add(listWidget);
                     }else{
     if(provider.usersHavingChatList[i].transaction == null || (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3) ){
@@ -162,7 +162,7 @@ class Stream_Builder extends StatelessWidget {
                       final recieverId=provider.usersHavingChatList[i].receiver_id;
                       final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
                       final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
-                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
+                      final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,);
                       list.add(listWidget);
                     }
                     }
@@ -180,7 +180,7 @@ class Stream_Builder extends StatelessWidget {
                     final recieverId=provider.usersHavingChatList[i].sender_id;
                     final profile_url=provider.usersHavingChatList[i].sender['profile_photo_path'];
                     final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
-                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
+                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,);
                     list.add(listWidget);
                   }else{
                     if(provider.usersHavingChatList[i].transaction == null || (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3)){
@@ -190,7 +190,7 @@ class Stream_Builder extends StatelessWidget {
                     final recieverId=provider.usersHavingChatList[i].receiver_id;
                     final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
                     final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
-                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,);
+                    final listWidget=ListOfUsersHavingChat(firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,);
                     list.add(listWidget);
                   }
                   }
