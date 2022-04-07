@@ -19,9 +19,10 @@ import '../model/get_currencies_model.dart';
 
 class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
-   ChatScreen({Key? key,required this.reciever_id,required this.name,required this.transactionId}) : super(key: key);
+   ChatScreen({Key? key,required this.reciever_id,required this.name,required this.transactionId,required this.rateOffer}) : super(key: key);
   int reciever_id;
   String name;
+  Map<String,dynamic>? rateOffer;
   int? transactionId;
 
 
@@ -82,7 +83,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
               Provider.of<ApiDataProvider>(context,listen: false).roleId == 5?
-              widget.transactionId != null ?
+              widget.transactionId != null?
               IconButton(
                 icon: Icon(Icons.check,color: whiteColor,),
                 onPressed: () async{
@@ -115,8 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         primary: buttonColor
-                                      ),
-                                        onPressed: () async{
+                                      ), onPressed: () async{
                                       bool checkStatus=await Provider.of<ApiDataProvider>(context,listen: false).completeTransaction(context,
                                           Provider.of<ApiDataProvider>(context,listen: false).bearerToken , widget.transactionId, 'completed');
                                       if(!checkStatus){
@@ -209,7 +209,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 },
               )
-                  :Container()
+                  :IconButton(onPressed: (){
+
+                  }, icon: Icon(Icons.thumbs_up_down))
                   :
               widget.transactionId != null?
               IconButton(onPressed: (){

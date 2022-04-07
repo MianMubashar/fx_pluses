@@ -881,6 +881,7 @@ setRegisterUserCountryName(String n){
           Get.back(closeOverlays: true);
           print(apiResponse['message']);
           Map transaction = apiResponse['transaction'];
+          Map<String,dynamic> rateOffer = apiResponse['rate_offer'];
           setScreenIndex(6);
 
           // Get.showSnackbar(GetSnackBar(
@@ -890,20 +891,20 @@ setRegisterUserCountryName(String n){
           //   animationDuration: Duration(milliseconds: 100),
           // ),);
 
-
           pushNewScreen(context,
               screen: ChatScreen(
-                reciever_id: id, name: name, transactionId: transaction['id'],),
+                reciever_id: id, name: name, transactionId: transaction['id'],rateOffer: rateOffer,),
               withNavBar: false,
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);
         } else {
           Get.back(closeOverlays: true);
           Map transaction = apiResponse['transaction'];
+          Map<String,dynamic> rateOffer = apiResponse['rate_offer'];
           setScreenIndex(6);
           pushNewScreen(context,
               screen: ChatScreen(
-                reciever_id: id, name: name, transactionId: transaction['id'],),
+                reciever_id: id, name: name, transactionId: transaction['id'],rateOffer: rateOffer),
               withNavBar: false,
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);

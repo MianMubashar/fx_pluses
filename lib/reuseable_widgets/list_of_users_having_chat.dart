@@ -19,7 +19,7 @@ class ListOfUsersHavingChat extends StatelessWidget {
     return InkWell(
       onTap: () async{
         pushNewScreen(context,
-            screen: ChatScreen(reciever_id: recieverId,name: firstName+" "+lastName,transactionId: transaction_id,),
+            screen: ChatScreen(reciever_id: recieverId,name: firstName+" "+lastName,transactionId: transaction_id,rateOffer: null,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);
