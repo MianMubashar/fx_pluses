@@ -41,6 +41,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController buisnessController = TextEditingController();
 
   @override
   void initState() {
@@ -60,6 +61,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
     passwordController.clear();
     phoneNumbercontroller.clear();
     usernameController.clear();
+    buisnessController.clear();
     firstName='';
     lastName='';
     email='';
@@ -289,6 +291,32 @@ class _MCreateAccountState extends State<MCreateAccount> {
                   },
                 ),
               ),
+              Text(
+                'Buisness',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: greyColor),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: TextField(
+                  controller: buisnessController,
+                  decoration: InputDecoration(
+                      hintText: 'Buisness',
+                      helperStyle: TextStyle(color: blackColor),
+                      isDense: true,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                      )),
+                  onChanged: (value) {
+                    //email = value;
+                  },
+                ),
+              ),
               Center(
                 child: RichText(
                     text: TextSpan(
@@ -380,30 +408,59 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                           .showSnackbar(context,
                                           'Username should be atleast 5 characters long',redColor);
                                     }else {
-                                      await Provider.of<ApiDataProvider>(
-                                          context, listen: false).setContact(phoneNumber.toString());
-                                      await Provider.of<ApiDataProvider>(context, listen: false).setFirstName(
-                                          firstName);
-                                      await Provider.of<ApiDataProvider>(context, listen: false).setLastName(
-                                          lastName);
-                                      await Provider.of<ApiDataProvider>(context, listen: false).setEmail(
-                                          email);
-                                      await Provider.of<ApiDataProvider>(context, listen: false).setPassword(
-                                          password);
-                                      // await Provider.of<ApiDataProvider>(context, listen: false).setToken(
-                                      //     deviceToken);
-                                      await Provider.of<ApiDataProvider>(context, listen: false)
-                                          .setCountryCode(countryCode);
-                                      await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(4);
-                                     await Provider.of<ApiDataProvider>(context, listen: false).setUserId(
-                                          usernameController.text);
-                                     await Provider.of<ApiDataProvider>(context, listen: false).setRegisterUserCountryName(CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
-                                      // Provider.of<ApiDataProvider>(context, listen: false).otp_check==false
-                                      await Provider.of<ApiDataProvider>(context, listen: false)
-                                          .otpRequest(phoneNumber, context,0);
+                                      if(buisnessController.text.isEmpty){
+                                        Provider.of<ApiDataProvider>(context,
+                                            listen: false)
+                                            .showSnackbar(context,
+                                            'Please enter buisness name',redColor);
+                                      }else {
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false).setContact(
+                                            phoneNumber.toString());
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false)
+                                            .setFirstName(
+                                            firstName);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false).setLastName(
+                                            lastName);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false).setEmail(
+                                            email);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false).setPassword(
+                                            password);
+                                        // await Provider.of<ApiDataProvider>(context, listen: false).setToken(
+                                        //     deviceToken);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false)
+                                            .setCountryCode(countryCode);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false).setRoleId(
+                                            4);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false).setUserId(
+                                            usernameController.text);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false)
+                                            .setRegisterUserCountryName(
+                                            CountryPickerUtils
+                                                .getCountryByIsoCode(
+                                                countryCode)
+                                                .name
+                                                .toString());
+                                        // Provider.of<ApiDataProvider>(context, listen: false).otp_check==false
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false)
+                                            .setBuisnessName(
+                                            buisnessController.text);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false)
+                                            .otpRequest(
+                                            phoneNumber, context, 0);
 
-                                      clearControllers();
-
+                                        clearControllers();
+                                      }
                                     }
                                    // }
                                 }

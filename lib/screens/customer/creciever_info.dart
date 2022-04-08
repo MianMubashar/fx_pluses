@@ -184,16 +184,25 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                 if(firstNameController.text.isNotEmpty && lastNameController.text.isNotEmpty && accountNumberController.text.isNotEmpty
                     && swiftCodeController.text.isNotEmpty && amountController.text.isNotEmpty){
                   if(!amountController.text.contains('.')) {
-                    await Provider.of<ApiDataProvider>(context, listen: false).sendMessage(context,
+
+                    await Provider.of<ApiDataProvider>(context, listen: false).UpdateOfferStatus(context,
                         Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
-                        widget.reciever_id,
-                        "Name: " + firstNameController.text + " " + lastNameController.text + '\n' +
-                            "Account Number: " + accountNumberController.text + "\n" +
-                            "Bank Name: " + swiftCodeController.text + "\n" +
-                            "Amount: " + amountController.text,
-                        '',
-                        '',
-                        widget.transaction_id,null,null,null,null);
+                        Provider.of<ApiDataProvider>(context, listen: false).chatOffers?['id'],
+                        2,
+                    widget.reciever_id);
+
+
+
+                    // await Provider.of<ApiDataProvider>(context, listen: false).sendMessage(context,
+                    //     Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
+                    //     widget.reciever_id,
+                    //     "Name: " + firstNameController.text + " " + lastNameController.text + '\n' +
+                    //         "Account Number: " + accountNumberController.text + "\n" +
+                    //         "Bank Name: " + swiftCodeController.text + "\n" +
+                    //         "Amount: " + amountController.text,
+                    //     '',
+                    //     '',
+                    //     widget.transaction_id,null,null,null,null);
                     Navigator.pop(context);
                   }else{
                     Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);

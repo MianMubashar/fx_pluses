@@ -23,7 +23,7 @@ import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:fx_pluses/screens/customer/cbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/customer/chome.dart';
 import 'package:fx_pluses/screens/customer/cmessages.dart';
-import 'package:fx_pluses/screens/customer/cwallet_to_wallet_transfer.dart';
+import 'package:fx_pluses/screens/wallet_to_wallet_transfer.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
 import 'package:fx_pluses/screens/merchant/mbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/merchant/mhome.dart';
@@ -78,7 +78,13 @@ class ApiDataProvider extends ChangeNotifier {
   List<CustomerTransactionHistoryModel> customerTransactionHistoryList = [];
   List<FaqsModel> faqsList = [];
   List<ShowChatModel> showChatList = [];
-  Map<String,dynamic> chatOffers = new Map<String,dynamic>();
+
+  Map<String,dynamic>? _chatOffers;
+
+
+
+
+
   List<GetCurrenciesModel> getCurrenciesList = [];
   List<UserWalletsModel> _userWalletModelList = [];
   List<GetCurrencyRatesModel> getCurrencyRateModelList=[];
@@ -104,6 +110,10 @@ class ApiDataProvider extends ChangeNotifier {
   String? _currencySymbolForExchangeRateScreen;
 
 
+  setChatOffers(Map<String, dynamic>? value) {
+    _chatOffers = value;
+    notifyListeners();
+  }
   setUpdatedContact(String c){
     _updatedContact=c;
   }
@@ -881,7 +891,8 @@ setRegisterUserCountryName(String n){
           Get.back(closeOverlays: true);
           print(apiResponse['message']);
           Map transaction = apiResponse['transaction'];
-          Map<String,dynamic> rateOffer = apiResponse['rate_offer'];
+          Map<String,dynamic>? rateOffer = apiResponse['rate_offer'];
+          await setChatOffers(rateOffer);
           setScreenIndex(6);
 
           // Get.showSnackbar(GetSnackBar(
@@ -900,7 +911,8 @@ setRegisterUserCountryName(String n){
         } else {
           Get.back(closeOverlays: true);
           Map transaction = apiResponse['transaction'];
-          Map<String,dynamic> rateOffer = apiResponse['rate_offer'];
+          Map<String,dynamic>? rateOffer = apiResponse['rate_offer'];
+          await setChatOffers(rateOffer);
           setScreenIndex(6);
           pushNewScreen(context,
               screen: ChatScreen(
@@ -1699,6 +1711,47 @@ setRegisterUserCountryName(String n){
     }
   }
 
+  Future<bool> UpdateOfferStatus(BuildContext context, String token,
+      int? offer_id, int? status_id,int? merchant_id) async {
+    Get.dialog(CustomLoader());
+    Uri url = Uri.parse(SERVER_URL + 'update-offer-status');
+    try {
+      var header = {
+        'Content-Type': 'application/json',
+        "Accept": "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map bodyData = {
+        'offer_id': offer_id,
+        'status_id': status_id,
+        'merchant_id':merchant_id
+      };
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        bool status = apiResponse['status'];
+        if (status) {
+          Get.back();
+          showSnackbar(context, apiResponse['message'], buttonColor);
+          return true;
+        } else {
+          Get.back();
+          getError(apiResponse['error'], context);
+          return false;
+        }
+      } else {
+        Get.back();
+        showSnackbar(context, 'Something went wrong', redColor);
+        return false;
+      }
+    } catch (e) {
+      Get.back();
+      print('try catch error from privacyPolicy $e');
+      return false;
+    }
+  }
+
   Stream<http.Response> chatMenu(BuildContext context,String token) async* {
     var header={
       'Content-Type':'application/json',
@@ -1727,7 +1780,7 @@ setRegisterUserCountryName(String n){
     };
     var body=jsonEncode(bodyData);
     //print('stream builder 4');
-    yield* Stream.periodic(Duration(milliseconds: 1000), (_) async{
+    yield* Stream.periodic(Duration(milliseconds: 2000), (_) async{
       return await http.post(Uri.parse(SERVER_URL + 'show-chat'),headers:header,body: body);
     }).asyncMap((event) async {
       return await event;
@@ -1793,6 +1846,8 @@ setRegisterUserCountryName(String n){
       },
     );
   }
+
+
 
 
 
@@ -1882,4 +1937,5 @@ setRegisterUserCountryName(String n){
   String? get idFileForlocal => _idFileForlocal;
   int get screenIndex => _screenIndex;
   String? get updatedContact => _updatedContact;
+  Map<String, dynamic>? get chatOffers => _chatOffers;
 }

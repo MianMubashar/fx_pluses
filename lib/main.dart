@@ -25,7 +25,7 @@ import 'package:fx_pluses/screens/customer/cmessages.dart';
 import 'package:fx_pluses/screens/customer/creciever_info.dart';
 import 'package:fx_pluses/screens/customer/crefer_code.dart';
 import 'package:fx_pluses/screens/customer/cwallet.dart';
-import 'package:fx_pluses/screens/customer/cwallet_to_wallet_transfer.dart';
+import 'package:fx_pluses/screens/wallet_to_wallet_transfer.dart';
 import 'package:fx_pluses/screens/customer/cwithdraw.dart';
 import 'package:fx_pluses/screens/customer/profile.dart';
 import 'package:fx_pluses/screens/faq.dart';
@@ -156,7 +156,7 @@ class MyApp extends StatelessWidget {
         //CRecieverInfo.id: (context) => CRecieverInfo(),
         CReferCode.id: (context) => CReferCode(),
         CWallet.id: (context) => CWallet(),
-        CWalletToWalletTransfer.id: (context) => CWalletToWalletTransfer(),
+        WalletToWalletTransfer.id: (context) => WalletToWalletTransfer(),
         CProfile.id: (context) => CProfile(backButtonEnabled: false,),
         Signup.id: (context) => Signup(),
         MCreateAccount.id: (context) => MCreateAccount(),

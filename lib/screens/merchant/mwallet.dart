@@ -12,7 +12,7 @@ import 'package:fx_pluses/reuseable_widgets/customloader.dart';
 import 'package:fx_pluses/reuseable_widgets/enter_amout_to_transfer_dialog.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/screens/customer/ctransfer_dialog.dart';
-import 'package:fx_pluses/screens/customer/cwallet_to_wallet_transfer.dart';
+import 'package:fx_pluses/screens/wallet_to_wallet_transfer.dart';
 import 'package:fx_pluses/screens/customer/cwithdraw.dart';
 import 'package:fx_pluses/screens/customer/money_added_dialog.dart';
 import 'package:fx_pluses/shared_preferences.dart';
@@ -269,6 +269,17 @@ class _MWalletState extends State<MWallet> with AutomaticKeepAliveClientMixin{
                 },
                 bottomMargin: 30,
               ),
+              MainButton(
+                  text: 'Wallet to Wallet Transfer',
+                  onPress: () async{
+                    await Provider.of<ApiDataProvider>(context,listen: false).acceptedRequests(context,
+                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+                    await Provider.of<ApiDataProvider>(context, listen: false).setScreenIndex(6);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WalletToWalletTransfer()));
+                  })
 
             ],
           ),

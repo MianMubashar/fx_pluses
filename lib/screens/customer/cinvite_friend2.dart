@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
+import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants.dart';
@@ -13,6 +14,7 @@ class CInviteFriend2 extends StatelessWidget {
   final items = ['Select All', 'Deselect All'];
   List<Contact> contacts = [];
   CInviteFriend2({required this.contacts});
+  TextEditingController messageController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -147,10 +149,64 @@ class CInviteFriend2 extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: () async {
-                                var whatsappUrl = Uri.encodeFull(
-                                    "https://api.whatsapp.com/send?phone=${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}&text='hi'");
-                                if (!await launch(whatsappUrl))
-                                  throw 'Could not launch $whatsappUrl';
+
+                                showDialog(context: context, builder: (dialogContext){
+                                  return Dialog(
+                                    child: Container(
+                                      height: size.height * 0.3,
+                                      width:  size.width * 0.3,
+                                      padding: EdgeInsets.only(top: size.height * 0.04,left: 20,right: 20),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        color: whiteColor
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          SizedBox(
+                                            height:size.height * 0.15,
+                                            child: TextField(
+                                              controller: messageController,
+                                              textInputAction: TextInputAction.newline,
+                                              keyboardType: TextInputType.multiline,
+                                              maxLines: 50,
+                                              decoration: InputDecoration(
+                                                border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(20)
+                                                ),
+                                                filled: true,
+                                                hintText: 'Enter you message here',
+                                                isDense: true,
+
+                                              ),
+                                            ),
+                                          ),
+                                      InkWell(
+                                        onTap: () async{
+                                          Navigator.pop(context);
+                                          var whatsappUrl = Uri.encodeFull(
+                                              "https://api.whatsapp.com/send?phone=${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}&text='${messageController.text}'");
+                                          if (!await launch(whatsappUrl))
+                                            throw 'Could not launch $whatsappUrl';
+                                        },
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height * 0.05,
+                                          width: MediaQuery.of(context).size.width * 0.4,
+                                          margin: EdgeInsets.only(top: size.height * 0.02),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20),
+                                            gradient: gradient,
+                                          ),
+                                          child: Center(child: Text('Send',style: TextStyle(
+                                              color: Colors.white
+                                          ),)),
+                                        ),
+                                      )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
+
                               },
                               child: Container(
                                 padding: EdgeInsets.only(left: 10, right: 10),

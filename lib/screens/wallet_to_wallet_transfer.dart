@@ -4,18 +4,18 @@ import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:provider/provider.dart';
 
-import '../../constants.dart';
-import '../../model/accepted_request_merchants_model.dart';
-import 'ctransfer_dialog.dart';
+import '../constants.dart';
+import '../model/accepted_request_merchants_model.dart';
+import 'customer/ctransfer_dialog.dart';
 
-class CWalletToWalletTransfer extends StatefulWidget {
-  static final String id='CWalletToWalletTransfer_Screen';
+class WalletToWalletTransfer extends StatefulWidget {
+  static final String id='WalletToWalletTransfer_Screen';
 
   @override
-  State<CWalletToWalletTransfer> createState() => _CWalletToWalletTransferState();
+  State<WalletToWalletTransfer> createState() => _WalletToWalletTransferState();
 }
 
-class _CWalletToWalletTransferState extends State<CWalletToWalletTransfer> {
+class _WalletToWalletTransferState extends State<WalletToWalletTransfer> {
   TextEditingController searcchFieldController=TextEditingController();
 
    List<AcceptedRequestMerchantsModel> originaldata=[];

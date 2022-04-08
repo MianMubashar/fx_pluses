@@ -1,3 +1,7 @@
+import 'package:fx_pluses/providers/api_data_provider.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+
 class AcceptedRequestMerchantsModel {
   int id;
   String amount;
@@ -22,6 +26,7 @@ class AcceptedRequestMerchantsModel {
         from_user_id: data['from_user_id'],
         to_user_id: data['to_user_id'],
         transaction_status_id: data['transaction_status_id'],
-        slip_no: data['slip_no'], from_user: data['to_user']);
+        slip_no: data['slip_no'],
+        from_user: Provider.of<ApiDataProvider>(Get.context!,listen: false).roleId==5? data['to_user']: data['from_user']);
   }
 }

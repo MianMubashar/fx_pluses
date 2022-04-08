@@ -669,51 +669,51 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                         )
                                       ],
                                     ),
-                                    SizedBox(height: size.height * 0.009,),
-                                    Center(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-
-                                            margin: EdgeInsets.only(left: 30),
-                                            height: size.height * 0.03,
-                                            width: size.width * 0.2,
-                                            decoration: BoxDecoration(
-
-                                                color: buttonColor,
-                                                borderRadius: BorderRadius.circular(5
-                                                )
-                                            ),
-                                            child: Center(
-                                              child: Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].fromCurrency['symbol']}'+
-                                                  ' 1',style: TextStyle(
-                                                  color: textWhiteColor
-                                              ),),
-                                            ),
-                                          ),
-                                          Text(' =',style: TextStyle(
-                                              fontSize: 15
-                                          ),),
-                                          Container(
-                                            padding: EdgeInsets.only(left:3),
-                                            decoration:BoxDecoration(
-                                                color: whiteColor,
-                                                borderRadius: BorderRadius.circular(5)
-                                            ),
-                                            height: size.height * 0.03,
-                                            width: size.width * 0.2,
-                                            child: Row(
-                                              children: [
-                                                Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].exchange_rate}'),
-                                                Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].toCurrency['symbol']}')
-                                              ],
-                                            ),
-                                          )
-
-                                        ],
-                                      ),
-                                    )
+                                    // SizedBox(height: size.height * 0.009,),
+                                    // Center(
+                                    //   child: Row(
+                                    //     mainAxisAlignment: MainAxisAlignment.center,
+                                    //     children: [
+                                    //       Container(
+                                    //
+                                    //         margin: EdgeInsets.only(left: 30),
+                                    //         height: size.height * 0.03,
+                                    //         width: size.width * 0.2,
+                                    //         decoration: BoxDecoration(
+                                    //
+                                    //             color: buttonColor,
+                                    //             borderRadius: BorderRadius.circular(5
+                                    //             )
+                                    //         ),
+                                    //         child: Center(
+                                    //           child: Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].fromCurrency['symbol']}'+
+                                    //               ' 1',style: TextStyle(
+                                    //               color: textWhiteColor
+                                    //           ),),
+                                    //         ),
+                                    //       ),
+                                    //       Text(' =',style: TextStyle(
+                                    //           fontSize: 15
+                                    //       ),),
+                                    //       Container(
+                                    //         padding: EdgeInsets.only(left:3),
+                                    //         decoration:BoxDecoration(
+                                    //             color: whiteColor,
+                                    //             borderRadius: BorderRadius.circular(5)
+                                    //         ),
+                                    //         height: size.height * 0.03,
+                                    //         width: size.width * 0.2,
+                                    //         child: Row(
+                                    //           children: [
+                                    //             Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].exchange_rate}'),
+                                    //             Text('${Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].toCurrency['symbol']}')
+                                    //           ],
+                                    //         ),
+                                    //       )
+                                    //
+                                    //     ],
+                                    //   ),
+                                    // )
                                   ],
                                 ),
                               );

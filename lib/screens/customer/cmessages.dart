@@ -160,14 +160,8 @@ class Stream_Builder extends StatelessWidget {
                 provider.usersHavingChatList
                     .add(ChatMenuModel.fromJson(data[i]));
                 ChatMenuModel menuModel = provider.usersHavingChatList[i];
-                if (menuModel.receiver_id == provider.id &&
-                    (provider.usersHavingChatList[i].transaction == null ||
-                        (provider.usersHavingChatList[i]
-                                    .transaction!['transaction_status_id'] !=
-                                4 &&
-                            provider.usersHavingChatList[i]
-                                    .transaction!['transaction_status_id'] !=
-                                3))) {
+                if (menuModel.receiver_id == provider.id && (provider.usersHavingChatList[i].transaction == null ||
+                    (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3))) {
                   final firstName =
                       provider.usersHavingChatList[i].sender['first_name'];
                   final lastName =
