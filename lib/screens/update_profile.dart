@@ -12,20 +12,33 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import '../reuseable_widgets/appbar.dart';
-class UpdateProfile extends StatelessWidget {
+class UpdateProfile extends StatefulWidget {
 
   UpdateProfile({Key? key}) : super(key: key);
+
+  @override
+  State<UpdateProfile> createState() => _UpdateProfileState();
+}
+
+class _UpdateProfileState extends State<UpdateProfile> {
   PhoneNumber? phoneNumber;
+
   bool numberValid=false;
+
   String countryCode='';
+
   XFile? result;
+
   String? buisnessName;
+
   PhoneNumber? mobileNummber;
+
   String code='';
 
+   TextEditingController phoneNumbercontroller = TextEditingController();
 
-  final TextEditingController phoneNumbercontroller = TextEditingController();
-  final TextEditingController buisnessController = TextEditingController();
+   TextEditingController buisnessController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +76,12 @@ class UpdateProfile extends StatelessWidget {
               Provider.of<ApiDataProvider>(context,listen: false).roleId == 4?Container(
                 margin: EdgeInsets.only(bottom: 10),
                 child: TextField(
-                  //controller: buisnessController,
+
+                  controller: buisnessController,
                   decoration: InputDecoration(
                       hintText: Provider.of<ApiDataProvider>(context,listen: true).buisnessName == null ||
-                          Provider.of<ApiDataProvider>(context,listen: true).buisnessName == 'null' ? 'Business name':
+                          Provider.of<ApiDataProvider>(context,listen: true).buisnessName == 'null'  ||
+                          Provider.of<ApiDataProvider>(context,listen: true).buisnessName == '' ? 'Business name':
                                 Provider.of<ApiDataProvider>(context,listen: true).buisnessName,
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
@@ -80,10 +95,10 @@ class UpdateProfile extends StatelessWidget {
                     Provider.of<ApiDataProvider>(context,listen: false).setBuisnessName(buisnessName);
                     print(value);
                   },
-                  onSubmitted: (value){
-                    buisnessName=value;
-                    Provider.of<ApiDataProvider>(context,listen: false).setBuisnessName(buisnessName);
-                  },
+                  // onSubmitted: (value){
+                  //   buisnessName=value;
+                  //   Provider.of<ApiDataProvider>(context,listen: false).setBuisnessName(buisnessName);
+                  // },
                 ),
               ):Container(),
               Text(
@@ -106,14 +121,15 @@ class UpdateProfile extends StatelessWidget {
                   //formatInput: true,
                   initialValue: PhoneNumber(phoneNumber: Provider.of<ApiDataProvider>(context,listen: true).contact,
                       isoCode: Provider.of<ApiDataProvider>(context,listen: true).countryCode),
+
                   errorMessage: 'Invalid Phone Number',
-                  hintText: 'xxxx-xxxx-xxxx',
+                  hintText: '${Provider.of<ApiDataProvider>(context,listen: false).contact}',
                   textFieldController: phoneNumbercontroller,
 
                   spaceBetweenSelectorAndTextField: 0,
                   selectorButtonOnErrorPadding: 0,
                   inputDecoration: InputDecoration(
-                    // filled: true,
+                    filled: true,
                     isDense: true,
                     border: InputBorder.none,
                   ),
@@ -130,15 +146,21 @@ class UpdateProfile extends StatelessWidget {
                     numberValid=value;
                   },
 
-
-                  onInputChanged: (value) {
+                  onInputChanged: (value) async{
                     print('${value.phoneNumber}');
                     countryCode = value.isoCode.toString();
+                    code=countryCode;
                     print('phone number is $value');
                     print(countryCode);
                     phoneNumber = value;
+                    await Provider.of<ApiDataProvider>(context,listen: false).setUpdatedContact(phoneNumber.toString());
+                    await Provider.of<ApiDataProvider>(context,listen: false).setCountryCode(phoneNumber!.isoCode.toString());
+                    await Provider.of<ApiDataProvider>(context,listen: false).setRegisterUserCountryName(
+                        CountryPickerUtils.getCountryByIsoCode(phoneNumber!.isoCode.toString()).name.toString()
+                    );
 
                   },
+
                   // onSaved: (data){
                   //   print(data.phoneNumber);
                   //   phoneNumber=data;
@@ -167,7 +189,7 @@ class UpdateProfile extends StatelessWidget {
                   if (result == null) {
                   print("No file selected");
                   }else{
-                    Provider.of<ApiDataProvider>(context,listen: false).setIdFileForLocal(result!.path.toString());
+                    await Provider.of<ApiDataProvider>(context,listen: false).setIdFileForLocal(result!.path.toString());
                   }
                 },
                 child: Column(
@@ -218,21 +240,24 @@ class UpdateProfile extends StatelessWidget {
               SizedBox(height: 20,),
               MainButton(text: 'Update', onPress: () async{
                 print('abcd ${phoneNumbercontroller.text.isEmpty}');
-                if(result == null && buisnessName == null &&  mobileNummber==null){
+                print('abcd ${buisnessController.text.isEmpty}');
+                print(Provider.of<ApiDataProvider>(context,listen: false).contact+"   "+ phoneNumber!.phoneNumber.toString());
+                if(result == null && buisnessController.text.isEmpty &&  phoneNumber!.phoneNumber.toString() == Provider.of<ApiDataProvider>(context,listen: false).contact){
                   Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Enter data to update', redColor);
                 }else{
                   FocusManager.instance.primaryFocus?.unfocus();
-                  if(code ==null || code==''){
+                  if(phoneNumber!.phoneNumber.toString() == Provider.of<ApiDataProvider>(context,listen: false).contact){
                     await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,
                         Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                         '', '',
                         result == null ? null: result!.path.toString(),
                         'id_file',
                         null,
-                        buisnessName==null ? null : buisnessName,
+                        buisnessController.text.isEmpty ? null : buisnessController.text,
                         null,
                         null);
                   }else{
+                    Provider.of<ApiDataProvider>(context,listen: false).setContact(phoneNumber.toString());
                     await Provider.of<ApiDataProvider>(context,listen: false).otpRequest(phoneNumber, context, 1);
 
                     // await Provider.of<ApiDataProvider>(context,listen: false).updateProfile(context,

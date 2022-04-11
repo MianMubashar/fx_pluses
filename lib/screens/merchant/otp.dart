@@ -63,7 +63,10 @@ class _OTPState extends State<OTP> {
                     .deviceToken,
                 Provider
                     .of<ApiDataProvider>(context, listen: false)
-                    .countryName
+                    .countryName,
+                Provider
+                    .of<ApiDataProvider>(context, listen: false)
+                    .buisnessName
             );
           });
         }else{

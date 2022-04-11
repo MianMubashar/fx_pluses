@@ -40,10 +40,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
 class ApiDataProvider extends ChangeNotifier {
-  // static const String BASE_URL =
-  //     'http://console.fxpluses.com/';
   static const String BASE_URL =
-      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+      'http://console.fxpluses.com/';
+  // static const String BASE_URL =
+  //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 
@@ -248,7 +248,8 @@ setRegisterUserCountryName(String n){
       String? userId,
       int roleId,
       String deviceToken,
-      String country_name) async {
+      String country_name,
+      String? buisness_name) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'register');
     try {
@@ -278,7 +279,8 @@ setRegisterUserCountryName(String n){
         'user_id': userId,
         'role_id': roleId,
         'device_token': deviceToken,
-        'country_name':country_name
+        'country_name':country_name,
+        'business':buisness_name
       };
 
       var body = jsonEncode(roleId == 5 ? customerData : merchantData);

@@ -304,7 +304,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
                 child: TextField(
                   controller: buisnessController,
                   decoration: InputDecoration(
-                      hintText: 'Buisness',
+                      hintText: 'Buisness name',
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,
