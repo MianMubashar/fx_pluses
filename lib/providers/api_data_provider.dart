@@ -71,7 +71,7 @@ class ApiDataProvider extends ChangeNotifier {
   String? _defaultCurrencySymbol = '';
   List<TopFiveMerchants> top_five_merchant_list = [];
   List<GetCountriesForMerchants> getCountriesForMerchants = [];
-  List<String> _countryNameForTopFiveMerchantes = [];
+
   List<MerchantTransactionRequestsModel> merchantTransactionRequestsList = [];
   List<AcceptedRequestMerchantsModel> acceptedRequestMerchantsList = [];
   List<ChatMenuModel> usersHavingChatList = [];
@@ -100,6 +100,8 @@ class ApiDataProvider extends ChangeNotifier {
   String? _selectedCurrencySymbol = '';
   String? _countryName;
   int _screenIndex=0;
+  int? _chatOfferId;
+
 
   String? _updatedContact;
 
@@ -110,6 +112,9 @@ class ApiDataProvider extends ChangeNotifier {
   String? _currencySymbolForExchangeRateScreen;
 
 
+  setChatOfferId(int? i){
+    _chatOfferId=i;
+  }
   setChatOffers(Map<String, dynamic>? value) {
     _chatOffers = value;
     notifyListeners();
@@ -894,7 +899,8 @@ setRegisterUserCountryName(String n){
           print(apiResponse['message']);
           Map transaction = apiResponse['transaction'];
           Map<String,dynamic>? rateOffer = apiResponse['rate_offer'];
-          await setChatOffers(rateOffer);
+          await setChatOffers(rateOffer?['status']);
+          await setChatOfferId(rateOffer?['id']);
           setScreenIndex(6);
 
           // Get.showSnackbar(GetSnackBar(
@@ -914,7 +920,8 @@ setRegisterUserCountryName(String n){
           Get.back(closeOverlays: true);
           Map transaction = apiResponse['transaction'];
           Map<String,dynamic>? rateOffer = apiResponse['rate_offer'];
-          await setChatOffers(rateOffer);
+          await setChatOffers(rateOffer?['status']);
+          await setChatOfferId(rateOffer?['id']);
           setScreenIndex(6);
           pushNewScreen(context,
               screen: ChatScreen(
@@ -1754,6 +1761,44 @@ setRegisterUserCountryName(String n){
     }
   }
 
+  Future showChatFirst(BuildContext context, String token,int recieverId,int? transactionId) async{
+    // Get.dialog(CustomLoader());
+    Uri url = Uri.parse(SERVER_URL + 'show-chat');
+    try {
+      var header = {
+        'Content-Type': 'application/json',
+        "Accept": "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map bodyData = {
+        'receiver_id':recieverId,
+        'transaction_id':transactionId
+      };
+      var body = jsonEncode(bodyData);
+      var response = await http.post(url, headers: header, body: body);
+      if(response.statusCode == 200){
+        Map<String, dynamic> apiResponse=jsonDecode(response.body);
+        bool status=apiResponse['status'];
+        if(status){
+          if(apiResponse['rate_offer']==null){
+            await setChatOffers(null);
+            await setChatOfferId(null);
+          }else{
+            await setChatOffers(apiResponse['rate_offer']['status']);
+            await setChatOfferId(apiResponse['rate_offer']['id']);
+          }
+
+        }else{
+          print('error from showChatFirst status');
+        }
+      }else{
+        print('error from showChatFirst statusCode');
+      }
+    }catch(e){
+      print('error from showChatFirst try catch');
+    }
+  }
+
   Stream<http.Response> chatMenu(BuildContext context,String token) async* {
     var header={
       'Content-Type':'application/json',
@@ -1918,8 +1963,7 @@ setRegisterUserCountryName(String n){
   String get deviceToken => _deviceToken??'';
   String get balance => _balance!;
   int get id => _id!;
-  List<String> get countryNameForTopFiveMerchantes =>
-      _countryNameForTopFiveMerchantes;
+
   String get bearerToken => _bearerToken!;
 
   String get default_currency => _default_currency!;
@@ -1940,4 +1984,5 @@ setRegisterUserCountryName(String n){
   int get screenIndex => _screenIndex;
   String? get updatedContact => _updatedContact;
   Map<String, dynamic>? get chatOffers => _chatOffers;
+  int? get chatOfferId => _chatOfferId;
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/screens/chat_screen.dart';
+import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +20,17 @@ class ListOfUsersHavingChat extends StatelessWidget {
     var size=MediaQuery.of(context).size;
     return InkWell(
       onTap: () async{
-        pushNewScreen(context,
+        await Provider.of<ApiDataProvider>(context, listen: false)
+            .setScreenIndex(6);
+        await Provider.of<ApiDataProvider>(context, listen: false).showChatFirst(context,
+            Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
+            recieverId, transaction_id);
+        pushNewScreen(Get.context!,
             screen: ChatScreen(reciever_id: recieverId,name: firstName+" "+lastName,transactionId: transaction_id,rateOffer: null,transaction: transaction,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);
-        await Provider.of<ApiDataProvider>(context, listen: false)
-            .setScreenIndex(6);
+
       },
       child: Container(
         height: size.height * 0.13,

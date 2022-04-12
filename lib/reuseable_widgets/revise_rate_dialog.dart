@@ -1,5 +1,8 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:fx_pluses/model/get_countries_for_merchants.dart';
+import 'package:fx_pluses/reuseable_widgets/customloader.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
@@ -46,17 +49,17 @@ class ReviseRateDialog extends StatelessWidget {
                 iconSize: 30,
                 isExpanded: true,
                 items: Provider.of<ApiDataProvider>(context, listen: false)
-                    .getCurrenciesList
-                    .map((e) => DropdownMenuItem<GetCurrenciesModel>(
-                    value: e, child: Text("   "+e.name + " "+e.symbol)))
+                    .getCountriesForMerchants
+                    .map((e) => DropdownMenuItem<GetCountriesForMerchants>(
+                    value: e, child: Text("   "+e.country + " ("+e.currency['name']+" "+e.currency['symbol']+")")))
                     .toList(),
                 dropdownDecoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
                 hint: Text('From currency'),
-                onChanged: (GetCurrenciesModel? value) {
-                  fromCountry=value!.name;
-                  fromSymbol = value.symbol;
+                onChanged: (GetCountriesForMerchants? value) {
+                  fromCountry=value!.currency['name'];
+                  fromSymbol = value.currency['symbol'];
                   fromCountryId = value.id.toString();
                   // fromCountryId=value!.id;
                   // print('fromcountryId is $fromCountryId');
@@ -83,18 +86,19 @@ class ReviseRateDialog extends StatelessWidget {
                 iconSize: 30,
                 isExpanded: true,
                 items: Provider.of<ApiDataProvider>(context, listen: false)
-                    .getCurrenciesList
-                    .map((e) => DropdownMenuItem<GetCurrenciesModel>(
-                    value: e, child: Text("   "+e.name + " "+e.symbol)))
+                    .getCountriesForMerchants
+                    .map((e) => DropdownMenuItem<GetCountriesForMerchants>(
+                    value: e, child: Text("   "+e.country + " ("+e.currency['name']+" "+e.currency['symbol']+")")))
                     .toList(),
                 dropdownDecoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
                 ),
                 hint: Text('To currency'),
-                onChanged: (GetCurrenciesModel? value) {
-                  toCountry=value!.name;
+                onChanged: (GetCountriesForMerchants? value) {
+                  toCountry=value!.currency['name'];
                   toCountryId=value.id.toString();
-                  Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.symbol);
+
+                  Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.currency['symbol']);
                   // print('tocountryId is $toCountryId');
 
                 },
@@ -131,18 +135,28 @@ class ReviseRateDialog extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap:(){
+              onTap:() async{
                 if(fromCountry !=''){
                   if(toCountry !=''){
                     if(rate !='' && !rate.contains('.')){
 
                       Navigator.pop(context);
-                      Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
+
+                      Get.dialog(CustomLoader());
+                      await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                           Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
                           reciever_id,
                           fromCountry+' to '+ toCountry +'\n'+'Rate: '+rate,
 
                           '','',transaction_id ,1,fromCountryId,toCountryId,rate);
+
+                      await Provider.of<ApiDataProvider>(Get.context!,listen: false).showChatFirst(Get.context!,
+                          Provider.of<ApiDataProvider>(Get.context!,listen: false).bearerToken,
+                          reciever_id,
+                          transaction_id);
+                      Get.back();
+
+
                     }else{
                       Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);
                     }

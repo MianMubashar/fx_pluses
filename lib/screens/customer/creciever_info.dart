@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
+import 'package:fx_pluses/reuseable_widgets/customloader.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
@@ -185,11 +187,18 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                     && swiftCodeController.text.isNotEmpty && amountController.text.isNotEmpty){
                   if(!amountController.text.contains('.')) {
 
+
                     await Provider.of<ApiDataProvider>(context, listen: false).UpdateOfferStatus(context,
                         Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
-                        Provider.of<ApiDataProvider>(context, listen: false).chatOffers?['id'],
+                        Provider.of<ApiDataProvider>(context, listen: false).chatOfferId,
                         2,
                     widget.reciever_id);
+
+                    await Provider.of<ApiDataProvider>(context, listen: false).showChatFirst(context,
+                        Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
+                        widget.reciever_id,
+                    widget.transaction_id);
+
 
 
 

@@ -154,6 +154,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
 
 
+      }else{
+        if(event.data != null && event.data.containsKey('status')){
+          Map<String, dynamic> offer=json.decode(event.data['status']);
+          int? offerId=json.decode(event.data['id']);
+          await Provider.of<ApiDataProvider>(Get.context!,listen: false).setChatOffers(offer);
+          await Provider.of<ApiDataProvider>(Get.context!,listen: false).setChatOfferId(offerId);
+        }
       }
 
 
