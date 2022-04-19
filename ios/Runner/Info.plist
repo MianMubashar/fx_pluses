@@ -32,9 +32,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Please allow to update your profile</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app requires contacts access to invite users</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
