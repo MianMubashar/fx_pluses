@@ -100,7 +100,8 @@ class CTransferDialog extends StatelessWidget {
                                 .from_user['id'],
                             '',
                             '',
-                            currency_id);
+                            currency_id,
+                        null);
                       }else{
                         Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
                             context, 'Your wallet balance is insufficient', redColor);

@@ -24,16 +24,14 @@ class CMessages extends StatefulWidget {
   _CMessagesState createState() => _CMessagesState();
 }
 
-class _CMessagesState extends State<CMessages>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+class _CMessagesState extends State<CMessages> {
+
 
   TextEditingController searcchFieldController = TextEditingController();
-
-  // getData()async{
-  //   await Provider.of<ApiDataProvider>(context,listen: false).chatMenu(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+  // getData(){
+  //   setState(() {
+  //
+  //   });
   // }
 
   int historyCount = 0;
@@ -43,12 +41,12 @@ class _CMessagesState extends State<CMessages>
     // TODO: implement initState
     super.initState();
 
-    //getData();
+    // getData();
   }
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+
     var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: PreferredSize(
@@ -112,13 +110,20 @@ class _CMessagesState extends State<CMessages>
   }
 }
 
-class Stream_Builder extends StatelessWidget {
+class Stream_Builder extends StatefulWidget {
   Stream_Builder(
       {Key? key, required this.size, required this.searcchFieldController})
       : super(key: key);
   var size;
   TextEditingController searcchFieldController;
 
+
+  @override
+  State<Stream_Builder> createState() => _Stream_BuilderState();
+}
+
+class _Stream_BuilderState extends State<Stream_Builder> {
+  int total_unread_messages = 0;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -142,37 +147,36 @@ class Stream_Builder extends StatelessWidget {
           );
         } else {
           var response = snapshot.data!;
+          List<ListOfUsersHavingChat> list1 = [];
           list.clear();
-          ApiDataProvider provider =
-              Provider.of<ApiDataProvider>(context, listen: false);
+          ApiDataProvider provider = Provider.of<ApiDataProvider>(context, listen: false);
           print('stream builder 1');
           if (response.statusCode == 200) {
             print('stream builder 2');
             Map<String, dynamic> apiResponse = jsonDecode(response.body);
             bool status = apiResponse['status'];
             if (status) {
-              Provider.of<ApiDataProvider>(context, listen: false)
-                  .usersHavingChatList
-                  .clear();
+              Provider.of<ApiDataProvider>(context, listen: false).usersHavingChatList.clear();
               List<dynamic> data = apiResponse['chats'];
+              provider.unreadMessageModel=apiResponse['unread_messages'];
+              total_unread_messages=provider.unreadMessageModel?.values.reduce((value, element) => value + element);
+              if(total_unread_messages > provider.unread_total_msg!){
+                //provider.setUnreadTotalMsg(total_unread_messages);
+              }
 
               for (int i = 0; i < data.length; i++) {
-                provider.usersHavingChatList
-                    .add(ChatMenuModel.fromJson(data[i]));
+                provider.usersHavingChatList.add(ChatMenuModel.fromJson(data[i]));
                 ChatMenuModel menuModel = provider.usersHavingChatList[i];
-                if (menuModel.receiver_id == provider.id && (provider.usersHavingChatList[i].transaction == null ||
-                    (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3))) {
-                  final firstName =
-                      provider.usersHavingChatList[i].sender['first_name'];
-                  final lastName =
-                      provider.usersHavingChatList[i].sender['last_name'];
+                if (menuModel.receiver_id == provider.id && (provider.usersHavingChatList[i].transaction == null || (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3))) {
+                  final firstName = provider.usersHavingChatList[i].sender['first_name'];
+                  final lastName = provider.usersHavingChatList[i].sender['last_name'];
                   final message = provider.usersHavingChatList[i].message;
                   final recieverId = provider.usersHavingChatList[i].sender_id;
-                  final transactionId =
-                      provider.usersHavingChatList[i].transaction?['id'];
+                  final transactionId = provider.usersHavingChatList[i].transaction?['id'];
+                  final profile_url = provider.usersHavingChatList[i].sender['profile_photo_path'];
+                  int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
 
-                  final profile_url = provider
-                      .usersHavingChatList[i].sender['profile_photo_path'];
+
                   final listWidget = ListOfUsersHavingChat(
                       firstName: firstName,
                       lastName: lastName,
@@ -180,27 +184,20 @@ class Stream_Builder extends StatelessWidget {
                       recieverId: recieverId,
                       profile: profile_url,
                       transaction_id: transactionId,
-                      transaction: provider.usersHavingChatList[i].transaction);
-                  list.add(listWidget);
+                      transaction: provider.usersHavingChatList[i].transaction,
+                  unread_msg: unread_msg,);
+                  list1.add(listWidget);
                 } else {
                   if (provider.usersHavingChatList[i].transaction == null ||
-                      (provider.usersHavingChatList[i]
-                                  .transaction!['transaction_status_id'] !=
-                              4 &&
-                          provider.usersHavingChatList[i]
-                                  .transaction!['transaction_status_id'] !=
-                              3)) {
-                    final firstName =
-                        provider.usersHavingChatList[i].receiver['first_name'];
-                    final lastName =
-                        provider.usersHavingChatList[i].receiver['last_name'];
+                      (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3)) {
+                    final firstName = provider.usersHavingChatList[i].receiver['first_name'];
+                    final lastName = provider.usersHavingChatList[i].receiver['last_name'];
                     final message = provider.usersHavingChatList[i].message;
-                    final recieverId =
-                        provider.usersHavingChatList[i].receiver_id;
-                    final profile_url = provider
-                        .usersHavingChatList[i].receiver['profile_photo_path'];
+                    final recieverId = provider.usersHavingChatList[i].receiver_id;
+                    final profile_url = provider.usersHavingChatList[i].receiver['profile_photo_path'];
                     final transactionId =
                         provider.usersHavingChatList[i].transaction?['id'];
+                    int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                     final listWidget = ListOfUsersHavingChat(
                       firstName: firstName,
                       lastName: lastName,
@@ -209,8 +206,9 @@ class Stream_Builder extends StatelessWidget {
                       profile: profile_url,
                       transaction_id: transactionId,
                       transaction: provider.usersHavingChatList[i].transaction,
+                      unread_msg: unread_msg,
                     );
-                    list.add(listWidget);
+                    list1.add(listWidget);
                   }
                 }
               }
@@ -219,14 +217,7 @@ class Stream_Builder extends StatelessWidget {
             List<dynamic> data = provider.usersHavingChatList;
             for (int i = 0; i < data.length; i++) {
               ChatMenuModel menuModel = provider.usersHavingChatList[i];
-              if (menuModel.receiver_id == provider.id &&
-                  (provider.usersHavingChatList[i].transaction == null ||
-                      (provider.usersHavingChatList[i]
-                                  .transaction!['transaction_status_id'] !=
-                              4 &&
-                          provider.usersHavingChatList[i]
-                                  .transaction!['transaction_status_id'] !=
-                              3))) {
+              if (menuModel.receiver_id == provider.id && (provider.usersHavingChatList[i].transaction == null || (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3))) {
                 final firstName =
                     provider.usersHavingChatList[i].sender['first_name'];
                 final lastName =
@@ -237,6 +228,7 @@ class Stream_Builder extends StatelessWidget {
                     .usersHavingChatList[i].sender['profile_photo_path'];
                 final transactionId =
                     provider.usersHavingChatList[i].transaction?['id'];
+                int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                 final listWidget = ListOfUsersHavingChat(
                   firstName: firstName,
                   lastName: lastName,
@@ -245,16 +237,11 @@ class Stream_Builder extends StatelessWidget {
                   profile: profile_url,
                   transaction_id: transactionId,
                   transaction: provider.usersHavingChatList[i].transaction,
+                  unread_msg: unread_msg,
                 );
-                list.add(listWidget);
+                list1.add(listWidget);
               } else {
-                if (provider.usersHavingChatList[i].transaction == null ||
-                    (provider.usersHavingChatList[i]
-                                .transaction!['transaction_status_id'] !=
-                            4 &&
-                        provider.usersHavingChatList[i]
-                                .transaction!['transaction_status_id'] !=
-                            3)) {
+                if (provider.usersHavingChatList[i].transaction == null || (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3)) {
                   final firstName =
                       provider.usersHavingChatList[i].receiver['first_name'];
                   final lastName =
@@ -266,6 +253,7 @@ class Stream_Builder extends StatelessWidget {
                       .usersHavingChatList[i].receiver['profile_photo_path'];
                   final transactionId =
                       provider.usersHavingChatList[i].transaction?['id'];
+                  int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                   final listWidget = ListOfUsersHavingChat(
                     firstName: firstName,
                     lastName: lastName,
@@ -274,23 +262,25 @@ class Stream_Builder extends StatelessWidget {
                     profile: profile_url,
                     transaction_id: transactionId,
                     transaction: provider.usersHavingChatList[i].transaction,
+                    unread_msg: unread_msg,
                   );
-                  list.add(listWidget);
+                  list1.add(listWidget);
                 }
               }
             }
           }
           print('stream builder 3');
+          list=list1;
 
-          return list.isEmpty
+          return list1.isEmpty
               ? Center(
                   child: Text('No Active Transaction Chat Exists'),
                 )
               : ListView(
-                  children: searcchFieldController.text.isNotEmpty ||
+                  children: widget.searcchFieldController.text.isNotEmpty ||
                           searchList.length != 0
                       ? searchList
-                      : list,
+                      : list1,
                 );
         }
       },

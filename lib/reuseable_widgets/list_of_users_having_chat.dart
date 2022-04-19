@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import '../providers/api_data_provider.dart';
-class ListOfUsersHavingChat extends StatelessWidget {
-  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,required this.message,required this.recieverId,required this.profile,required this.transaction_id,required this.transaction}) : super(key: key);
+class ListOfUsersHavingChat extends StatefulWidget {
+  ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,
+    required this.message,required this.recieverId,required this.profile,
+    required this.transaction_id,required this.transaction,required this.unread_msg}) : super(key: key);
   final String firstName;
   final String lastName;
    String? message;
@@ -15,18 +17,29 @@ class ListOfUsersHavingChat extends StatelessWidget {
   String? profile; 
   int? transaction_id;
   Map<dynamic,dynamic>? transaction;
+  int? unread_msg;
+
+  @override
+  State<ListOfUsersHavingChat> createState() => _ListOfUsersHavingChatState();
+}
+
+class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
   @override
   Widget build(BuildContext context) {
     var size=MediaQuery.of(context).size;
+    setState(() {
+
+    });
+
     return InkWell(
       onTap: () async{
         await Provider.of<ApiDataProvider>(context, listen: false)
             .setScreenIndex(6);
         await Provider.of<ApiDataProvider>(context, listen: false).showChatFirst(context,
             Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
-            recieverId, transaction_id);
+            widget.recieverId, widget.transaction_id);
         pushNewScreen(Get.context!,
-            screen: ChatScreen(reciever_id: recieverId,name: firstName+" "+lastName,transactionId: transaction_id,rateOffer: null,transaction: transaction,),
+            screen: ChatScreen(reciever_id: widget.recieverId,name: widget.firstName+" "+widget.lastName,transactionId: widget.transaction_id,rateOffer: null,transaction: widget.transaction,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);
@@ -62,10 +75,10 @@ class ListOfUsersHavingChat extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 30,
-                      backgroundImage: profile==null ?
+                      backgroundImage: widget.profile==null ?
                       NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSMA98U5nhBmtcdj2hmFD4ijUIue_fCxNWw&usqp=CAU')
-                          :NetworkImage((profile!.contains('http') || profile!.contains('https'))? profile!:
-                      profile_url+profile!,),
+                          :NetworkImage((widget.profile!.contains('http') || widget.profile!.contains('https'))? widget.profile!:
+                      profile_url+widget.profile!,),
                     )
                     // Container(
                     //   height: size.height * 0.1,
@@ -109,17 +122,31 @@ class ListOfUsersHavingChat extends StatelessWidget {
                     CrossAxisAlignment.start,
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
                             width:size.width * 0.5,
                             child: Text(
-                              firstName+" "+lastName,
+                              widget.firstName+" "+widget.lastName,
                               maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
                                 color: textBlackColor,
                                 fontSize: 17,
                                 fontWeight: FontWeight.w600),
                             ),
                           ),
+                          widget.unread_msg != null && widget.unread_msg != 0 ?Container(
+                            height: 15,
+                            width: 15,
+                            child: Center(child: Text('${widget.unread_msg}',style: TextStyle(
+                              color: whiteColor,
+                              fontSize: 10
+                            ),)),
+
+                            decoration: BoxDecoration(
+                              color: buttonColor,
+                              shape: BoxShape.circle
+                            ),
+                          ):SizedBox()
                         ],
                       ),
                       SizedBox(
@@ -128,7 +155,7 @@ class ListOfUsersHavingChat extends StatelessWidget {
                       SizedBox(
                         width: size.width * 0.4,
                         child: Text(
-                          message==null ?'': message!,
+                          widget.message==null ?'': widget.message!,
                           softWrap: false,
                           overflow: TextOverflow.fade,
                           maxLines: 1,

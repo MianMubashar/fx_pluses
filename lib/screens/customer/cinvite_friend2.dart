@@ -4,6 +4,7 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants.dart';
@@ -182,7 +183,7 @@ class CInviteFriend2 extends StatelessWidget {
                                           ),
                                       InkWell(
                                         onTap: () async{
-                                          Navigator.pop(context);
+                                          Get.back(closeOverlays: true);
                                           var whatsappUrl = Uri.encodeFull(
                                               "https://api.whatsapp.com/send?phone=${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}&text='${messageController.text}'");
                                           if (!await launch(whatsappUrl))

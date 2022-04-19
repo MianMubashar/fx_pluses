@@ -12,3 +12,11 @@ class ChatMenuModel{
     return ChatMenuModel(sender_id: data['sender_id'], receiver_id: data['receiver_id'], message: data['message'], receiver: data['receiver'],sender: data['sender'],file: data['file'],profile_url: data['profile_photo_url'],transaction: data['transaction'] );
   }
 }
+class UnreadMsgModel{
+  Map? unread_messages;
+  UnreadMsgModel({required this.unread_messages});
+
+  factory UnreadMsgModel.fromJson(Map<String, dynamic> data){
+    return UnreadMsgModel(unread_messages: data['unread_messages']);
+  }
+}

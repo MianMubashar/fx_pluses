@@ -65,6 +65,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     var size = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
@@ -292,12 +293,21 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                   controller: amount,
 
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    prefixIcon: Padding(
+                  decoration: fromCurrencySymbol != null? InputDecoration(
+                      prefixIcon: Padding(
                       padding:  EdgeInsets.only(left: 20.0,top: 15),
-                      child: Text(fromCurrencySymbol==null?Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol:fromCurrencySymbol!),
+                      child: Text(fromCurrencySymbol==null?'':fromCurrencySymbol!),
                     ),
-                      hintText: 'amount',
+                      hintText: 'Enter amount',
+                      helperStyle: TextStyle(color: blackColor),
+                      isDense: true,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                      )) :
+                  InputDecoration(
+                      hintText: 'Enter amount',
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,

@@ -12,6 +12,8 @@ import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/chat_screen.dart';
 import 'package:fx_pluses/screens/customer/cbottom_navigation_bar.dart';
 import 'package:fx_pluses/screens/customer/chome.dart';
+import 'package:fx_pluses/screens/customer/ctransfer_dialog.dart';
+import 'package:fx_pluses/screens/customer/money_added_dialog.dart';
 import 'package:fx_pluses/screens/home.dart';
 import 'package:fx_pluses/screens/login_signup/login.dart';
 import 'package:fx_pluses/screens/merchant/mbottom_navigation_bar.dart';
@@ -123,26 +125,33 @@ class _SplashScreenState extends State<SplashScreen> {
 
     FirebaseMessaging.onMessage.listen((event) async{
 
+
       print('data recieved ${event.data}');
+      SharedPreferences pref = await SharedPreferences.getInstance();
       if(event.data.containsKey('wallet')){
         //int balance=int.parse(event.data['wallet']['id']);
         Map<String, dynamic> wallet=jsonDecode(event.data['wallet']);
         if(wallet['user_id']==Provider.of<ApiDataProvider>(Get.context!,listen: false).id && event.data['wallet_action_id']=='3'){
 
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          String? wallletList = await pref.getString(
-              SharedPreference.userWalletsKey);
+          int? beforeDeduction;
+          int amount3=0;
+          String? wallletList = await pref.getString(SharedPreference.userWalletsKey);
           List<UserWalletsModel> list = UserWalletsModel.decode(wallletList!);
           list.forEach((element) async {
             if(element.currency_id == wallet['currency_id']){
-              String amount1 = element.wallet;
-              List a = amount1.split('.');
-              int amount2 = int.parse(a[0]);
-              int amount3 = double.parse(wallet['wallet'].toString()).round();
+
+              // String amount1 = element.wallet;
+              // List a = amount1.split('.');
+              // int amount2 = int.parse(a[0]);
+              amount3 = double.parse(wallet['wallet'].toString()).round();
               // int total = amount2 + amount3;
+              beforeDeduction=amount3 - double.parse(element.wallet).round();
+
+
               element.wallet=amount3.toString();
               Provider.of<ApiDataProvider>(Get.context!,listen: false).setBalance(amount3.toString());
               Provider.of<ApiDataProvider>(Get.context!,listen: false).setSelectedWalletBalance(amount3.toString());
+
 
             }
           });
@@ -150,18 +159,49 @@ class _SplashScreenState extends State<SplashScreen> {
           final String encodedData = UserWalletsModel.encode(list);
           await SharedPreference.saveUserWalletsSharedPreferences(
               encodedData);
+          if(Provider.of<ApiDataProvider>(Get.context!,listen: false).roleId == 4) {
+            Get.dialog(MoneyAddedDialog(text: 'Amount ${beforeDeduction} after 20% deduction has been recieved and your new account balance is $amount3 '));
+          }
+
         }
+      }
 
-
-
-      }else{
-        if(event.data != null && event.data.containsKey('status')){
+      if(event.data != null && event.data.containsKey('status')){
           Map<String, dynamic> offer=json.decode(event.data['status']);
           int? offerId=json.decode(event.data['id']);
           await Provider.of<ApiDataProvider>(Get.context!,listen: false).setChatOffers(offer);
           await Provider.of<ApiDataProvider>(Get.context!,listen: false).setChatOfferId(offerId);
-        }
       }
+
+      if(event.data != null && event.data.containsKey('withdraw_request')){
+        if(event.data['withdraw_request']=='accepted'){
+          Map<String, dynamic> wallet=jsonDecode(event.data['user_wallet']);
+          if(wallet['user_id']==Provider.of<ApiDataProvider>(Get.context!,listen: false).id && event.data['wallet_action_id']=='2'){
+
+            String? wallletList = await pref.getString(SharedPreference.userWalletsKey);
+            List<UserWalletsModel> list = UserWalletsModel.decode(wallletList!);
+            list.forEach((element) async {
+              if(element.currency_id == wallet['currency_id']){
+
+                int amount3 = double.parse(wallet['wallet'].toString()).round();
+                element.wallet=amount3.toString();
+                Provider.of<ApiDataProvider>(Get.context!,listen: false).setBalance(amount3.toString());
+                Provider.of<ApiDataProvider>(Get.context!,listen: false).setSelectedWalletBalance(amount3.toString());
+
+              }
+            });
+            await Provider.of<ApiDataProvider>(Get.context!,listen: false).setUserWalletModelList(list);
+            final String encodedData = UserWalletsModel.encode(list);
+            await SharedPreference.saveUserWalletsSharedPreferences(
+                encodedData);
+          }
+
+        }
+
+
+      }
+
+
 
 
 
@@ -181,6 +221,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 color: buttonColor,
                   playSound: true,
                 icon: '@mipmap/ic_launcher',
+                channelShowBadge: true,
+                visibility: NotificationVisibility.public
                 //icon: android.smallIcon,
                 // other properties...
               ),
@@ -227,22 +269,21 @@ class _SplashScreenState extends State<SplashScreen> {
         }
     });
   }
-  Future<void> setupInteractedMessage() async {
-    // Get any messages which caused the application to open from
-    // a terminated state.
-    RemoteMessage? initialMessage =
-    await FirebaseMessaging.instance.getInitialMessage();
-
-    // If the message also contains a data property with a "type" of "chat",
-    // navigate to a chat screen
-    if (initialMessage != null) {
-      _handleMessage(initialMessage);
-    }
-
-    // Also handle any interaction when the app is in the background via a
-    // Stream listener
-    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
-  }
+  // Future<void> setupInteractedMessage() async {
+  //   // Get any messages which caused the application to open from
+  //   // a terminated state.
+  //   RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+  //
+  //   // If the message also contains a data property with a "type" of "chat",
+  //   // navigate to a chat screen
+  //   if (initialMessage != null) {
+  //     _handleMessage(initialMessage);
+  //   }
+  //
+  //   // Also handle any interaction when the app is in the background via a
+  //   // Stream listener
+  //   FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
+  // }
 
 
 

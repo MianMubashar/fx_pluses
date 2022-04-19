@@ -127,9 +127,9 @@ class EnterAmountToTransferDialog extends StatelessWidget {
       await Stripe.instance.initPaymentSheet(
           paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: paymentInentData!['client_secret'],
-              applePay: true,
-              googlePay: true,
-              style: ThemeMode.dark,
+              applePay: false,
+              googlePay: false,
+              style: ThemeMode.light,
              // merchantCountryCode: 'US',
               merchantDisplayName: 'FX Pluses'
           ));
@@ -191,7 +191,7 @@ class EnterAmountToTransferDialog extends StatelessWidget {
           await Provider.of<ApiDataProvider>(Get.context!, listen: false)
               .updateWallet(Get.context!,
               Provider.of<ApiDataProvider>(Get.context!,listen: false).bearerToken,
-              1, amount, 0,'','',currency_id);
+              1, amount, 0,'','',currency_id,null);
         }catch(e){
           print(e);
         }

@@ -19,6 +19,8 @@ class _CWithdrawState extends State<CWithdraw> {
   TextEditingController accountHolderName=TextEditingController();
   TextEditingController accountNumber=TextEditingController();
   TextEditingController amount=TextEditingController();
+  TextEditingController bankName=TextEditingController();
+  TextEditingController currency=TextEditingController();
 
   @override
   void initState() {
@@ -101,6 +103,72 @@ class _CWithdrawState extends State<CWithdraw> {
               ),
             ),
             Text(
+              'Bank Name',
+              textAlign: TextAlign.start,
+              style: TextStyle(color: greyColor),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Container(
+
+              margin: EdgeInsets.only(bottom: 30),
+              child: TextField(
+                controller: bankName,
+                decoration: InputDecoration(
+                    hintText: 'Bank Name',
+                    helperStyle: TextStyle(color: blackColor),
+                    isDense: true,
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(20),
+                    )),
+                onChanged: (value) {
+                  // firstName = value;
+                },
+              ),
+            ),
+            Text(
+              'Currency',
+              textAlign: TextAlign.start,
+              style: TextStyle(color: greyColor),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            // Container(
+            //
+            //   margin: EdgeInsets.only(bottom: 30),
+            //   child: TextField(
+            //     controller: currency,
+            //     decoration: InputDecoration(
+            //         hintText: Provider.of<ApiDataProvider>(context,listen: true).selectedCurrencySymbol+" " + Provider.of<ApiDataProvider>(context,listen: true).defaultCurrencyName,
+            //         helperStyle: TextStyle(color: blackColor),
+            //         isDense: true,
+            //         filled: true,
+            //         border: OutlineInputBorder(
+            //           borderSide: BorderSide.none,
+            //           borderRadius: BorderRadius.circular(20),
+            //         )),
+            //     onChanged: (value) {
+            //       // firstName = value;
+            //     },
+            //   ),
+            // ),
+
+            Container(
+                margin: EdgeInsets.only(bottom: 30),
+              padding: EdgeInsets.only(left: 12,top: 15),
+              height: size.height * 0.07,
+              width: size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.black.withOpacity(0.05)
+              ),
+              child: Text(Provider.of<ApiDataProvider>(context,listen: true).selectedCurrencySymbol+" " + Provider.of<ApiDataProvider>(context,listen: true).defaultCurrencyName),
+            ),
+            Text(
               'Amount',
               textAlign: TextAlign.start,
               style: TextStyle(color: greyColor),
@@ -127,13 +195,11 @@ class _CWithdrawState extends State<CWithdraw> {
                 },
               ),
             ),
+
             MainButton(text: 'Withdraw', onPress: () async{
-    if(accountHolderName.text.isNotEmpty &&
-    accountNumber.text.isNotEmpty &&
-    amount.text.isNotEmpty) {
+    if(accountHolderName.text.isNotEmpty && accountNumber.text.isNotEmpty && amount.text.isNotEmpty && bankName.text.isNotEmpty) {
     if(amount.text.contains('.')){
-    Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
-    context, 'Please enter valid amount to proceed',redColor);
+    Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(context, 'Please enter valid amount to proceed',redColor);
     }else {
       int balance = int.parse(amount.text);
       //List a = Provider.of<ApiDataProvider>(context, listen: false).balance.split('.');
@@ -147,23 +213,23 @@ class _CWithdrawState extends State<CWithdraw> {
               context, 'Add balance in your wallet for withdraw', redColor);
         } else {
           if (accountHolderName.text.isNotEmpty &&
-              accountNumber.text.isNotEmpty && amount.text.isNotEmpty) {
-            await Provider.of<ApiDataProvider>(context, listen: false)
-                .updateWallet(
+              accountNumber.text.isNotEmpty && amount.text.isNotEmpty && bankName.text.isNotEmpty) {
+            await Provider.of<ApiDataProvider>(context, listen: false).updateWallet(
                 context,
-                Provider
-                    .of<ApiDataProvider>(context, listen: false)
-                    .bearerToken,
+                Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
                 2,
                 amount.text,
                 0,
                 accountNumber.text,
                 accountHolderName.text,
-                widget.currency_id);
+                widget.currency_id,
+            bankName.text);
 
             accountHolderName.clear();
             accountNumber.clear();
             amount.clear();
+            bankName.clear();
+
           } else {
             Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
                 context, 'Please enter valid data to proceed', redColor);

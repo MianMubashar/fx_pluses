@@ -75,6 +75,7 @@ class ApiDataProvider extends ChangeNotifier {
   List<MerchantTransactionRequestsModel> merchantTransactionRequestsList = [];
   List<AcceptedRequestMerchantsModel> acceptedRequestMerchantsList = [];
   List<ChatMenuModel> usersHavingChatList = [];
+  Map? unreadMessageModel ;
   List<CustomerTransactionHistoryModel> customerTransactionHistoryList = [];
   List<FaqsModel> faqsList = [];
   List<ShowChatModel> showChatList = [];
@@ -105,13 +106,20 @@ class ApiDataProvider extends ChangeNotifier {
 
   String? _updatedContact;
 
-   //String? id_file;
+  int? _unread_total_msg=0;
+
+
+
 
 
 
   String? _currencySymbolForExchangeRateScreen;
 
 
+  setUnreadTotalMsg(int? value) {
+    _unread_total_msg = value;
+    notifyListeners();
+  }
   setChatOfferId(int? i){
     _chatOfferId=i;
   }
@@ -387,6 +395,8 @@ setRegisterUserCountryName(String n){
           int currencyId = apiResponse['user']['default_currency_id'];
           String currencyName = apiResponse['user']['default_currency']['name'];
           String currencySymbol = apiResponse['user']['default_currency']['symbol'];
+          int? unread=apiResponse['unread_msgs_count'];
+
 
           List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
 
@@ -452,6 +462,7 @@ setRegisterUserCountryName(String n){
           await setIdFile(file);
           await setBuisnessName(buisness);
           await setRegisterUserCountryName(country_name);
+          await setUnreadTotalMsg(unread);
 
           await setScreenIndex(0);
 
@@ -535,6 +546,8 @@ setRegisterUserCountryName(String n){
           String country_name=apiResponse['user']['country_name'];
           String currencyName = apiResponse['user']['default_currency']['name'];
           String currencySymbol = apiResponse['user']['default_currency']['symbol'];
+          int? unread=apiResponse['unread_msgs_count'];
+
           List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
 
           for (int i = 0; i < user_wallets_data.length; i++) {
@@ -598,6 +611,7 @@ setRegisterUserCountryName(String n){
           await setRegisterUserCountryName(country_name);
           await setIdFile(file);
           await setBuisnessName(buisness);
+          await setUnreadTotalMsg(unread);
 
           await setScreenIndex(0);
 
@@ -638,7 +652,7 @@ setRegisterUserCountryName(String n){
 
   Future<bool> updateWallet(BuildContext context, String token,
       int wallet_action_id, String amount, int to_user_id, String accountNumber,
-      String name, int currencyId) async {
+      String name, int currencyId,String? bankName) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'update-wallet');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
@@ -662,7 +676,8 @@ setRegisterUserCountryName(String n){
           'acc_owner_name': name,
           'acc_number': accountNumber,
           'amount': amount,
-          'currency_id': currencyId
+          'currency_id': currencyId,
+          'bank_name' : bankName
           //'device_token': device_token
         };
         Map walletToWalletTransferData = {
@@ -1183,7 +1198,7 @@ setRegisterUserCountryName(String n){
 
   Future sendMessage(BuildContext context, String token, int recieverid,
       String message, String filePath, String name, int? transacion_id
-      ,int? is_rate_msg,String? from_country_id,String? to_country_id,String? rate) async {
+      ,int? is_rate_msg,String? from_country_id,String? to_country_id,String? rate,int? is_receiver_detail) async {
     Uri url = Uri.parse(SERVER_URL + "send-message");
     try {
       var header = {
@@ -1195,7 +1210,8 @@ setRegisterUserCountryName(String n){
         "receiver_id": recieverid,
         "message": message,
         "transaction_id": transacion_id,
-        "is_rate_msg":is_rate_msg
+        "is_rate_msg":is_rate_msg,
+        'is_receiver_detail':is_receiver_detail
       };
 
       if(is_rate_msg != null && is_rate_msg == 1){
@@ -1806,7 +1822,7 @@ setRegisterUserCountryName(String n){
       'Authorization':'Bearer $token'
     };
     //print('stream builder 4');
-    yield* Stream.periodic(Duration(milliseconds:3000), (_) async{
+    yield* Stream.periodic(Duration(milliseconds:1000), (_) async{
       return await http.post(Uri.parse(SERVER_URL + 'chat-menu'),headers:header);
     }).asyncMap((event) async {
       //print('stream builder 4');
@@ -1814,6 +1830,8 @@ setRegisterUserCountryName(String n){
       return await event;
     });
   }
+
+
 
   Stream<http.Response> showChat(BuildContext context,String token,int recieverId,int? transactionId) async* {
     var header={
@@ -1823,7 +1841,7 @@ setRegisterUserCountryName(String n){
     };
     Map bodyData={
       'receiver_id':recieverId,
-      'transaction_id':transactionId
+      'transaction_id':transactionId,
     };
     var body=jsonEncode(bodyData);
     //print('stream builder 4');
@@ -1985,4 +2003,5 @@ setRegisterUserCountryName(String n){
   String? get updatedContact => _updatedContact;
   Map<String, dynamic>? get chatOffers => _chatOffers;
   int? get chatOfferId => _chatOfferId;
+  int? get unread_total_msg => _unread_total_msg;
 }

@@ -284,6 +284,9 @@ class _ChatScreenState extends State<ChatScreen> {
     var size=MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async{
+        setState(() {
+
+        });
         Provider.of<ApiDataProvider>(context, listen: false).setChatOffers(null);
         return true;
       },
@@ -450,7 +453,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               });
                               await Provider.of<ApiDataProvider>(context,listen: false).sendMessage(context,
                                   Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
-                                  widget.reciever_id, messageText.text,'','',widget.transactionId,null,null,null,null);
+                                  widget.reciever_id, messageText.text,'','',widget.transactionId,null,null,null,null,null);
                               messageText.clear();
                               messageSentCheck=false;
                               setState(() {

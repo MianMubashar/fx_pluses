@@ -65,6 +65,7 @@ Future notificationSelected(String? payload) async {
 Future<void> _firbaseHandler(RemoteMessage message) async{
 await Firebase.initializeApp();
 print('a bg msg is showed up ${message.messageId}');
+
 }
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -148,7 +148,7 @@ class ReviseRateDialog extends StatelessWidget {
                           reciever_id,
                           fromCountry+' to '+ toCountry +'\n'+'Rate: '+rate,
 
-                          '','',transaction_id ,1,fromCountryId,toCountryId,rate);
+                          '','',transaction_id ,1,fromCountryId,toCountryId,rate,null);
 
                       await Provider.of<ApiDataProvider>(Get.context!,listen: false).showChatFirst(Get.context!,
                           Provider.of<ApiDataProvider>(Get.context!,listen: false).bearerToken,

@@ -12,6 +12,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../constants.dart';
 import '../../shared_preferences.dart';
 import '../../utils/mcustom_navbar.dart';
 
@@ -152,9 +153,34 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
                       inactiveColorPrimary: CupertinoColors.systemGrey,
                     ),
                     PersistentBottomNavBarItem(
-                      icon: Image.asset(_controller.index==3?'assets/images/bmessage.png':'assets/images/message.png',
-                        height: size.height * 0.04,
-                        width: size.width * 0.07,),
+                      icon: Stack(
+                        children: [
+                          Image.asset(_controller.index==3?'assets/images/bmessage.png':'assets/images/message.png',
+                            height: size.height * 0.04,
+                            width: size.width * 0.07,),
+                          Provider.of<ApiDataProvider>(context,listen: true).unread_total_msg == 0 ? SizedBox() :Positioned(
+                            // draw a red marble
+                            top: 0.0,
+                            right: 0.0,
+                            child: Container(
+                              height: 12,
+                              width: 12,
+
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              child: Center(
+                                child: Text(Provider.of<ApiDataProvider>(context,listen: false).unread_total_msg.toString(),
+                                  style: TextStyle(
+                                      color: whiteColor,
+                                      fontSize:6
+                                  ),),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                       title: ("Message\'s"),
                       activeColorPrimary: CupertinoColors.activeBlue,
                       inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -165,6 +191,9 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
                   onItemSelected: (index) async{
 
 
+                    if(index==3){
+                      Provider.of<ApiDataProvider>(context,listen: false).setUnreadTotalMsg(0);
+                    }
 
                     if(_controller.index == index) {
                       int screen= await Provider.of<ApiDataProvider>(context,listen: false).screenIndex;

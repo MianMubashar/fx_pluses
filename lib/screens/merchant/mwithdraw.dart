@@ -22,6 +22,8 @@ class _MWithdrawState extends State<MWithdraw> {
   TextEditingController accountHolderName=TextEditingController();
   TextEditingController accountNumber=TextEditingController();
   TextEditingController amount=TextEditingController();
+  TextEditingController bankName=TextEditingController();
+  TextEditingController currency=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +99,60 @@ class _MWithdrawState extends State<MWithdraw> {
                 ),
               ),
               Text(
+                'Bank Name',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: greyColor),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+
+                margin: EdgeInsets.only(bottom: 30),
+                child: TextField(
+                  controller: bankName,
+                  decoration: InputDecoration(
+                      hintText: 'Bank Name',
+                      helperStyle: TextStyle(color: blackColor),
+                      isDense: true,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                      )),
+                  onChanged: (value) {
+                    // firstName = value;
+                  },
+                ),
+              ),
+              Text(
+                'Currency',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: greyColor),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+
+                margin: EdgeInsets.only(bottom: 30),
+                child: TextField(
+                  controller: currency,
+                  decoration: InputDecoration(
+                      hintText: Provider.of<ApiDataProvider>(context,listen: true).selectedCurrencySymbol+" " + Provider.of<ApiDataProvider>(context,listen: true).defaultCurrencyName,
+                      helperStyle: TextStyle(color: blackColor),
+                      isDense: true,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                      )),
+                  onChanged: (value) {
+                    // firstName = value;
+                  },
+                ),
+              ),
+              Text(
                 'Amount',
                 textAlign: TextAlign.start,
                 style: TextStyle(color: greyColor),
@@ -151,10 +207,13 @@ class _MWithdrawState extends State<MWithdraw> {
                             amount.text,
                             0,
                             accountNumber.text,
-                            accountHolderName.text,widget.currency_id);
+                            accountHolderName.text,
+                            widget.currency_id,
+                            bankName.text);
                         amount.clear();
                         accountNumber.clear();
                         accountHolderName.clear();
+                        bankName.clear();
 
                       } else {
                         Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/customer/chome.dart';
 import 'package:fx_pluses/screens/customer/cmessages.dart';
@@ -200,9 +201,34 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
                       inactiveColorPrimary: CupertinoColors.systemGrey,
                     ),
                     PersistentBottomNavBarItem(
-                      icon: Image.asset(_controller.index==2?'assets/images/bmessage.png':'assets/images/message.png',
-                        height: size.height * 0.04,
-                        width: size.width * 0.07,),
+                      icon: Stack(
+                        children: [
+                          Image.asset(_controller.index==2?'assets/images/bmessage.png':'assets/images/message.png',
+                            height: size.height * 0.04,
+                            width: size.width * 0.07,),
+                          Provider.of<ApiDataProvider>(context,listen: true).unread_total_msg == 0 ? SizedBox() :  Positioned(
+                            // draw a red marble
+                            top: 0.0,
+                            right: 0.0,
+                            child: Container(
+                              height: 12,
+                                width: 12,
+
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                              child: Center(
+                                child: Text(Provider.of<ApiDataProvider>(context,listen: true).unread_total_msg.toString(),
+                                style: TextStyle(
+                                  color: whiteColor,
+                                  fontSize:6
+                                ),),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                       title: ("Message\'s"),
                       activeColorPrimary: CupertinoColors.activeBlue,
                       inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -220,7 +246,9 @@ class _CBottomNavigationBarState extends State<CBottomNavigationBar> {
                   selectedIndex: _controller.index,
                   onItemSelected: (index) async{
 
-
+                    if(index==2){
+                      Provider.of<ApiDataProvider>(context,listen: false).setUnreadTotalMsg(0);
+                    }
 
 
                     if(_controller.index == index){
