@@ -159,10 +159,10 @@ class _Stream_BuilderState extends State<Stream_Builder> {
               Provider.of<ApiDataProvider>(context, listen: false).usersHavingChatList.clear();
               List<dynamic> data = apiResponse['chats'];
               provider.unreadMessageModel=apiResponse['unread_messages'];
-              total_unread_messages=provider.unreadMessageModel?.values.reduce((value, element) => value + element);
-              if(total_unread_messages > provider.unread_total_msg!){
-                //provider.setUnreadTotalMsg(total_unread_messages);
-              }
+              // total_unread_messages=provider.unreadMessageModel?.values.reduce((value, element) => value + element);
+              // if(total_unread_messages > provider.unread_total_msg!){
+              //   //provider.setUnreadTotalMsg(total_unread_messages);
+              // }
 
               for (int i = 0; i < data.length; i++) {
                 provider.usersHavingChatList.add(ChatMenuModel.fromJson(data[i]));
