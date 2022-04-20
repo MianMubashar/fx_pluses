@@ -40,10 +40,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
 class ApiDataProvider extends ChangeNotifier {
-  static const String BASE_URL =
-      'http://console.fxpluses.com/';
   // static const String BASE_URL =
-  //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+  //     'http://console.fxpluses.com/';
+  static const String BASE_URL =
+      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 
