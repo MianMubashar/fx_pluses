@@ -143,6 +143,7 @@ class _SplashScreenState extends State<SplashScreen> {
               // String amount1 = element.wallet;
               // List a = amount1.split('.');
               // int amount2 = int.parse(a[0]);
+              print(element.wallet);
               amount3 = double.parse(wallet['wallet'].toString()).round();
               // int total = amount2 + amount3;
               beforeDeduction=amount3 - double.parse(element.wallet).round();
@@ -160,7 +161,12 @@ class _SplashScreenState extends State<SplashScreen> {
           await SharedPreference.saveUserWalletsSharedPreferences(
               encodedData);
           if(Provider.of<ApiDataProvider>(Get.context!,listen: false).roleId == 4) {
-            Get.dialog(MoneyAddedDialog(text: 'Amount ${beforeDeduction} after 20% deduction has been recieved and your new account balance is $amount3 '));
+            Get.dialog(MoneyAddedDialog(text: 'Dear Merchant \n'
+
+                'A payment of ${beforeDeduction} is received from the customer. We have credited your wallet with ${amount3} after decucting our commison \n'
+
+                'Thank You \n'
+                'FX Pluses'));
           }
 
         }

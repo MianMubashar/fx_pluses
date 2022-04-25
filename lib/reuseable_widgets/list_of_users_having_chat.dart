@@ -9,7 +9,7 @@ import '../providers/api_data_provider.dart';
 class ListOfUsersHavingChat extends StatefulWidget {
   ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,
     required this.message,required this.recieverId,required this.profile,
-    required this.transaction_id,required this.transaction,required this.unread_msg}) : super(key: key);
+    required this.transaction_id,required this.transaction,required this.unread_msg,required this.buisness}) : super(key: key);
   final String firstName;
   final String lastName;
    String? message;
@@ -18,6 +18,7 @@ class ListOfUsersHavingChat extends StatefulWidget {
   int? transaction_id;
   Map<dynamic,dynamic>? transaction;
   int? unread_msg;
+  String? buisness;
 
   @override
   State<ListOfUsersHavingChat> createState() => _ListOfUsersHavingChatState();
@@ -39,7 +40,7 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
             Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
             widget.recieverId, widget.transaction_id);
         pushNewScreen(Get.context!,
-            screen: ChatScreen(reciever_id: widget.recieverId,name: widget.firstName+" "+widget.lastName,transactionId: widget.transaction_id,rateOffer: null,transaction: widget.transaction,),
+            screen: ChatScreen(buisnessName: widget.buisness,reciever_id: widget.recieverId,name: widget.firstName+" "+widget.lastName,transactionId: widget.transaction_id,rateOffer: null,transaction: widget.transaction,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);

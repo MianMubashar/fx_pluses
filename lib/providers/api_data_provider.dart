@@ -40,10 +40,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 
 class ApiDataProvider extends ChangeNotifier {
-  // static const String BASE_URL =
-  //     'http://console.fxpluses.com/';
   static const String BASE_URL =
-      'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
+      'http://console.fxpluses.com/';
+  // static const String BASE_URL =
+  //     'http://192.168.18.17/FX_Pluses/FX_Pluses/public/';
   String SERVER_URL = BASE_URL + 'api/';
   String verificationId = '';
 
@@ -886,7 +886,7 @@ setRegisterUserCountryName(String n){
 
 
   Future requestTransaction(BuildContext context, String amount, int id,
-      String token, String name, int currency_id,int merchant_rate_id,) async {
+      String token, String name, int currency_id,int merchant_rate_id,String? buisness) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'request-transaction');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
@@ -910,7 +910,7 @@ setRegisterUserCountryName(String n){
         bool status = apiResponse['status'];
         if (status) {
 
-          Get.back(closeOverlays: true);
+          Get.back();
           print(apiResponse['message']);
           Map transaction = apiResponse['transaction'];
           Map<String,dynamic>? rateOffer = apiResponse['rate_offer'];
@@ -927,12 +927,13 @@ setRegisterUserCountryName(String n){
 
           pushNewScreen(context,
               screen: ChatScreen(
+                buisnessName:buisness,
                 reciever_id: id, name: name, transactionId: transaction['id'],transaction: transaction,rateOffer: rateOffer,),
               withNavBar: false,
               pageTransitionAnimation:
               PageTransitionAnimation.cupertino);
         } else {
-          Get.back(closeOverlays: true);
+          Get.back();
           Map transaction = apiResponse['transaction'];
           Map<String,dynamic>? rateOffer = apiResponse['rate_offer'];
           await setChatOffers(rateOffer?['status']);
@@ -940,6 +941,7 @@ setRegisterUserCountryName(String n){
           setScreenIndex(6);
           pushNewScreen(context,
               screen: ChatScreen(
+                buisnessName: buisness,
                 reciever_id: id, name: name, transactionId: transaction['id'],transaction: transaction,rateOffer: rateOffer),
               withNavBar: false,
               pageTransitionAnimation:
@@ -1737,7 +1739,8 @@ setRegisterUserCountryName(String n){
   }
 
   Future<bool> UpdateOfferStatus(BuildContext context, String token,
-      int? offer_id, int? status_id,int? merchant_id) async {
+      int? offer_id, int? status_id,int? merchant_id,String? namee,String? acc_num,String? swift_code, String? amount,
+      String? message,int? tran_id) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'update-offer-status');
     try {
@@ -1749,7 +1752,11 @@ setRegisterUserCountryName(String n){
       Map bodyData = {
         'offer_id': offer_id,
         'status_id': status_id,
-        'merchant_id':merchant_id
+        'merchant_id':merchant_id,
+        'name':namee,
+        'acc_no': acc_num,
+        'swift_code': swift_code,
+        'amount':amount
       };
       var body = jsonEncode(bodyData);
       var response = await http.post(url, headers: header, body: body);
@@ -1759,6 +1766,21 @@ setRegisterUserCountryName(String n){
         if (status) {
           Get.back();
           showSnackbar(context, apiResponse['message'], buttonColor);
+          if(status_id==2) {
+            await sendMessage(
+                context,
+                token,
+                merchant_id!,
+                message!,
+                '',
+                '',
+                tran_id,
+                null,
+                null,
+                null,
+                null,
+                1);
+          }
           return true;
         } else {
           Get.back();

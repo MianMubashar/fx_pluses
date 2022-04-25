@@ -193,18 +193,28 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                         Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
                         Provider.of<ApiDataProvider>(context, listen: false).chatOfferId,
                         2,
-                    widget.reciever_id);
-
-                    await Provider.of<ApiDataProvider>(context, listen: false).sendMessage(context,
-                        Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
-                        widget.reciever_id,
+                    widget.reciever_id,
+                    firstNameController.text + " " + lastNameController.text,
+                    accountNumberController.text,
+                    swiftCodeController.text,
+                    amountController.text,
                         "Name: " + firstNameController.text + " " + lastNameController.text + '\n' +
                             "Account Number: " + accountNumberController.text + "\n" +
                             "Bank Name: " + swiftCodeController.text + "\n" +
                             "Amount: " + amountController.text,
-                        '',
-                        '',
-                        widget.transaction_id,null,null,null,null,1);
+                    widget.transaction_id
+                    );
+
+                    // await Provider.of<ApiDataProvider>(context, listen: false).sendMessage(context,
+                    //     Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
+                    //     widget.reciever_id,
+                    //     "Name: " + firstNameController.text + " " + lastNameController.text + '\n' +
+                    //         "Account Number: " + accountNumberController.text + "\n" +
+                    //         "Bank Name: " + swiftCodeController.text + "\n" +
+                    //         "Amount: " + amountController.text,
+                    //     '',
+                    //     '',
+                    //     widget.transaction_id,null,null,null,null,1);
 
                     await Provider.of<ApiDataProvider>(context, listen: false).showChatFirst(context,
                         Provider.of<ApiDataProvider>(context, listen: false).bearerToken,

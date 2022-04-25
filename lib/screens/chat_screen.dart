@@ -22,12 +22,13 @@ import '../reuseable_widgets/customloader.dart';
 String? msg='';
 class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
-   ChatScreen({Key? key,required this.reciever_id,required this.name,required this.transactionId,required this.transaction,required this.rateOffer}) : super(key: key);
+   ChatScreen({Key? key,required this.buisnessName,required this.reciever_id,required this.name,required this.transactionId,required this.transaction,required this.rateOffer}) : super(key: key);
   int reciever_id;
   String name;
   Map<String,dynamic>? rateOffer;
   Map<dynamic,dynamic>? transaction;
   int? transactionId;
+  String? buisnessName;
 
 
 
@@ -226,7 +227,13 @@ class _ChatScreenState extends State<ChatScreen> {
                                             Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
                                             Provider.of<ApiDataProvider>(context, listen: false).chatOfferId,
                                             3,
-                                            widget.reciever_id);
+                                            widget.reciever_id,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null,
+                                        null);
 
                                         await Provider.of<ApiDataProvider>(Get.context!, listen: false).showChatFirst(Get.context!,
                                             Provider.of<ApiDataProvider>(Get.context!, listen: false).bearerToken,
@@ -287,6 +294,7 @@ class _ChatScreenState extends State<ChatScreen> {
         setState(() {
 
         });
+        Get.back();
         Provider.of<ApiDataProvider>(context, listen: false).setChatOffers(null);
         return true;
       },
@@ -297,7 +305,7 @@ class _ChatScreenState extends State<ChatScreen> {
               centerTitle: true,
               backgroundColor: buttonColor,
               title: Text(
-                widget.name,
+                widget.buisnessName ?? widget.name,
                 style: TextStyle(
                     color: whiteColor, fontSize: 23, fontWeight: FontWeight.w600),
               ),

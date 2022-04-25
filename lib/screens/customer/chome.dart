@@ -2,6 +2,7 @@
 import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
@@ -282,7 +283,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                 ),
               ),
               Text(
-                'Enter Amount',
+                'Enter rate',
                 style: TextStyle(
                   color: greyColor,
                 ),
@@ -298,7 +299,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                       padding:  EdgeInsets.only(left: 20.0,top: 15),
                       child: Text(fromCurrencySymbol==null?'':fromCurrencySymbol!),
                     ),
-                      hintText: 'Enter amount',
+                      hintText: 'Enter rate',
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,
@@ -395,6 +396,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
 
                                 }
                               }else{
+                                ScaffoldMessenger.of(context).clearSnackBars();
                                 Provider
                                     .of<ApiDataProvider>(context,
                                     listen: false).showSnackbar(context, 'Please select countries', redColor);
@@ -403,6 +405,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                             }
 
                           }else{
+                            ScaffoldMessenger.of(context).clearSnackBars();
                             Provider
                                 .of<ApiDataProvider>(context,
                                 listen: false).showSnackbar(context, 'Please enter amount more then 0', redColor);
@@ -412,6 +415,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                       });
                    // }
                   }else{
+                    ScaffoldMessenger.of(context).clearSnackBars();
                     Get.showSnackbar(GetSnackBar(
                       backgroundColor: Colors.red,
                       message: 'Please select valid values',
@@ -606,12 +610,28 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                                           fontWeight:
                                                               FontWeight.w500),
                                                     ),
-                                                    Text(double.parse(Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['rating']).toStringAsFixed(2),
-                                                    style: TextStyle(
-                                                        color: greyColor,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                        FontWeight.bold),),
+                                                    Row(
+                                                      children: [
+                                                        RatingBarIndicator(
+                                                          rating: double.parse(Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['rating']),
+                                                          itemBuilder: (context, index) => Icon(
+                                                            Icons.star,
+                                                            color: Colors.amber,
+                                                          ),
+                                                          itemCount: 5,
+                                                          itemSize: 13.0,
+                                                          direction: Axis.horizontal,
+                                                        ),
+                                                        SizedBox(width: 5,),
+                                                        Text(
+                                                          double.parse(Provider.of<ApiDataProvider>(context, listen: false).top_five_merchant_list[index].user['rating']).toStringAsFixed(2),
+                                                        style: TextStyle(
+                                                            color: greyColor,
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                            FontWeight.bold),),
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
                                               ),
@@ -644,9 +664,11 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                                   Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user['first_name'] +
                                                      " "+ Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user['last_name'],
                                                   Provider.of<ApiDataProvider>(Get.context!, listen: false).selectedCurrencyId,
-                                                  Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].id);
+                                                  Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].id,
+                                                  Provider.of<ApiDataProvider>(Get.context!, listen: false).top_five_merchant_list[index].user['business']
+                                              );
                                               setState(() {
-                                                check = true;
+                                                check = false;
                                               });
                                            // }
 
