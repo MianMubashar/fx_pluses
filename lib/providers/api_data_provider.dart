@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fx_pluses/constants.dart';
@@ -15,6 +16,7 @@ import 'package:fx_pluses/model/get_countries_for_merchants.dart';
 import 'package:fx_pluses/model/get_currencies_model.dart';
 import 'package:fx_pluses/model/get_currency_rates_model.dart';
 import 'package:fx_pluses/model/merchant_transaction_requests_model.dart';
+import 'package:fx_pluses/model/service_fee_model.dart';
 import 'package:fx_pluses/model/show_chat_model.dart';
 import 'package:fx_pluses/model/top_five_merchants.dart';
 import 'package:fx_pluses/model/user_wallets_model.dart';
@@ -79,6 +81,7 @@ class ApiDataProvider extends ChangeNotifier {
   List<CustomerTransactionHistoryModel> customerTransactionHistoryList = [];
   List<FaqsModel> faqsList = [];
   List<ShowChatModel> showChatList = [];
+  List<ServiceFeeModel> serviceFeeModelList = [];
 
   Map<String,dynamic>? _chatOffers;
 
@@ -102,6 +105,8 @@ class ApiDataProvider extends ChangeNotifier {
   String? _countryName;
   int _screenIndex=0;
   int? _chatOfferId;
+  int? _onlineStatus;
+
 
 
   String? _updatedContact;
@@ -116,6 +121,10 @@ class ApiDataProvider extends ChangeNotifier {
   String? _currencySymbolForExchangeRateScreen;
 
 
+  setOnlineStatus(int? status){
+    _onlineStatus=status;
+    notifyListeners();
+  }
   setUnreadTotalMsg(int? value) {
     _unread_total_msg = value;
     notifyListeners();
@@ -396,6 +405,7 @@ setRegisterUserCountryName(String n){
           String currencyName = apiResponse['user']['default_currency']['name'];
           String currencySymbol = apiResponse['user']['default_currency']['symbol'];
           int? unread=apiResponse['unread_msgs_count'];
+          int? is_online=apiResponse['user']['is_online'];
 
 
           List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
@@ -463,6 +473,8 @@ setRegisterUserCountryName(String n){
           await setBuisnessName(buisness);
           await setRegisterUserCountryName(country_name);
           await setUnreadTotalMsg(unread);
+          await setOnlineStatus(is_online);
+
 
           await setScreenIndex(0);
 
@@ -471,6 +483,7 @@ setRegisterUserCountryName(String n){
           await getCountries(context, token);
           await merchantTransactionRequests(context, token);
           await getCurrencies(context, token);
+          await GetServiceFees(context, token, currencyId);
           Get.back();
           if (roleId == 5) {
             Navigator.pushReplacement(
@@ -547,6 +560,7 @@ setRegisterUserCountryName(String n){
           String currencyName = apiResponse['user']['default_currency']['name'];
           String currencySymbol = apiResponse['user']['default_currency']['symbol'];
           int? unread=apiResponse['unread_msgs_count'];
+          int? is_online=int.parse(apiResponse['user']['is_online']);
 
           List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
 
@@ -612,6 +626,7 @@ setRegisterUserCountryName(String n){
           await setIdFile(file);
           await setBuisnessName(buisness);
           await setUnreadTotalMsg(unread);
+          await setOnlineStatus(is_online);
 
           await setScreenIndex(0);
 
@@ -619,6 +634,7 @@ setRegisterUserCountryName(String n){
           await getCountries(context, token);
           await merchantTransactionRequests(context, token);
           await getCurrencies(context, token);
+          await GetServiceFees(context, token, currencyId);
 
           SharedPreferences preferences = await SharedPreferences.getInstance();
           //int? initScreen = 0;
@@ -652,7 +668,7 @@ setRegisterUserCountryName(String n){
 
   Future<bool> updateWallet(BuildContext context, String token,
       int wallet_action_id, String amount, int to_user_id, String accountNumber,
-      String name, int currencyId,String? bankName) async {
+      String name, int currencyId,String? bankName,String? service_fees) async {
     Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'update-wallet');
     //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
@@ -684,7 +700,8 @@ setRegisterUserCountryName(String n){
           'wallet_action_id': wallet_action_id,
           'amount': amount,
           'to_user_id': to_user_id,
-          'currency_id': currencyId
+          'currency_id': currencyId,
+          'service_fees': service_fees
           //'device_token': device_token
         };
         var body = jsonEncode(
@@ -1513,7 +1530,8 @@ setRegisterUserCountryName(String n){
   }
 
   Future rateMerchant(BuildContext context, String token, int merchant_id,
-      double rate) async {
+      double rate,int? transaction_id) async {
+    Get.dialog(CustomLoader());
     Uri url = Uri.parse(SERVER_URL + 'rate-merchant');
     try {
       var header = {
@@ -1523,7 +1541,8 @@ setRegisterUserCountryName(String n){
       };
       Map bodyData = {
         'merchant_id': merchant_id,
-        'rating': rate
+        'rating': rate,
+        'transaction_id':transaction_id
       };
       var body = jsonEncode(bodyData);
       var response = await http.post(url, headers: header, body: body);
@@ -1531,6 +1550,7 @@ setRegisterUserCountryName(String n){
       if (response.statusCode == 200) {
         bool status = apiResponse['status'];
         if (status) {
+          Get.back();
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => CBottomNavigationBar(index: 0,)));
           showSnackbar(context, apiResponse['message'], buttonColor);
@@ -1543,8 +1563,11 @@ setRegisterUserCountryName(String n){
         getError(apiResponse['error'], context);
       }
     } catch (e) {
-      print('try catch error from rateMerchant $e');
-      showSnackbar(context, e.toString(), redColor);
+      Get.back();
+      if(kDebugMode) {
+        print('try catch error from rateMerchant $e');
+      }
+      //showSnackbar(context, e.toString(), redColor);
     }
   }
 
@@ -1837,6 +1860,83 @@ setRegisterUserCountryName(String n){
     }
   }
 
+  Future UpdateOnlineStatus(BuildContext context, String token,int is_online) async{
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL+'update-online-status');
+    try{
+      var  header={
+        "Content-Type":"application/json",
+        "Accept" : "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map  bodyData={
+        'is_online':is_online,
+      };
+      var body=jsonEncode(bodyData);
+      var response=await http.post(url,headers: header,body: body);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      if(response.statusCode==200){
+        bool status=apiResponse['status'];
+        if(status){
+          Get.back();
+          setOnlineStatus(is_online);
+          // showSnackbar(context, apiResponse['messsage'], buttonColor);
+        }else{
+          Get.back();
+          showSnackbar(context, apiResponse['messsage'], redColor);
+        }
+      }else{
+        Get.back();
+        getError(apiResponse['error'], context);
+      }
+
+    }catch(e){
+      Get.back();
+      showSnackbar(context, 'Something went wrong', redColor);
+    }
+  }
+
+  Future GetServiceFees(BuildContext context, String token,int currency_id) async{
+    Get.dialog(CustomLoader());
+    Uri url=Uri.parse(SERVER_URL+'get-service-fees');
+    try{
+      var  header={
+        "Content-Type":"application/json",
+        "Accept" : "application/json",
+        "Authorization": "Bearer $token"
+      };
+      Map  bodyData={
+        'currency_id':currency_id,
+      };
+      var body=jsonEncode(bodyData);
+      var response=await http.post(url,headers: header,body: body);
+      Map<String,dynamic> apiResponse=jsonDecode(response.body);
+      if(response.statusCode==200){
+        bool status=apiResponse['status'];
+        if(status){
+
+         serviceFeeModelList.clear();
+         List<dynamic> data=apiResponse['service_fees'];
+         for(int i=0;i<data.length;i++){
+           serviceFeeModelList.add(ServiceFeeModel.fromJson(data[i]));
+         }
+         Get.back();
+          // showSnackbar(context, apiResponse['messsage'], buttonColor);
+        }else{
+          Get.back();
+          showSnackbar(context, apiResponse['messsage'], redColor);
+        }
+      }else{
+        Get.back();
+        getError(apiResponse['error'], context);
+      }
+
+    }catch(e){
+      Get.back();
+      showSnackbar(context, 'Something went wrong', redColor);
+    }
+  }
+
   Stream<http.Response> chatMenu(BuildContext context,String token) async* {
     var header={
       'Content-Type':'application/json',
@@ -2026,4 +2126,5 @@ setRegisterUserCountryName(String n){
   Map<String, dynamic>? get chatOffers => _chatOffers;
   int? get chatOfferId => _chatOfferId;
   int? get unread_total_msg => _unread_total_msg;
+  int? get onlineStatus => _onlineStatus;
 }

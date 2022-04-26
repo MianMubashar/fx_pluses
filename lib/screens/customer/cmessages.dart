@@ -175,6 +175,8 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                   final transactionId = provider.usersHavingChatList[i].transaction?['id'];
                   final profile_url = provider.usersHavingChatList[i].sender['profile_photo_path'];
                   String? buisness = provider.usersHavingChatList[i].sender['buisness'];
+                  int? is_online=provider.usersHavingChatList[i].sender['is_online'];
+                  int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                   int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
 
 
@@ -187,7 +189,10 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                       profile: profile_url,
                       transaction_id: transactionId,
                       transaction: provider.usersHavingChatList[i].transaction,
-                  unread_msg: unread_msg,);
+                  unread_msg: unread_msg,
+                  transaction_status_id: transaction_status_id,
+                    isOnline: is_online,
+                  );
                   list1.add(listWidget);
                 } else {
                   if (provider.usersHavingChatList[i].transaction == null ||
@@ -200,6 +205,8 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                     final transactionId =
                         provider.usersHavingChatList[i].transaction?['id'];
                     String? buisness = provider.usersHavingChatList[i].receiver['business'];
+                    int? is_online=provider.usersHavingChatList[i].receiver['is_online'];
+                    int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                     int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                     final listWidget = ListOfUsersHavingChat(
                       buisness: buisness,
@@ -211,6 +218,8 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                       transaction_id: transactionId,
                       transaction: provider.usersHavingChatList[i].transaction,
                       unread_msg: unread_msg,
+                      transaction_status_id: transaction_status_id,
+                      isOnline: is_online,
                     );
                     list1.add(listWidget);
                   }
@@ -233,6 +242,8 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                 final transactionId =
                     provider.usersHavingChatList[i].transaction?['id'];
                 String? buisness = provider.usersHavingChatList[i].sender['business'];
+                int? is_online=provider.usersHavingChatList[i].sender['is_online'];
+                int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                 int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                 final listWidget = ListOfUsersHavingChat(
                   buisness: buisness,
@@ -244,6 +255,8 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                   transaction_id: transactionId,
                   transaction: provider.usersHavingChatList[i].transaction,
                   unread_msg: unread_msg,
+                  transaction_status_id: transaction_status_id,
+                  isOnline: is_online,
                 );
                 list1.add(listWidget);
               } else {
@@ -260,6 +273,8 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                   final transactionId =
                       provider.usersHavingChatList[i].transaction?['id'];
                   String? buisness = provider.usersHavingChatList[i].receiver['business'];
+                  int? is_online=provider.usersHavingChatList[i].receiver['is_online'];
+                  int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                   int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                   final listWidget = ListOfUsersHavingChat(
                     buisness: buisness,
@@ -271,6 +286,8 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                     transaction_id: transactionId,
                     transaction: provider.usersHavingChatList[i].transaction,
                     unread_msg: unread_msg,
+                    transaction_status_id: transaction_status_id,
+                    isOnline: is_online,
                   );
                   list1.add(listWidget);
                 }

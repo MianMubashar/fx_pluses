@@ -7,9 +7,11 @@ import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/customer/profile.dart';
+import 'package:fx_pluses/screens/service_fees.dart';
 import 'package:fx_pluses/shared_preferences.dart';
 import 'package:get/get.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -114,6 +116,38 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap:() async {
+                      await Provider.of<ApiDataProvider>(context, listen: false).setScreenIndex(6);
+                      pushNewScreen(
+                        context,
+                        screen: ServiceFees(),
+                        withNavBar: false, // OPTIONAL VALUE. True by default.
+                        pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                      );
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      width: size.width * 0.4,
+                      height: size.height * 0.04,
+                      decoration: BoxDecoration(
+                          color: buttonColor,
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      child: Center(
+                        child: Text(
+                          'Service Fee',style: TextStyle(
+                            color: textWhiteColor
+                        ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Container(
                 height: size.height * 0.15,
                 width: size.width,

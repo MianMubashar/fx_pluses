@@ -35,7 +35,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
   String userId = '';
   bool numberValid = false;
   String verificationIdRecieved = '';
-  final TextEditingController usernameController = TextEditingController();
+ // final TextEditingController usernameController = TextEditingController();
   final TextEditingController phoneNumbercontroller = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -60,7 +60,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
     emailController.clear();
     passwordController.clear();
     phoneNumbercontroller.clear();
-    usernameController.clear();
+    //usernameController.clear();
     buisnessController.clear();
     firstName='';
     lastName='';
@@ -150,32 +150,32 @@ class _MCreateAccountState extends State<MCreateAccount> {
                   },
                 ),
               ),
-              Text(
-                'Username',
-                textAlign: TextAlign.start,
-                style: TextStyle(color: greyColor),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: TextField(
-                  controller: usernameController,
-                  decoration: InputDecoration(
-                      hintText: 'Username',
-                      helperStyle: TextStyle(color: blackColor),
-                      isDense: true,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(20),
-                      )),
-                  onChanged: (value) {
-                    userId = value;
-                  },
-                ),
-              ),
+              // Text(
+              //   'Username',
+              //   textAlign: TextAlign.start,
+              //   style: TextStyle(color: greyColor),
+              // ),
+              // SizedBox(
+              //   height: 8,
+              // ),
+              // Container(
+              //   margin: EdgeInsets.only(bottom: 10),
+              //   child: TextField(
+              //     controller: usernameController,
+              //     decoration: InputDecoration(
+              //         hintText: 'Username',
+              //         helperStyle: TextStyle(color: blackColor),
+              //         isDense: true,
+              //         filled: true,
+              //         border: OutlineInputBorder(
+              //           borderSide: BorderSide.none,
+              //           borderRadius: BorderRadius.circular(20),
+              //         )),
+              //     onChanged: (value) {
+              //       userId = value;
+              //     },
+              //   ),
+              // ),
               Text(
                 'First Name',
                 textAlign: TextAlign.start,
@@ -402,12 +402,12 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                   //     color: newColor,
                                   //   );
                                   // } else {
-                                    if(usernameController.text.length < 5){
-                                      Provider.of<ApiDataProvider>(context,
-                                          listen: false)
-                                          .showSnackbar(context,
-                                          'Username should be atleast 5 characters long',redColor);
-                                    }else {
+                                  //   if(usernameController.text.length < 5){
+                                  //     Provider.of<ApiDataProvider>(context,
+                                  //         listen: false)
+                                  //         .showSnackbar(context,
+                                  //         'Username should be atleast 5 characters long',redColor);
+                                  //   }else {
                                       if(buisnessController.text.isEmpty){
                                         Provider.of<ApiDataProvider>(context,
                                             listen: false)
@@ -438,9 +438,9 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                         await Provider.of<ApiDataProvider>(
                                             context, listen: false).setRoleId(
                                             4);
-                                        await Provider.of<ApiDataProvider>(
-                                            context, listen: false).setUserId(
-                                            usernameController.text);
+                                        // await Provider.of<ApiDataProvider>(
+                                        //     context, listen: false).setUserId(
+                                        //     usernameController.text);
                                         await Provider.of<ApiDataProvider>(
                                             context, listen: false)
                                             .setRegisterUserCountryName(
@@ -461,7 +461,7 @@ class _MCreateAccountState extends State<MCreateAccount> {
 
                                         clearControllers();
                                       }
-                                    }
+                                    // }
                                    // }
                                 }
                               }

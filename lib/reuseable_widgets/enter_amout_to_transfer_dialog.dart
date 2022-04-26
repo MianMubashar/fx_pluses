@@ -191,7 +191,7 @@ class EnterAmountToTransferDialog extends StatelessWidget {
           await Provider.of<ApiDataProvider>(Get.context!, listen: false)
               .updateWallet(Get.context!,
               Provider.of<ApiDataProvider>(Get.context!,listen: false).bearerToken,
-              1, amount, 0,'','',currency_id,null);
+              1, amount, 0,'','',currency_id,null,null);
         }catch(e){
           print(e);
         }

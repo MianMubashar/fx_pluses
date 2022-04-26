@@ -40,7 +40,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   TextEditingController messageText=TextEditingController();
   bool messageSentCheck=false;
-  double ratingBar=0;
+  double ratingBar=1;
 
 
   List<String> emailCheck(String message){
@@ -349,6 +349,88 @@ class _ChatScreenState extends State<ChatScreen> {
               //     :Container()
               //     :Container(),
               Stream_Builder(recieverId: widget.reciever_id,transactionId: widget.transactionId,),
+              widget.transaction != null && widget.transaction?['transaction_status_id'] == 5 && Provider.of<ApiDataProvider>(context,listen: false) .roleId == 5
+                  ?
+                  InkWell(
+                    onTap: (){
+                      showDialog(context: context, builder: (dialogContext){
+                        return Dialog(
+                          child: Container(
+                            height: size.height * 0.2,
+                            width:  size.width * 0.6,
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(15)
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                // Text('Rate',style: TextStyle(
+                                //   color: buttonColor,
+                                //   fontSize: 20
+                                // ),),
+                            RatingBar.builder(
+                              initialRating: ratingBar,
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: false,
+                              itemCount: 5,
+                              itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (rating) {
+                                ratingBar=rating;
+                              },
+                            ),
+                                InkWell(
+                                  onTap:() async{
+                                    Get.back();
+                                    await Provider.of<ApiDataProvider>(context,listen: false).rateMerchant(context,
+                                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                                        widget.reciever_id,
+                                    ratingBar,
+                                    widget.transactionId);
+                                  },
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height * 0.05,
+                                    width: MediaQuery.of(context).size.width * 0.4,
+                                    // margin: EdgeInsets.only(bottom: bottomMargin==null ? 2 : bottomMargin!),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      gradient: gradient,
+                                    ),
+                                    child: Center(child: Text('Rate',style: TextStyle(
+                                        color: Colors.white,
+                                      fontSize: 20
+                                    ),)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      });
+                    },
+                    child: Container(
+                      height: size.height * 0.08,
+                      width: size.width,
+                      decoration: BoxDecoration(
+                        color: buttonColor
+                      ),
+                      child: Center(
+                        child: Text('Rate',style: TextStyle(
+                          color: textWhiteColor
+                        ),),
+                      ),
+                    ),
+                  )
+                  :
+              widget.transaction != null && widget.transaction?['transaction_status_id'] == 5 && Provider.of<ApiDataProvider>(context,listen: false) .roleId == 4
+              ?
+                  Container()
+                  :
               Container(
                 padding: EdgeInsets.only(left: 10,right: 10),
                 decoration: BoxDecoration(

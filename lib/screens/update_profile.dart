@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:provider/provider.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 import '../constants.dart';
 import '../reuseable_widgets/appbar.dart';
@@ -177,6 +178,29 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   },
 
 
+                ),
+              ),
+
+              Container(
+                height: size.height * 0.05,
+                width:  size.width,
+                margin: EdgeInsets.only(bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Status'),
+                    ToggleSwitch(
+                      initialLabelIndex:Provider.of<ApiDataProvider>(context,listen: true).onlineStatus,
+                      totalSwitches: 2,
+                      labels: ['Offline', 'Online'],
+                      onToggle: (index) async{
+                        await Provider.of<ApiDataProvider>(context,listen: false).UpdateOnlineStatus(context,
+                            Provider.of<ApiDataProvider>(context,listen: false).bearerToken,
+                            index!
+                        );
+                      },
+                    ),
+                  ],
                 ),
               ),
               Provider.of<ApiDataProvider>(context,listen: true).idFile==null ||

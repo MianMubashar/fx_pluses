@@ -164,8 +164,10 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                       final profile_url=provider.usersHavingChatList[i].sender['profile_photo_path'];
                       final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                       String? buisness = provider.usersHavingChatList[i].sender['business'];
+                      int? is_online=provider.usersHavingChatList[i].sender['is_online'];
+                      int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                       int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
-                      final listWidget=ListOfUsersHavingChat(buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,);
+                      final listWidget=ListOfUsersHavingChat(isOnline: is_online,buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,transaction_status_id: transaction_status_id,);
                       list1.add(listWidget);
                     }else{
     if(provider.usersHavingChatList[i].transaction == null || (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3) ){
@@ -176,9 +178,11 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                       final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
                       final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                       String? buisness = provider.usersHavingChatList[i].receiver['business'];
+                      int? is_online=provider.usersHavingChatList[i].receiver['is_online'];
+                      int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                       int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
 
-                      final listWidget=ListOfUsersHavingChat(buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,);
+                      final listWidget=ListOfUsersHavingChat(isOnline: is_online,buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,transaction_status_id: transaction_status_id,);
                       list1.add(listWidget);
                     }
                     }
@@ -197,8 +201,10 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                     final profile_url=provider.usersHavingChatList[i].sender['profile_photo_path'];
                     final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                     String? buisness = provider.usersHavingChatList[i].sender['business'];
+                    int? is_online=provider.usersHavingChatList[i].sender['is_online'];
+                    int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                     int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
-                    final listWidget=ListOfUsersHavingChat(buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,);
+                    final listWidget=ListOfUsersHavingChat(isOnline: is_online,buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,transaction_status_id: transaction_status_id,);
                     list1.add(listWidget);
                   }else{
                     if(provider.usersHavingChatList[i].transaction == null || (provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 4 && provider.usersHavingChatList[i].transaction!['transaction_status_id'] != 3)){
@@ -209,8 +215,10 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                     final profile_url=provider.usersHavingChatList[i].receiver['profile_photo_path'];
                     final transactionId=provider.usersHavingChatList[i].transaction?['id'] ;
                     String? buisness = provider.usersHavingChatList[i].receiver['business'];
+                    int? is_online=provider.usersHavingChatList[i].receiver['is_online'];
+                    int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                     int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
-                    final listWidget=ListOfUsersHavingChat(buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,);
+                    final listWidget=ListOfUsersHavingChat(isOnline: is_online,buisness: buisness,firstName: firstName,lastName: lastName,message: message,recieverId: recieverId,profile: profile_url,transaction_id: transactionId,transaction: provider.usersHavingChatList[i].transaction,unread_msg: unread_msg,transaction_status_id: transaction_status_id,);
                     list1.add(listWidget);
                   }
                   }

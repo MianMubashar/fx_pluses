@@ -9,7 +9,8 @@ import '../providers/api_data_provider.dart';
 class ListOfUsersHavingChat extends StatefulWidget {
   ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,
     required this.message,required this.recieverId,required this.profile,
-    required this.transaction_id,required this.transaction,required this.unread_msg,required this.buisness}) : super(key: key);
+    required this.transaction_id,required this.transaction,required this.unread_msg,
+    required this.buisness,required this.transaction_status_id,required this.isOnline}) : super(key: key);
   final String firstName;
   final String lastName;
    String? message;
@@ -19,6 +20,8 @@ class ListOfUsersHavingChat extends StatefulWidget {
   Map<dynamic,dynamic>? transaction;
   int? unread_msg;
   String? buisness;
+  int? transaction_status_id;
+  int? isOnline;
 
   @override
   State<ListOfUsersHavingChat> createState() => _ListOfUsersHavingChatState();
@@ -80,7 +83,7 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
                       NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSMA98U5nhBmtcdj2hmFD4ijUIue_fCxNWw&usqp=CAU')
                           :NetworkImage((widget.profile!.contains('http') || widget.profile!.contains('https'))? widget.profile!:
                       profile_url+widget.profile!,),
-                    )
+                    ),
                     // Container(
                     //   height: size.height * 0.1,
                     //   width: size.width * 0.22,
@@ -103,18 +106,27 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
                     //     ),
                     //   ),
                     // ),
-                    // Positioned(
-                    //   //bottom: 10,
-                    //   top: 2,
-                    //   left: 55,
-                    //   child: Image.asset(
-                    //     'assets/icons/statusicon.png',
-                    //     height: 20,
-                    //     width: 20,
-                    //   ),
-                    // )
+                     Positioned(
+                      //bottom: 10,
+                      top: 2,
+                      left: 40,
+                      child: Container(
+                        height: size.height * 0.022,
+                        width:  size.width * 0.05,
+                        decoration: widget.isOnline == 1 ?
+                        BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.green
+                        )
+                            :BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.red
+                        ),
+                      ),
+                    )
                   ],
                 ),
+
                 Container(
                   padding: EdgeInsets.only(left: 20),
                   child: Column(
@@ -125,15 +137,22 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width:size.width * 0.5,
-                            child: Text(
-                              widget.firstName+" "+widget.lastName,
-                              maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
-                                color: textBlackColor,
-                                fontSize: 17,
-                                fontWeight: FontWeight.w600),
-                            ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width:size.width * 0.45,
+                                child: Text(
+                                  widget.firstName+" "+widget.lastName,
+                                  maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
+                                    color: textBlackColor,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              widget.transaction_status_id != null && widget.transaction_status_id == 5 ?
+                               Icon(Icons.star,size: size.height * 0.02,color: buttonColor,)
+                                  :Container(),
+                            ],
                           ),
                           widget.unread_msg != null && widget.unread_msg != 0 ?Container(
                             height: 15,
@@ -168,7 +187,8 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
                       )
                     ],
                   ),
-                )
+                ),
+
               ],
             ),
           ],

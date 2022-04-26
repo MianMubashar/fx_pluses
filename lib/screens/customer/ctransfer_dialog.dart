@@ -10,6 +10,7 @@ class CTransferDialog extends StatelessWidget {
   var size;
   int index;
   int currency_id;
+  int? charges;
   CTransferDialog({required this.size,required this.index,required this.currency_id});
 
   TextEditingController amountController=TextEditingController();
@@ -84,7 +85,12 @@ class CTransferDialog extends StatelessWidget {
                       int balance2 = b.round();
                       if(balance2>= balance) {
                         Navigator.pop(context);
-
+                        Provider.of<ApiDataProvider>(
+                            context, listen: false).serviceFeeModelList.forEach((element) {
+                           if(int.parse(amountController.text) > int.parse(element.min.toString()) && int.parse(amountController.text) < int.parse(element.max.toString())){
+                             charges=element.charges;
+                           }
+                        });
                         await Provider.of<ApiDataProvider>(
                             context, listen: false)
                             .updateWallet(
@@ -101,7 +107,8 @@ class CTransferDialog extends StatelessWidget {
                             '',
                             '',
                             currency_id,
-                        null);
+                        null,
+                        charges.toString());
                       }else{
                         Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
                             context, 'Your wallet balance is insufficient', redColor);
