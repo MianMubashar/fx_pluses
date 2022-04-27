@@ -113,6 +113,7 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
                       child: Container(
                         height: size.height * 0.022,
                         width:  size.width * 0.05,
+
                         decoration: widget.isOnline == 1 ?
                         BoxDecoration(
                             shape: BoxShape.circle,

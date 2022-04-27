@@ -137,6 +137,8 @@ class _SplashScreenState extends State<SplashScreen> {
           int amount3=0;
           String? wallletList = await pref.getString(SharedPreference.userWalletsKey);
           List<UserWalletsModel> list = UserWalletsModel.decode(wallletList!);
+          String? totalAmountRecieved = event.data['amount'].toString();
+          String? totalAmountRecievedAfterDeduction= event.data['after_deduction_merchant_amount'].toString();
           list.forEach((element) async {
             if(element.currency_id == wallet['currency_id']){
 
@@ -161,11 +163,14 @@ class _SplashScreenState extends State<SplashScreen> {
           await SharedPreference.saveUserWalletsSharedPreferences(
               encodedData);
           if(Provider.of<ApiDataProvider>(Get.context!,listen: false).roleId == 4) {
-            Get.dialog(MoneyAddedDialog(text: 'Dear Merchant \n'
+            Get.dialog(MoneyAddedDialog(text: 'Dear Merchant \n''\n'
 
-                'A payment of ${beforeDeduction} is received from the customer. We have credited your wallet with ${amount3} after decucting our commison \n'
+                'A payment of ${totalAmountRecieved} is received from the customer. '
+                'We have credited your wallet with ${totalAmountRecievedAfterDeduction} '
+                'after deducting our commison \n'
+            '\n'
 
-                'Thank You \n'
+                'Thank You \n''\n'
                 'FX Pluses'));
           }
 

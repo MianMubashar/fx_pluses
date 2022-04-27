@@ -484,12 +484,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
                           // String pattern = r'\b[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*\b';
-                          String pattern = r'\b[+]*[(]{0,1}[6-9]{1,4}[)]{0,1}[-\s\.0-9]*\b';
+                          String pattern = r'[^""]+?([0-9]{5,})';
                           RegExp regExp = new RegExp(pattern,caseSensitive: false,multiLine: false);
-
                           final phoneNumberMatches=regExp.allMatches(messageText.text);
                           List<String> phoneNumbers=[];
                           if(phoneNumberMatches != null){
+
                             for(final Match match in phoneNumberMatches){
                               phoneNumbers.add(messageText.text.substring(match.start,match.end));
                             }

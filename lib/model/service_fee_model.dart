@@ -1,8 +1,8 @@
 class ServiceFeeModel{
   int? id;
-  int? min;
-  int? max;
-  int? charges;
+  String? min;
+  String? max;
+  String? charges;
   int? currency_id;
   Map? currency;
 

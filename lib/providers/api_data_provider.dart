@@ -560,7 +560,7 @@ setRegisterUserCountryName(String n){
           String currencyName = apiResponse['user']['default_currency']['name'];
           String currencySymbol = apiResponse['user']['default_currency']['symbol'];
           int? unread=apiResponse['unread_msgs_count'];
-          int? is_online=int.parse(apiResponse['user']['is_online']);
+          int? is_online=apiResponse['user']['is_online'];
 
           List<dynamic> user_wallets_data = apiResponse['user']['user_wallet'];
 
@@ -1399,6 +1399,7 @@ setRegisterUserCountryName(String n){
                 Map<String, dynamic> user = apiResponse['user'];
                  if(user['id_file'] != '' || user['id_file'] != null){
                    setIdFile(user['id_file']);
+                   showSnackbar(context, 'ID uploaded successfully', buttonColor);
                  }
 
               }
@@ -1897,7 +1898,7 @@ setRegisterUserCountryName(String n){
   }
 
   Future GetServiceFees(BuildContext context, String token,int currency_id) async{
-    Get.dialog(CustomLoader());
+
     Uri url=Uri.parse(SERVER_URL+'get-service-fees');
     try{
       var  header={
@@ -1920,19 +1921,19 @@ setRegisterUserCountryName(String n){
          for(int i=0;i<data.length;i++){
            serviceFeeModelList.add(ServiceFeeModel.fromJson(data[i]));
          }
-         Get.back();
+
           // showSnackbar(context, apiResponse['messsage'], buttonColor);
         }else{
-          Get.back();
+
           showSnackbar(context, apiResponse['messsage'], redColor);
         }
       }else{
-        Get.back();
+
         getError(apiResponse['error'], context);
       }
 
     }catch(e){
-      Get.back();
+
       showSnackbar(context, 'Something went wrong', redColor);
     }
   }

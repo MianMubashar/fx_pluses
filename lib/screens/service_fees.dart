@@ -44,8 +44,9 @@ class ServiceFees extends StatelessWidget {
 
             )),
         body: Container(
-          height: size.height * 0.4,
+          height: size.height * 0.85,
           width: size.width,
+
           child: ListView.builder(
               itemCount: Provider.of<ApiDataProvider>(context,listen: false).serviceFeeModelList.length,
               itemBuilder: (context, index) {
@@ -69,39 +70,41 @@ class ServiceFees extends StatelessWidget {
                         color: whiteColor,
                         borderRadius: BorderRadius.circular(15)
                       ),
-                      child: Text(provider.serviceFeeModelList[index].currency?['name'])),
+                      child: Text(provider.serviceFeeModelList[index].currency?['name'],style: TextStyle(fontSize: 12),)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Container(
-                        padding: EdgeInsets.only(left: 15,right: 15,top: 7,bottom: 7),
+                        padding: EdgeInsets.only(left: 10,right: 10,top: 7,bottom: 7),
                         decoration: BoxDecoration(
                             color: whiteColor,
                             borderRadius: BorderRadius.circular(10)
                         ),
-                        child: Text('min: ${provider.serviceFeeModelList[index].currency?['symbol']}${provider.serviceFeeModelList[index].min}',),
+                        child: Text('min: ${provider.serviceFeeModelList[index].currency?['symbol']}${provider.serviceFeeModelList[index].min}',style: TextStyle(fontSize: 12),),
                       ),
-                      Text('----->',style: TextStyle(
-                        color: whiteColor
+                      Text('--->',style: TextStyle(
+                        color: whiteColor,
+                        fontSize: 10
                       ),),
                       Container(
-                        padding: EdgeInsets.only(left: 15,right: 15,top: 7,bottom: 7),
+                        padding: EdgeInsets.only(left: 10,right: 10,top: 7,bottom: 7),
                         decoration: BoxDecoration(
                             color: whiteColor,
                             borderRadius: BorderRadius.circular(10)
                         ),
-                        child: Text('max: ${provider.serviceFeeModelList[index].currency?['symbol']}${provider.serviceFeeModelList[index].max}'),
+                        child: Text('max: ${provider.serviceFeeModelList[index].currency?['symbol']}${provider.serviceFeeModelList[index].max}',style: TextStyle(fontSize: 12),),
                       ),
                       Text(' = ',style: TextStyle(
-                          color: whiteColor
+                          color: whiteColor,
+                        fontSize: 10
                       ),),
                       Container(
-                        padding: EdgeInsets.only(left: 15,right: 15,top: 7,bottom: 7),
+                        padding: EdgeInsets.only(left: 10,right: 10,top: 7,bottom: 7),
                         decoration: BoxDecoration(
                             color: whiteColor,
                             borderRadius: BorderRadius.circular(10)
                         ),
-                        child: Text('${provider.serviceFeeModelList[index].currency?['symbol']}${provider.serviceFeeModelList[index].charges}'),
+                        child: Text('${provider.serviceFeeModelList[index].currency?['symbol']}${provider.serviceFeeModelList[index].charges}',style: TextStyle(fontSize: 12),),
                       ),
                     ],
                   ),

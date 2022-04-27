@@ -261,6 +261,8 @@ class MProfile extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () async{
+                    await Provider.of<ApiDataProvider>(context,listen: false).UpdateOnlineStatus(context,
+                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken, 0);
                     SharedPreferences pref=await SharedPreferences.getInstance();
                     await pref.remove(SharedPreference.roleIdKey);
                     await pref.remove(SharedPreference.userLoggedInKey);
@@ -270,6 +272,7 @@ class MProfile extends StatelessWidget {
                     await pref.remove(SharedPreference.firstNameKey);
                     await pref.remove(SharedPreference.lastNameKey);
                     await Provider.of<ApiDataProvider>(context,listen: false).setBearerToken('');
+
                     Navigator.of(context,rootNavigator: true).pushReplacement(MaterialPageRoute(builder: (context)=>Login()));
                   },
                   child: Container(

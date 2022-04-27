@@ -11,12 +11,12 @@ class MoneyAddedDialog extends StatelessWidget {
     var size=MediaQuery.of(context).size;
     return Dialog(
       child: Container(
-        height: 390.0,
-        width: 320.0,
-        padding: EdgeInsets.only(left: 10,right: 10,top: 10,bottom: 40),
+        height: size.height * 0.65,
+        width: size.width * 0.6,
+        padding: EdgeInsets.only(left: 10,right: 10,top: 10,bottom: 30),
 
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Align(alignment:Alignment.topRight,child: IconButton(
               onPressed: (){
@@ -24,12 +24,12 @@ class MoneyAddedDialog extends StatelessWidget {
               },
               icon: Icon(Icons.cancel_outlined),
             )),
-            Image.asset('assets/images/moneyadd.png',height: size.height * 0.27,width: size.width * 0.9,),
-            Flexible(child: Text('$text',maxLines: 4,style: TextStyle(
+            Image.asset('assets/images/moneyadd.png',height: size.height * 0.24,width: size.width * 0.8,),
+            Flexible(child: Text('$text',maxLines: 10,overflow: TextOverflow.fade,style: TextStyle(
                 color: newColor,
-                fontSize: 18,
+                fontSize: 15,
                 fontWeight: FontWeight.w600
-            ),textAlign: TextAlign.center,))
+            ),textAlign: TextAlign.start,))
           ],
         ),
       ),

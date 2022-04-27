@@ -119,16 +119,17 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
                         Provider.of<ApiDataProvider>(context, listen: false).selectedCurrencySymbol,style: TextStyle(color:textBlackColor),),
                     onChanged: (GetCurrenciesModel? value) async{
                       data=value;
+                      ApiDataProvider provider=Provider.of<ApiDataProvider>(context, listen: false);
                       //print('cccccccccccccccccc ${value!.name}');
-                      Provider.of<ApiDataProvider>(context, listen: false).userWalletModelList.forEach((element)  {
+                      provider.userWalletModelList.forEach((element)  async{
                         if(element.currency_id==value!.id){
-                           Provider.of<ApiDataProvider>(context, listen: false).setBalance(element.wallet);
-                           Provider.of<ApiDataProvider>(context, listen: false).setSelectedWalletBalance(element.wallet);
-                           Provider.of<ApiDataProvider>(context, listen: false).setSelectedCurrencySymbol(value.symbol);
-                           Provider.of<ApiDataProvider>(context,listen: false).setSelectedCurrencyId(value.id);
+                           provider.setBalance(element.wallet);
+                           provider.setSelectedWalletBalance(element.wallet);
+                           provider.setSelectedCurrencySymbol(value.symbol);
+                           provider.setSelectedCurrencyId(value.id);
 
-                          Provider.of<ApiDataProvider>(context, listen: false).setdefaultCurrencySymbol(value.symbol);
-                          Provider.of<ApiDataProvider>(context, listen: false).setdefaultCurrencyName(value.name);
+                           provider.setdefaultCurrencySymbol(value.symbol);
+                           provider.setdefaultCurrencyName(value.name);
 
                         }
                       });

@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
+import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/screens/customer/profile.dart';
 import 'package:fx_pluses/screens/service_fees.dart';
 import 'package:fx_pluses/shared_preferences.dart';
@@ -68,6 +69,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     var size = MediaQuery.of(context).size;
+    ApiDataProvider provider=Provider.of<ApiDataProvider>(context,listen: false);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -93,8 +95,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
               padding: const EdgeInsets.only(right: 8.0),
               child: InkWell(
                 onTap: () async{
-                  await Provider.of<ApiDataProvider>(context, listen: false)
-                      .setScreenIndex(6);
+                  await provider.setScreenIndex(6);
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>CProfile(backButtonEnabled: true,)));
                 },
                 child: CircleAvatar(
@@ -121,7 +122,8 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                 children: [
                   InkWell(
                     onTap:() async {
-                      await Provider.of<ApiDataProvider>(context, listen: false).setScreenIndex(6);
+                      await provider.setScreenIndex(6);
+                      await provider.GetServiceFees(context, provider.bearerToken, provider.selectedCurrencyId);
                       pushNewScreen(
                         context,
                         screen: ServiceFees(),
@@ -135,7 +137,8 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                       height: size.height * 0.04,
                       decoration: BoxDecoration(
                           color: buttonColor,
-                          borderRadius: BorderRadius.circular(15)
+                          borderRadius: BorderRadius.circular(15),
+                        gradient: gradient
                       ),
                       child: Center(
                         child: Text(
@@ -146,6 +149,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                       ),
                     ),
                   ),
+
                 ],
               ),
               Container(
@@ -194,8 +198,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children:  [
                             Text(
-                              'Welcome ${Provider.of<ApiDataProvider>(context,listen: false).firstName==null?'':
-                              Provider.of<ApiDataProvider>(context,listen: false).firstName}',
+                              'Welcome ${provider.firstName==null? '' : provider.firstName}',
                               textAlign: TextAlign.start,
                               style: TextStyle(
                                   color: textWhiteColor,
@@ -246,8 +249,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                   ),
                   iconSize: 30,
                   isExpanded: true,
-                  items: Provider.of<ApiDataProvider>(context, listen: false)
-                      .getCountriesForMerchants
+                  items: provider.getCountriesForMerchants
                       .map((e) => DropdownMenuItem<GetCountriesForMerchants>(
                           value: e, child: Text(e.country)))
                       .toList(),
@@ -292,8 +294,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                   ),
                   iconSize: 30,
                   isExpanded: true,
-                  items: Provider.of<ApiDataProvider>(context, listen: false)
-                      .getCountriesForMerchants
+                  items: provider.getCountriesForMerchants
                       .map((e) => DropdownMenuItem<GetCountriesForMerchants>(
                       value: e, child: Text(e.country)))
                       .toList(),
@@ -385,31 +386,23 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                     //   //Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Your wallet balance is insufficient');
                     // } else {
                       print('aaaaaaaaaaaaaaaaaaaaaaa $country');
-                      Provider
-                          .of<ApiDataProvider>(context, listen: false)
-                          .getCountriesForMerchants
-                          .forEach((element) async {
+                      provider.getCountriesForMerchants.forEach((element) async {
                         //await Provider.of<ApiDataProvider>(context,listen: false).setCountryName(CountryPickerUtils.getCountryByIsoCode(element.country_code).name.toString());
                         if (element.country == country) {
                           print(element.country);
                           countryCode = element.country_code;
                           if(amountWritten !='0'  ){
                             if(amount.text.isEmpty){
-                              Provider
-                                  .of<ApiDataProvider>(context,
-                                  listen: false).showSnackbar(context, 'Please enter amount', redColor);
+                              provider.showSnackbar(context, 'Please enter amount', redColor);
                             }else{
                               if(from_country_id != null && to_counntry_id != null){
                                 if(amount.text.contains('.')) {
-                                  Provider
-                                      .of<ApiDataProvider>(context,
-                                      listen: false).showSnackbar(context,'Please enter amount in digits format',redColor);
+                                  provider.showSnackbar(context,'Please enter amount in digits format',redColor);
                                 }else{
                                   FocusScope.of(context).requestFocus(
                                       FocusNode());
 
-                                  await Provider.of<ApiDataProvider>(
-                                      context, listen: false).getMercchantes(
+                                  await provider.getMercchantes(
                                       context,
                                       token!,
                                       amount.text,
@@ -431,18 +424,14 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                 }
                               }else{
                                 ScaffoldMessenger.of(context).clearSnackBars();
-                                Provider
-                                    .of<ApiDataProvider>(context,
-                                    listen: false).showSnackbar(context, 'Please select countries', redColor);
+                                provider.showSnackbar(context, 'Please select countries', redColor);
                               }
 
                             }
 
                           }else{
                             ScaffoldMessenger.of(context).clearSnackBars();
-                            Provider
-                                .of<ApiDataProvider>(context,
-                                listen: false).showSnackbar(context, 'Please enter amount more then 0', redColor);
+                            provider.showSnackbar(context, 'Please enter amount more then 0', redColor);
                           }
 
                         }
