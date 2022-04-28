@@ -305,7 +305,10 @@ class _ChatScreenState extends State<ChatScreen> {
               centerTitle: true,
               backgroundColor: buttonColor,
               title: Text(
-                widget.buisnessName ?? widget.name,
+                widget.buisnessName != null && widget.buisnessName != 'null' ? widget.buisnessName! : widget.name,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                softWrap: false,
                 style: TextStyle(
                     color: whiteColor, fontSize: 23, fontWeight: FontWeight.w600),
               ),

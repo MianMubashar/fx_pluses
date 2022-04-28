@@ -43,7 +43,7 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
             Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
             widget.recieverId, widget.transaction_id);
         pushNewScreen(Get.context!,
-            screen: ChatScreen(buisnessName: widget.buisness,reciever_id: widget.recieverId,name: widget.firstName+" "+widget.lastName,transactionId: widget.transaction_id,rateOffer: null,transaction: widget.transaction,),
+            screen: ChatScreen(buisnessName: widget.buisness,reciever_id: widget.recieverId,name: widget.firstName,transactionId: widget.transaction_id,rateOffer: null,transaction: widget.transaction,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);

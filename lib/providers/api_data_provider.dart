@@ -1797,6 +1797,7 @@ setRegisterUserCountryName(String n){
         if (status) {
           Get.back();
           showSnackbar(context, apiResponse['message'], buttonColor);
+          Navigator.pop(context);
           // if(status_id==2) {
           //   // await sendMessage(
           //   //     context,
