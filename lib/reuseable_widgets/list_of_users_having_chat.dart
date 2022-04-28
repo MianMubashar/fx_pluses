@@ -71,127 +71,130 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
           // ],
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
           children: [
-            Row(
+            Stack(
+
               children: [
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 30,
-                      backgroundImage: widget.profile==null ?
-                      NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSMA98U5nhBmtcdj2hmFD4ijUIue_fCxNWw&usqp=CAU')
-                          :NetworkImage((widget.profile!.contains('http') || widget.profile!.contains('https'))? widget.profile!:
-                      profile_url+widget.profile!,),
-                    ),
-                    // Container(
-                    //   height: size.height * 0.1,
-                    //   width: size.width * 0.22,
-                    //   // color:Colors.blue,
-                    //   child: Center(
-                    //     child: Stack(
-                    //       children: [
-                    //         ClipRRect(
-                    //           borderRadius:
-                    //           BorderRadius.circular(15.0),
-                    //           child: Container(
-                    //             height: size.height * 0.08,
-                    //             width: size.width * 0.18,
-                    //             color: Colors.black,
-                    //             child: Image.network((profile!.contains('http') || profile!.contains('https'))?profile!:
-                    //             profile_url+profile!,fit: BoxFit.fill,),
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                     Positioned(
-                      //bottom: 10,
-                      top: 2,
-                      left: 40,
-                      child: Container(
-                        height: size.height * 0.022,
-                        width:  size.width * 0.05,
-
-                        decoration: widget.isOnline == 1 ?
-                        BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.green
-                        )
-                            :BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.red
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-
                 Container(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment:
-                    CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width:size.width * 0.45,
-                                child: Text(
-                                  widget.firstName+" "+widget.lastName,
-                                  maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
-                                    color: textBlackColor,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              widget.transaction_status_id != null && widget.transaction_status_id == 5 ?
-                               Icon(Icons.star,size: size.height * 0.02,color: buttonColor,)
-                                  :Container(),
-                            ],
-                          ),
-                          widget.unread_msg != null && widget.unread_msg != 0 ?Container(
-                            height: 15,
-                            width: 15,
-                            child: Center(child: Text('${widget.unread_msg}',style: TextStyle(
-                              color: whiteColor,
-                              fontSize: 10
-                            ),)),
+                  margin: EdgeInsets.only(right: 20),
+                  child: CircleAvatar(
 
-                            decoration: BoxDecoration(
-                              color: buttonColor,
-                              shape: BoxShape.circle
-                            ),
-                          ):SizedBox()
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                        width: size.width * 0.4,
-                        child: Text(
-                          widget.message==null ?'': widget.message!,
-                          softWrap: false,
-                          overflow: TextOverflow.fade,
-                          maxLines: 1,
-                          style: TextStyle(
-                              color: greyColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      )
-                    ],
+                    radius: 30,
+                    backgroundImage: widget.profile==null ?
+                    NetworkImage('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuSMA98U5nhBmtcdj2hmFD4ijUIue_fCxNWw&usqp=CAU')
+                        :NetworkImage((widget.profile!.contains('http') || widget.profile!.contains('https'))? widget.profile!:
+                    profile_url+widget.profile!,),
                   ),
                 ),
+                // Container(
+                //   height: size.height * 0.1,
+                //   width: size.width * 0.22,
+                //   // color:Colors.blue,
+                //   child: Center(
+                //     child: Stack(
+                //       children: [
+                //         ClipRRect(
+                //           borderRadius:
+                //           BorderRadius.circular(15.0),
+                //           child: Container(
+                //             height: size.height * 0.08,
+                //             width: size.width * 0.18,
+                //             color: Colors.black,
+                //             child: Image.network((profile!.contains('http') || profile!.contains('https'))?profile!:
+                //             profile_url+profile!,fit: BoxFit.fill,),
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+                 Positioned(
+                  //bottom: 10,
+                  top: 0,
+                  left: 42,
+                  child: Container(
+                    padding: EdgeInsets.only(right: 20),
+                    height: size.height * 0.022,
+                    width:  size.width * 0.05,
 
+                    decoration: widget.isOnline == 1 ?
+                    BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.green
+                    )
+                        :BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red
+                    ),
+                  ),
+                )
               ],
             ),
+
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              //margin: EdgeInsets.only(left: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(
+                            width:size.width * 0.45,
+                            child: Text(
+                              widget.firstName+" "+widget.lastName,
+                              maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
+                                color: textBlackColor,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          widget.transaction_status_id != null && widget.transaction_status_id == 5 ?
+                           Icon(Icons.star,size: size.height * 0.02,color: buttonColor,)
+                              :Container(),
+                        ],
+                      ),
+                      widget.unread_msg != null && widget.unread_msg != 0 ?Container(
+                        height: 15,
+                        width: 15,
+                        child: Center(child: Text('${widget.unread_msg}',style: TextStyle(
+                          color: whiteColor,
+                          fontSize: 10
+                        ),)),
+
+                        decoration: BoxDecoration(
+                          color: buttonColor,
+                          shape: BoxShape.circle
+                        ),
+                      ):SizedBox()
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    width: size.width * 0.4,
+                    child: Text(
+                      widget.message==null ?'': widget.message!,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: greyColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  )
+                ],
+              ),
+            ),
+
           ],
         ),
       ),

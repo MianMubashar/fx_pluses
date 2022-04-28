@@ -18,7 +18,7 @@ class CTransferDialog extends StatefulWidget {
 }
 
 class _CTransferDialogState extends State<CTransferDialog> {
-  int? charges;
+  int charges=0;
   int? balance;
 
   TextEditingController amountController=TextEditingController();
@@ -28,7 +28,7 @@ class _CTransferDialogState extends State<CTransferDialog> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.73,
+      // height: MediaQuery.of(context).size.height ,
       width: MediaQuery.of(context).size.width ,
       padding: EdgeInsets.only(left: 10,right: 10,top: 30,bottom: 40),
 
@@ -81,14 +81,20 @@ class _CTransferDialogState extends State<CTransferDialog> {
                       Provider.of<ApiDataProvider>(
                           context, listen: false).serviceFeeModelList.forEach((element) {
                         if(int.parse(value) > double.parse(element.min.toString()).round() && int.parse(value) < double.parse(element.max.toString()).round()){
-                          charges=double.parse(element.charges!).round();
+                          charges=double.parse(element.charges!.toString()).round();
 
                           setState(() {
 
                           });
                         }
                       });
-                      balance = int.parse(amountController.text) + int.parse(charges.toString());
+                      if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 5) {
+                        balance = int.parse(amountController.text) +
+                            charges;
+                      }
+                      if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 4) {
+                        balance = int.parse(amountController.text);
+                      }
                       }else{
                         if(amountController.text.isEmpty){
                           balance=0;
@@ -102,12 +108,14 @@ class _CTransferDialogState extends State<CTransferDialog> {
                     },
                   ),
                 ),
+                Provider.of<ApiDataProvider>(context,listen: false).roleId == 5 ?
                 Text(
                   'Service Fee',
                   style: TextStyle(
                     color: greyColor,
                   ),
-                ),
+                ) : SizedBox(),
+                Provider.of<ApiDataProvider>(context,listen: false).roleId == 5 ?
                 Container(
                   margin: EdgeInsets.only(bottom: 25, top: 5),
                   height: MediaQuery.of(context).size.height * 0.07,
@@ -118,13 +126,15 @@ class _CTransferDialogState extends State<CTransferDialog> {
                     borderRadius: BorderRadius.circular(20)
                   ),
                   child: charges != null ? Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol + '       ' + charges.toString()) : Text('0'),
-                ),
+                ) : SizedBox(),
+                Provider.of<ApiDataProvider>(context,listen: false).roleId == 5 ?
                 Text(
                   'Total',
                   style: TextStyle(
                     color: greyColor,
                   ),
-                ),
+                ) : SizedBox(),
+                Provider.of<ApiDataProvider>(context,listen: false).roleId == 5 ?
                 Container(
                   margin: EdgeInsets.only(bottom: 25, top: 5),
                   height: MediaQuery.of(context).size.height * 0.07,
@@ -135,7 +145,7 @@ class _CTransferDialogState extends State<CTransferDialog> {
                       borderRadius: BorderRadius.circular(20)
                   ),
                   child: charges != null ? Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol + '       ' + balance.toString()) : Text('0'),
-                ),
+                ) : SizedBox(),
                 InkWell(
                   onTap: () async{
                     if(amountController.text.isEmpty){
@@ -170,7 +180,7 @@ class _CTransferDialogState extends State<CTransferDialog> {
                               '',
                               widget.currency_id,
                           null,
-                          charges.toString());
+                              Provider.of<ApiDataProvider>(context, listen: false).roleId == 5 ?charges.toString(): '0');
                         }else{
                           Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
                               context, 'Your wallet balance is insufficient', redColor);

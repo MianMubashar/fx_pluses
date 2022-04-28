@@ -484,7 +484,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
 
                           // String pattern = r'\b[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*\b';
-                          String pattern = r'[^""]+?([0-9]{5,})';
+                          String pattern = r'[^""]+?([0-9]{4,})';
                           RegExp regExp = new RegExp(pattern,caseSensitive: false,multiLine: false);
                           final phoneNumberMatches=regExp.allMatches(messageText.text);
                           List<String> phoneNumbers=[];
@@ -627,7 +627,9 @@ class Stream_Builder extends StatelessWidget {
                   }else{
                     List<dynamic> data1=apiResponse['messages'];
 
-                    data1.removeLast();
+                    if(data1.isNotEmpty) {
+                      data1.removeLast();
+                    }
                     data=data1;
 
                     Map<String, dynamic>? offer=apiResponse['rate_offer'];

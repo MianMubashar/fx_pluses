@@ -1400,6 +1400,13 @@ setRegisterUserCountryName(String n){
                  if(user['id_file'] != '' || user['id_file'] != null){
                    setIdFile(user['id_file']);
                    showSnackbar(context, 'ID uploaded successfully', buttonColor);
+                   if(roleId==4) {
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>MBottomNavigationBar(index: 0)), (route) => false);
+                   }
+                   if(roleId==5) {
+                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>CBottomNavigationBar(index: 0)), (route) => false);
+                   }
+
                  }
 
               }
@@ -1790,21 +1797,23 @@ setRegisterUserCountryName(String n){
         if (status) {
           Get.back();
           showSnackbar(context, apiResponse['message'], buttonColor);
-          if(status_id==2) {
-            await sendMessage(
-                context,
-                token,
-                merchant_id!,
-                message!,
-                '',
-                '',
-                tran_id,
-                null,
-                null,
-                null,
-                null,
-                1);
-          }
+          // if(status_id==2) {
+          //   // await sendMessage(
+          //   //     context,
+          //   //     token,
+          //   //     merchant_id!,
+          //   //     message!,
+          //   //     '',
+          //   //     '',
+          //   //     tran_id,
+          //   //     null,
+          //   //     null,
+          //   //     null,
+          //   //     null,
+          //   //     1);
+          //
+          // }
+
           return true;
         } else {
           Get.back();

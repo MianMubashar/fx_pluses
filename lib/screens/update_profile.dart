@@ -280,6 +280,9 @@ class _UpdateProfileState extends State<UpdateProfile> {
                         buisnessController.text.isEmpty ? null : buisnessController.text,
                         null,
                         null);
+                    setState(() {
+
+                    });
                   }else{
                     Provider.of<ApiDataProvider>(context,listen: false).setContact(phoneNumber.toString());
                     await Provider.of<ApiDataProvider>(context,listen: false).otpRequest(phoneNumber, context, 1);

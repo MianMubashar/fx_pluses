@@ -220,12 +220,13 @@ class _CRecieverInfoState extends State<CRecieverInfo> {
                         Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
                         widget.reciever_id,
                     widget.transaction_id);
+                    Get.back();
 
 
 
 
 
-                    Navigator.pop(context);
+
                   }else{
                     Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid amount',redColor);
                   }
