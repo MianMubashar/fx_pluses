@@ -263,6 +263,7 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
     }else{
+      print(Provider.of<ApiDataProvider>(context,listen: true).chatOffers?['title']);
       if(widget.transactionId != null && Provider.of<ApiDataProvider>(context,listen: false).roleId == 4){
         if(Provider.of<ApiDataProvider>(context,listen: true).chatOffers == null || Provider.of<ApiDataProvider>(context,listen: true).chatOffers?['title']=='declined') {
           return IconButton(onPressed: () {
@@ -274,7 +275,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 });
           }, icon: Icon(Icons.local_offer_outlined, color: whiteColor,));
         }else{
-          return Container();
+          return IconButton(onPressed: () {
+            Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context,
+                'You already have ${Provider.of<ApiDataProvider>(context,listen: false).chatOffers?['title']} request', Colors.red);
+          }, icon: Icon(Icons.local_offer_outlined, color: whiteColor,));
         }
       }else{
         return Container(
@@ -291,10 +295,12 @@ class _ChatScreenState extends State<ChatScreen> {
     var size=MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async{
+
         setState(() {
 
         });
         Get.back();
+
         Provider.of<ApiDataProvider>(context, listen: false).setChatOffers(null);
         return true;
       },

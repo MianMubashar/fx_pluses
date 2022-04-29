@@ -35,11 +35,11 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
     ];
   }
 
-  getData() async{
-    await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
-        Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
-
-  }
+  // getData() async{
+  //   await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
+  //       Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+  //
+  // }
 
   @override
   void initState() {
@@ -201,9 +201,9 @@ class _MBottomNavigationBarState extends State<MBottomNavigationBar> {
 
                         await Provider.of<ApiDataProvider>(context, listen: false)
                             .setScreenIndex(index);
-                        if (index == 0 || index == 1) {
-                          await getData();
-                        }
+                        // if (index == 0 || index == 1) {
+                        //   await getData();
+                        // }
 
                         Navigator.pushAndRemoveUntil(
                             Get.context!, MaterialPageRoute(builder: (context) {

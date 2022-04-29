@@ -481,7 +481,7 @@ setRegisterUserCountryName(String n){
 
 
           await getCountries(context, token);
-          await merchantTransactionRequests(context, token);
+          //await merchantTransactionRequests(context, token);
           await getCurrencies(context, token);
           await GetServiceFees(context, token, currencyId);
           Get.back();
@@ -632,7 +632,7 @@ setRegisterUserCountryName(String n){
 
 
           await getCountries(context, token);
-          await merchantTransactionRequests(context, token);
+         // await merchantTransactionRequests(context, token);
           await getCurrencies(context, token);
           await GetServiceFees(context, token, currencyId);
 
@@ -975,37 +975,7 @@ setRegisterUserCountryName(String n){
     }
   }
 
-  Future merchantTransactionRequests(BuildContext context, String token) async {
-    Uri url = Uri.parse(SERVER_URL + 'merchant-transaction-requests');
-    //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
-    try {
-      var header = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer $token",
-      };
-      var response = await http.post(url, headers: header);
-      if (response.statusCode == 200) {
-        Map<String, dynamic> apiResponse = jsonDecode(response.body);
-        //print(apiResponse.values);
-        bool status = apiResponse['status'];
-        if (status) {
-          merchantTransactionRequestsList.clear();
-          List<dynamic> data = apiResponse['requests'];
-          for (int i = 0; i < data.length; i++) {
-            merchantTransactionRequestsList.add(
-                MerchantTransactionRequestsModel.fromJson(data[i]));
-          }
-        } else {
-          showSnackbar(context, apiResponse['message'], redColor);
-        }
-      } else {
-        // showSnackbar(context, 'Something went wrong',redColor);
-      }
-    } catch (e) {
-      showSnackbar(context, 'Something went wrong', redColor);
-    }
-  }
+
 
   Future accepteOrNotStatusRequest(BuildContext context, String token,
       String status, int transaction_id, int index) async {
@@ -1946,6 +1916,55 @@ setRegisterUserCountryName(String n){
 
       showSnackbar(context, 'Something went wrong', redColor);
     }
+  }
+
+  Future merchantTransactionRequests(BuildContext context, String token) async {
+    Uri url = Uri.parse(SERVER_URL + 'merchant-transaction-requests');
+    //String token='27|RttDuIFEcRlrBNtVvkDqG1vEYZBLQ1nZsFT7fSaZ';
+    try {
+      var header = {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer $token",
+      };
+      var response = await http.post(url, headers: header);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> apiResponse = jsonDecode(response.body);
+        //print(apiResponse.values);
+        bool status = apiResponse['status'];
+        if (status) {
+          merchantTransactionRequestsList.clear();
+          List<dynamic> data = apiResponse['requests'];
+          for (int i = 0; i < data.length; i++) {
+            merchantTransactionRequestsList.add(
+                MerchantTransactionRequestsModel.fromJson(data[i]));
+          }
+        } else {
+          showSnackbar(context, apiResponse['message'], redColor);
+        }
+      } else {
+        // showSnackbar(context, 'Something went wrong',redColor);
+      }
+    } catch (e) {
+      showSnackbar(context, 'Something went wrong', redColor);
+    }
+  }
+
+  Stream<http.Response> merchantTransactionRequests1(BuildContext context,String token) async* {
+    var header={
+      'Content-Type':'application/json',
+      "Accept" : "application/json",
+      'Authorization':'Bearer $token'
+    };
+    //print('stream builder 4');
+    yield* Stream.periodic(Duration(milliseconds:2000), (_) async{
+      return await http.post(Uri.parse(SERVER_URL + 'merchant-transaction-requests'),headers:header);
+    }).asyncMap((event) async {
+      //print('stream builder 4');
+      // event.then((value) => print('stream builder 4 ${value.body}'));
+
+      return await event;
+    });
   }
 
   Stream<http.Response> chatMenu(BuildContext context,String token) async* {

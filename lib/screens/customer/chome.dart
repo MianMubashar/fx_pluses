@@ -334,7 +334,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                       padding:  EdgeInsets.only(left: 20.0,top: 15),
                       child: Text(fromCurrencySymbol==null?'':fromCurrencySymbol!),
                     ),
-                      hintText: 'Enter rate',
+                      hintText: 'Enter amount',
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,
@@ -343,7 +343,7 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                         borderRadius: BorderRadius.circular(20),
                       )) :
                   InputDecoration(
-                      hintText: 'Enter rate',
+                      hintText: '0',
                       helperStyle: TextStyle(color: blackColor),
                       isDense: true,
                       filled: true,

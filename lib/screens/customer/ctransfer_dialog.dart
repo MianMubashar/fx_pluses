@@ -19,7 +19,7 @@ class CTransferDialog extends StatefulWidget {
 
 class _CTransferDialogState extends State<CTransferDialog> {
   int charges=0;
-  int? balance;
+  int? balance=0;
 
   TextEditingController amountController=TextEditingController();
 
@@ -78,14 +78,11 @@ class _CTransferDialogState extends State<CTransferDialog> {
                     onChanged: (value) {
                       print(amountController.text);
                       if(amountController.text.isNotEmpty){
-                      Provider.of<ApiDataProvider>(
-                          context, listen: false).serviceFeeModelList.forEach((element) {
-                        if(int.parse(value) > double.parse(element.min.toString()).round() && int.parse(value) < double.parse(element.max.toString()).round()){
+                        balance=0;
+                        charges=0;
+                      Provider.of<ApiDataProvider>(context, listen: false).serviceFeeModelList.forEach((element) {
+                        if(int.parse(value) >= double.parse(element.min.toString()).round() && int.parse(value) <= double.parse(element.max.toString()).round()){
                           charges=double.parse(element.charges!.toString()).round();
-
-                          setState(() {
-
-                          });
                         }
                       });
                       if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 5) {
@@ -95,6 +92,9 @@ class _CTransferDialogState extends State<CTransferDialog> {
                       if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 4) {
                         balance = int.parse(amountController.text);
                       }
+                      setState(() {
+
+                      });
                       }else{
                         if(amountController.text.isEmpty){
                           balance=0;
@@ -125,7 +125,7 @@ class _CTransferDialogState extends State<CTransferDialog> {
                     color: Colors.black.withOpacity(0.04),
                     borderRadius: BorderRadius.circular(20)
                   ),
-                  child: charges != null ? Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol + '       ' + charges.toString()) : Text('0'),
+                  child:  Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol + '       ' + charges.toString()) ,
                 ) : SizedBox(),
                 Provider.of<ApiDataProvider>(context,listen: false).roleId == 5 ?
                 Text(
@@ -144,7 +144,7 @@ class _CTransferDialogState extends State<CTransferDialog> {
                       color: Colors.black.withOpacity(0.04),
                       borderRadius: BorderRadius.circular(20)
                   ),
-                  child: charges != null ? Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol + '       ' + balance.toString()) : Text('0'),
+                  child:  Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol + '       ' + balance.toString()) ,
                 ) : SizedBox(),
                 InkWell(
                   onTap: () async{

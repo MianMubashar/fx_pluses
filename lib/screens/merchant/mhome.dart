@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/screens/merchant/mprofile.dart';
 import 'package:provider/provider.dart';
 import '../../constants.dart';
+import '../../model/merchant_transaction_requests_model.dart';
 import '../../reuseable_widgets/enter_amout_to_transfer_dialog.dart';
 import 'mtransaction_requests.dart';
+import 'package:http/http.dart' as http;
 
 
 class MHome extends StatefulWidget {
@@ -19,18 +23,18 @@ class _MHomeState extends State<MHome> {
 
   String? balance;
   String? profilePhoto;
-  getData() async{
-    await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
-        Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
-    setState(() {
-
-    });
-  }
+  // getData() async{
+  //   await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
+  //       Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+  //   setState(() {
+  //
+  //   });
+  // }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    //getData();
 
   }
   @override
@@ -235,21 +239,50 @@ class _MHomeState extends State<MHome> {
               ),
               SizedBox(height: 20,),
 
-
-              Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length==0?
-              Align(
-                alignment: Alignment.center,
-                child: Text('No Requests found',style: TextStyle(
-                    color: textBlackColor,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 16),),
-              ):Container(
+              Container(
                 height: size.height * 0.4,
-                child: ListView.builder(
-                    itemCount: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length>5?5:
-                    Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length,
-                    itemBuilder: (context, index) {
-                      return transactionRequestWidget(size: size,index: index,);
+                child: StreamBuilder<http.Response>(
+                    stream: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests1(context,
+                        Provider.of<ApiDataProvider>(context,listen: false).bearerToken),
+                    builder: (context, snapshot) {
+                      if(!snapshot.hasData){
+                        return Center(
+                          child: Container(
+                            height: 40,width: 40,
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        );
+                      }else{
+                        var response= snapshot.data!;
+
+                        if(response.statusCode==200){
+                          Map<String, dynamic> apiResponse = jsonDecode(response.body);
+                          //print(apiResponse.values);
+                          bool status = apiResponse['status'];
+                          if(status){
+                            Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.clear();
+                            List<dynamic> data = apiResponse['requests'];
+                            for (int i = 0; i < data.length; i++) {
+                              Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.add(
+                                  MerchantTransactionRequestsModel.fromJson(data[i]));
+                            }
+
+                          }
+                        }
+                        return Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length==0?
+                        Center(
+                            child:Text('No request recieved')
+                        )
+                            :ListView.builder(
+                            itemCount: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length,
+                            itemBuilder: (context, index) {
+                              return transactionRequestWidget(size: size,index: index,);
+                            });
+                      }
                     }),
               )
             ],

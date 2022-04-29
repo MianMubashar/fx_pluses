@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:country_currency_pickers/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 import '../../constants.dart';
+import '../../model/merchant_transaction_requests_model.dart';
 class MTransactionRequests extends StatefulWidget {
   static final String id='MTransactionRequests_Screen';
   const MTransactionRequests({Key? key}) : super(key: key);
@@ -15,19 +19,19 @@ class MTransactionRequests extends StatefulWidget {
 
 class _MTransactionRequestsState extends State<MTransactionRequests> {
 
-  getData() async{
-    await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
-        Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
-    setState(() {
-
-    });
-  }
+  // getData() async{
+  //   await Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests(context,
+  //       Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+  //   setState(() {
+  //
+  //   });
+  // }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    //getData();
   }
   @override
   Widget build(BuildContext context) {
@@ -38,15 +42,51 @@ class _MTransactionRequestsState extends State<MTransactionRequests> {
           child: appbar(size: size,onPress: (){},text: 'Transaction Requests',check: false,)),
       body: Padding(
         padding: EdgeInsets.only(left: 15,right: 15,top: 15),
-      child: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length==0?
-          Center(
-            child:Text('No request recieved')
-          )
-          :ListView.builder(
-          itemCount: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length,
-          itemBuilder: (context, index) {
-            return transactionRequestWidget(size: size,index: index,);
+      child: StreamBuilder<http.Response>(
+              stream: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequests1(context,
+                  Provider.of<ApiDataProvider>(context,listen: false).bearerToken),
+              builder: (context, snapshot) {
+            if(!snapshot.hasData){
+              return Center(
+                child: Container(
+                  height: 40,width: 40,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              );
+            }else{
+              var response= snapshot.data!;
+
+              if(response.statusCode==200){
+                Map<String, dynamic> apiResponse = jsonDecode(response.body);
+                //print(apiResponse.values);
+                bool status = apiResponse['status'];
+                if(status){
+                  Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.clear();
+                  List<dynamic> data = apiResponse['requests'];
+                  for (int i = 0; i < data.length; i++) {
+                    Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.add(
+                        MerchantTransactionRequestsModel.fromJson(data[i]));
+                  }
+
+                }
+              }
+              return Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length==0?
+              Center(
+                  child:Text('No request recieved')
+              )
+                  :ListView.builder(
+                  itemCount: Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList.length,
+                  itemBuilder: (context, index) {
+                    return transactionRequestWidget(size: size,index: index,);
+                  });
+            }
           }),
+
+
       ),
     );
   }

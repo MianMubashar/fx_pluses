@@ -131,6 +131,10 @@ class _CWalletState extends State<CWallet> with AutomaticKeepAliveClientMixin{
                            provider.setdefaultCurrencySymbol(value.symbol);
                            provider.setdefaultCurrencyName(value.name);
 
+                           provider.GetServiceFees(context,
+                               provider.bearerToken,
+                               value.id);
+
                         }
                       });
                       setState(() {
