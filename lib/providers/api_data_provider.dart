@@ -217,7 +217,7 @@ setRegisterUserCountryName(String n){
     this._password = password;
   }
 
-  setUserId(String userId) {
+  setUserId(String? userId) {
     this._userId = userId;
   }
 
@@ -283,6 +283,7 @@ setRegisterUserCountryName(String n){
       Map customerData = {
         'first_name': firstName,
         'last_name': lastName,
+        'user_id': userId,
         'email': email,
         'password': password,
         'contact_no': contact,
@@ -298,7 +299,7 @@ setRegisterUserCountryName(String n){
         'password': password,
         'contact_no': contact,
         'country_code': countryCode,
-        'user_id': userId,
+        // 'user_id': userId,
         'role_id': roleId,
         'device_token': deviceToken,
         'country_name':country_name,
@@ -385,7 +386,7 @@ setRegisterUserCountryName(String n){
         if (status) {
           _userWalletModelList.clear();
 
-          int user_id = apiResponse['user']['id'];
+          int _id = apiResponse['user']['id'];
           String firstName = apiResponse['user']['first_name'];
           String lastName = apiResponse['user']['last_name'];
           String email = apiResponse['user']['email'];
@@ -393,7 +394,7 @@ setRegisterUserCountryName(String n){
          String? file=apiResponse['user']['id_file'];
          String? buisness=apiResponse['user']['business'];
 
-          // String wallet=apiResponse['user']['wallet'];
+          String? _user_id=apiResponse['user']['user_id'];
           int role_id = apiResponse['user']['role_id'];
           String country_code = apiResponse['user']['country_code'];
           String rating = apiResponse['user']['rating'];
@@ -432,7 +433,7 @@ setRegisterUserCountryName(String n){
               _userWalletModelList);
 
 
-          await SharedPreference.saveUserIdSharedPreferences(user_id);
+          await SharedPreference.saveUserIdSharedPreferences(_id);
           await SharedPreference.saveFirstNameSharedPreferences(firstName);
           await SharedPreference.saveLastNameSharedPreferences(lastName);
           await SharedPreference.saveEmailSharedPreferences(email);
@@ -452,7 +453,7 @@ setRegisterUserCountryName(String n){
           await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
 
 
-          await setId(user_id);
+          await setId(_id);
           await setFirstName(firstName);
           await setLastName(lastName);
           await setEmail(email);
@@ -474,6 +475,7 @@ setRegisterUserCountryName(String n){
           await setRegisterUserCountryName(country_name);
           await setUnreadTotalMsg(unread);
           await setOnlineStatus(is_online);
+          await setUserId(_user_id);
 
 
           await setScreenIndex(0);
@@ -541,7 +543,7 @@ setRegisterUserCountryName(String n){
           _userWalletModelList.clear();
 
 
-          int user_id = apiResponse['user']['id'];
+          int _id = apiResponse['user']['id'];
           String firstName = apiResponse['user']['first_name'];
           String lastName = apiResponse['user']['last_name'];
           String email = apiResponse['user']['email'];
@@ -549,6 +551,7 @@ setRegisterUserCountryName(String n){
           String? file=apiResponse['user']['id_file'];
           String? buisness=apiResponse['user']['business'];
           // String wallet=apiResponse['user']['wallet'];
+          String? _user_id=apiResponse['user']['user_id'];
           int role_id = apiResponse['user']['role_id'];
           String country_code = apiResponse['user']['country_code'];
           String rating = apiResponse['user']['rating'];
@@ -586,7 +589,7 @@ setRegisterUserCountryName(String n){
               _userWalletModelList);
 
 
-          await SharedPreference.saveUserIdSharedPreferences(user_id);
+          await SharedPreference.saveUserIdSharedPreferences(_id);
           await SharedPreference.saveFirstNameSharedPreferences(firstName);
           await SharedPreference.saveLastNameSharedPreferences(lastName);
           await SharedPreference.saveEmailSharedPreferences(email);
@@ -605,7 +608,7 @@ setRegisterUserCountryName(String n){
               currencySymbol);
           await SharedPreference.saveUserWalletsSharedPreferences(encodedData);
 
-          await setId(user_id);
+          await setId(_id);
           await setFirstName(firstName);
           await setLastName(lastName);
           await setEmail(email);
@@ -627,6 +630,7 @@ setRegisterUserCountryName(String n){
           await setBuisnessName(buisness);
           await setUnreadTotalMsg(unread);
           await setOnlineStatus(is_online);
+          await setUserId(_user_id);
 
           await setScreenIndex(0);
 

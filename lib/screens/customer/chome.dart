@@ -197,13 +197,19 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children:  [
-                            Text(
-                              'Welcome ${provider.firstName==null? '' : provider.firstName}',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                  color: textWhiteColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600),
+                            SizedBox(
+                              width:size.width * 0.45,
+                              child: Text(
+                                'Welcome ${provider.firstName==null? '' : provider.firstName}',
+                                textAlign: TextAlign.start,
+                                softWrap: false,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: textWhiteColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600),
+                              ),
                             ),
                             Text(
                               'Please Process you payments.',
@@ -552,13 +558,40 @@ class _CHomeState extends State<CHome> with AutomaticKeepAliveClientMixin {
                                                 //               country: country,
                                                 //               profilePhoto: Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].profile,)));
                                               },
-                                              child: CircleAvatar(
-                                                radius: 30,
-                                                backgroundImage: NetworkImage(
-                                                    (Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('http') ||
-                                                        Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('https'))?
-                                                    Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'] :
-                                                profile_url+Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path']),
+                                              child: Stack(
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 30,
+                                                    backgroundImage: NetworkImage(
+                                                        (Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('http') ||
+                                                            Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'].contains('https'))?
+                                                        Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path'] :
+                                                    profile_url+Provider.of<ApiDataProvider>(context,listen: false).top_five_merchant_list[index].user['profile_photo_path']),
+                                                  ),
+                                                  Positioned(
+                                                    //bottom: 10,
+                                                    top: 0,
+                                                    left: 42,
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(right: 20),
+                                                      height: size.height * 0.022,
+                                                      width:  size.width * 0.05,
+
+                                                      decoration:
+                                                      Provider.of<ApiDataProvider>(context, listen: false)
+                                                          .top_five_merchant_list[index].user['is_online'] == 1 ?
+                                                      BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          color: Colors.green
+                                                      )
+                                                          :
+                                                      BoxDecoration(
+                                                          shape: BoxShape.circle,
+                                                          color: Colors.red
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ),
                                             InkWell(

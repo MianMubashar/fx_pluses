@@ -73,7 +73,8 @@ class _WalletToWalletTransferState extends State<WalletToWalletTransfer> {
                      // print(originaldata.length);
                       for (int i = 0; i < originaldata.length; i++) {
                         AcceptedRequestMerchantsModel item = originaldata[i];
-                        String name=item.from_user['first_name']+" "+item.from_user["last_name"];
+                        String name=item.from_user['user_id'];
+                        // +" "+item.from_user["last_name"];
                         print('$name');
 
                         if (name.toLowerCase().contains(searcchFieldController.text.toLowerCase())) {
@@ -157,7 +158,8 @@ class _WalletToWalletTransferState extends State<WalletToWalletTransfer> {
                                         SizedBox(
                                           width:size.width * 0.18,
                                           child: Text(
-                                            searchdata[index].from_user['first_name']+" "+searchdata[index].from_user['last_name'],
+                                            searchdata[index].from_user['user_id'],
+                                            // +" "+searchdata[index].from_user['last_name'],
                                             maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
                                               color: textBlackColor,
                                               fontSize: 15,
@@ -267,9 +269,9 @@ class _WalletToWalletTransferState extends State<WalletToWalletTransfer> {
                                             SizedBox(
                                               width:size.width * 0.2,
                                               child: Text(
-                                                Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['first_name']
-                                                    +" "+
-                                                    Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['last_name'],
+                                                Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['user_id'],
+                                                    // +" "+
+                                                    // Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['last_name'],
                                                 maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
                                                   color: textBlackColor,
                                                   fontSize: 15,

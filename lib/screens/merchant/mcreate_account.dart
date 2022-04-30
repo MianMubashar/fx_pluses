@@ -438,9 +438,9 @@ class _MCreateAccountState extends State<MCreateAccount> {
                                         await Provider.of<ApiDataProvider>(
                                             context, listen: false).setRoleId(
                                             4);
-                                        // await Provider.of<ApiDataProvider>(
-                                        //     context, listen: false).setUserId(
-                                        //     usernameController.text);
+                                        await Provider.of<ApiDataProvider>(
+                                            context, listen: false).setUserId(
+                                            '');
                                         await Provider.of<ApiDataProvider>(
                                             context, listen: false)
                                             .setRegisterUserCountryName(

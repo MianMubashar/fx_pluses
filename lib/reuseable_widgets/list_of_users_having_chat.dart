@@ -10,7 +10,7 @@ class ListOfUsersHavingChat extends StatefulWidget {
   ListOfUsersHavingChat({Key? key,required this.firstName,required this.lastName,
     required this.message,required this.recieverId,required this.profile,
     required this.transaction_id,required this.transaction,required this.unread_msg,
-    required this.buisness,required this.transaction_status_id,required this.isOnline}) : super(key: key);
+    required this.buisness,required this.transaction_status_id,required this.isOnline,required this.userName}) : super(key: key);
   final String firstName;
   final String lastName;
    String? message;
@@ -22,6 +22,7 @@ class ListOfUsersHavingChat extends StatefulWidget {
   String? buisness;
   int? transaction_status_id;
   int? isOnline;
+  String? userName;
 
   @override
   State<ListOfUsersHavingChat> createState() => _ListOfUsersHavingChatState();
@@ -43,7 +44,7 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
             Provider.of<ApiDataProvider>(context, listen: false).bearerToken,
             widget.recieverId, widget.transaction_id);
         pushNewScreen(Get.context!,
-            screen: ChatScreen(buisnessName: widget.buisness,reciever_id: widget.recieverId,name: widget.firstName,transactionId: widget.transaction_id,rateOffer: null,transaction: widget.transaction,),
+            screen: ChatScreen(buisnessName: widget.buisness,reciever_id: widget.recieverId,name: widget.userName,transactionId: widget.transaction_id,rateOffer: null,transaction: widget.transaction,),
             withNavBar: false,
             pageTransitionAnimation:
             PageTransitionAnimation.cupertino);
@@ -148,7 +149,7 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
                           SizedBox(
                             width:size.width * 0.45,
                             child: Text(
-                              widget.firstName+" "+widget.lastName,
+                              widget.userName != null && widget.userName != 'null' && widget.userName != '' ? widget.userName! :widget.firstName+" "+widget.lastName,
                               maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
                                 color: textBlackColor,
                                 fontSize: 17,

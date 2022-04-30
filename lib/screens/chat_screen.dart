@@ -24,7 +24,7 @@ class ChatScreen extends StatefulWidget {
   static final String id='ChatScreen_Screen';
    ChatScreen({Key? key,required this.buisnessName,required this.reciever_id,required this.name,required this.transactionId,required this.transaction,required this.rateOffer}) : super(key: key);
   int reciever_id;
-  String name;
+  String? name;
   Map<String,dynamic>? rateOffer;
   Map<dynamic,dynamic>? transaction;
   int? transactionId;
@@ -311,7 +311,7 @@ class _ChatScreenState extends State<ChatScreen> {
               centerTitle: true,
               backgroundColor: buttonColor,
               title: Text(
-                widget.buisnessName != null && widget.buisnessName != 'null' ? widget.buisnessName! : widget.name,
+                widget.buisnessName != null && widget.buisnessName != 'null' ? widget.buisnessName! : widget.name ?? '',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: false,

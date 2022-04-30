@@ -94,12 +94,12 @@ class _CProfileState extends State<CProfile> {
                 Column(
                   children: [
                     Container(
-                      height: size.height * 0.1,
+                      //height: size.height * 0.1,
                       width: size.width,
                       margin: EdgeInsets.only(
                         bottom: 10,
                       ),
-                      padding: EdgeInsets.only(left: 10, right: 10),
+                      padding: EdgeInsets.only(left: 10, right: 10,top: 10,bottom: 10),
                       decoration: BoxDecoration(
                         color: profileColor.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(10),
@@ -164,6 +164,7 @@ class _CProfileState extends State<CProfile> {
                                                 fontWeight: FontWeight.w500),
                                           ),
                                         ),
+
                                         SizedBox(width: 10,),
                                         IconButton(
                                           constraints: BoxConstraints(
@@ -233,6 +234,17 @@ class _CProfileState extends State<CProfile> {
                                               width: size.width * 0.03,
                                             ))
                                       ],
+                                    ),
+                                    SizedBox(
+                                      width:MediaQuery.of(context).size.width * 0.45,
+                                      child: Text(
+                                        Provider.of<ApiDataProvider>(context,listen: false).userId,
+                                        //Provider.of<ApiDataProvider>(context,listen: false).firstName+" " + Provider.of<ApiDataProvider>(context,listen: false).lastName,
+                                        softWrap: false,overflow: TextOverflow.fade,style: TextStyle(
+                                          color: greyColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                      ),
                                     ),
                                     Text(
                                       Provider.of<ApiDataProvider>(context,listen: false).email,

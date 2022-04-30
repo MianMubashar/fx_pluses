@@ -182,6 +182,8 @@ class _transactionRequestWidgetState extends State<transactionRequestWidget> {
                           child: SizedBox(
                             width: widget.size.width * 0.18,
                             child: Text(
+                              Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList[widget.index].from_user['user_id'] != null && Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList[widget.index].from_user['user_id'] != '' &&
+                                  Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList[widget.index].from_user['user_id'] != 'null'? Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList[widget.index].from_user['user_id']:
                               Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList[widget.index].from_user['first_name']+" " +Provider.of<ApiDataProvider>(context,listen: false).merchantTransactionRequestsList[widget.index].from_user['last_name'],maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                   color: textBlackColor,

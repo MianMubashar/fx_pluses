@@ -174,13 +174,15 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                   final recieverId = provider.usersHavingChatList[i].sender_id;
                   final transactionId = provider.usersHavingChatList[i].transaction?['id'];
                   final profile_url = provider.usersHavingChatList[i].sender['profile_photo_path'];
-                  String? buisness = provider.usersHavingChatList[i].sender['buisness'];
+                  String? buisness = provider.usersHavingChatList[i].sender['business'];
                   int? is_online=provider.usersHavingChatList[i].sender['is_online'];
+                  String? userName=provider.usersHavingChatList[i].sender['user_id'];
                   int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                   int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
 
 
                   final listWidget = ListOfUsersHavingChat(
+                    userName: userName,
                     buisness: buisness,
                       firstName: firstName,
                       lastName: lastName,
@@ -206,9 +208,11 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                         provider.usersHavingChatList[i].transaction?['id'];
                     String? buisness = provider.usersHavingChatList[i].receiver['business'];
                     int? is_online=provider.usersHavingChatList[i].receiver['is_online'];
+                    String? userName=provider.usersHavingChatList[i].receiver['user_id'];
                     int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                     int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                     final listWidget = ListOfUsersHavingChat(
+                      userName: userName,
                       buisness: buisness,
                       firstName: firstName,
                       lastName: lastName,
@@ -243,9 +247,11 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                     provider.usersHavingChatList[i].transaction?['id'];
                 String? buisness = provider.usersHavingChatList[i].sender['business'];
                 int? is_online=provider.usersHavingChatList[i].sender['is_online'];
+                String? userName=provider.usersHavingChatList[i].sender['user_id'];
                 int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                 int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                 final listWidget = ListOfUsersHavingChat(
+                  userName: userName,
                   buisness: buisness,
                   firstName: firstName,
                   lastName: lastName,
@@ -274,9 +280,11 @@ class _Stream_BuilderState extends State<Stream_Builder> {
                       provider.usersHavingChatList[i].transaction?['id'];
                   String? buisness = provider.usersHavingChatList[i].receiver['business'];
                   int? is_online=provider.usersHavingChatList[i].receiver['is_online'];
+                  String? userName=provider.usersHavingChatList[i].receiver['user_id'];
                   int? transaction_status_id=provider.usersHavingChatList[i].transaction?['transaction_status_id'];
                   int? unread_msg=provider.unreadMessageModel?[provider.usersHavingChatList[i].receiver_id.toString()] ?? provider.unreadMessageModel?[provider.usersHavingChatList[i].sender_id.toString()];
                   final listWidget = ListOfUsersHavingChat(
+                    userName: userName,
                     buisness: buisness,
                     firstName: firstName,
                     lastName: lastName,

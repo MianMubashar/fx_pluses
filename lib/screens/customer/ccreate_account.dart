@@ -37,6 +37,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
   String deviceToken = '';
   String? userId;
   bool numberValid=false;
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController controller = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -51,6 +52,7 @@ class _CCreateAccountState extends State<CCreateAccount> {
     firstNameController.clear();
     lastNameController.clear();
     userNameController.clear();
+    usernameController.clear();
     emailController.clear();
     passwordController.clear();
     firstName='';
@@ -146,6 +148,32 @@ class _CCreateAccountState extends State<CCreateAccount> {
                     print('phone number is $value');
                     print(countryCode);
                     phoneNumber = value;
+                  },
+                ),
+              ),
+              Text(
+                'Username',
+                textAlign: TextAlign.start,
+                style: TextStyle(color: greyColor),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 10),
+                child: TextField(
+                  controller: usernameController,
+                  decoration: InputDecoration(
+                      hintText: 'Username',
+                      helperStyle: TextStyle(color: blackColor),
+                      isDense: true,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(20),
+                      )),
+                  onChanged: (value) {
+                    userId = value;
                   },
                 ),
               ),
@@ -311,66 +339,115 @@ class _CCreateAccountState extends State<CCreateAccount> {
                   text: 'Continue',
                   onPress: () async{
                     print('continue presses');
-                    if(firstName==''){
-                      Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter first name',redColor);
-                    }else{
-                      if(lastName==''){
-                        Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter last name',redColor);
-                      }else{
-                        if(email==''){
-                          Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter email',redColor);
-                        }else{
-                          final bool isValid = EmailValidator.validate(email);
-                          if(!isValid){
-                            Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid email address',redColor);
-                          }else{
-                            if(password==''){
-                              Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter password',redColor);
-                            }else{
-                              if(phoneNumber.toString().length<=countryCode.toString().length){
-                                Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter phone number',redColor);
-                              }else{
-                                if(!numberValid){
-                                  Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter valid phone number',redColor);
-                                }else{
-                                  // if(deviceToken==''){ CircularProgressIndicator(
-                                  //   color: newColor,
-                                  // ); }else {
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setContact(phoneNumber.toString());
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setFirstName(firstName);
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setLastName(lastName);
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setEmail(email.trim());
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setPassword(password);
-                                    //await Provider.of<ApiDataProvider>(context, listen: false).setToken(deviceToken);
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setCountryCode(countryCode);
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setRoleId(5);
-                                    await Provider.of<ApiDataProvider>(context, listen: false).setUserId('');
+                    if(usernameController.text.length < 5){
+        Provider.of<ApiDataProvider>(context,
+            listen: false)
+            .showSnackbar(context,
+            'Username should be atleast 5 characters long',redColor);
+      }else {
+                      if (firstName == '') {
+                        Provider.of<ApiDataProvider>(context, listen: false)
+                            .showSnackbar(
+                            context, 'Please enter first name', redColor);
+                      } else {
+                        if (lastName == '') {
+                          Provider.of<ApiDataProvider>(context, listen: false)
+                              .showSnackbar(
+                              context, 'Please enter last name', redColor);
+                        } else {
+                          if (email == '') {
+                            Provider.of<ApiDataProvider>(context, listen: false)
+                                .showSnackbar(
+                                context, 'Please enter email', redColor);
+                          } else {
+                            final bool isValid = EmailValidator.validate(email);
+                            if (!isValid) {
+                              Provider.of<ApiDataProvider>(
+                                  context, listen: false).showSnackbar(
+                                  context, 'Please enter valid email address',
+                                  redColor);
+                            } else {
+                              if (password == '') {
+                                Provider.of<ApiDataProvider>(
+                                    context, listen: false).showSnackbar(
+                                    context, 'Please enter password', redColor);
+                              } else {
+                                if (phoneNumber
+                                    .toString()
+                                    .length <= countryCode
+                                    .toString()
+                                    .length) {
+                                  Provider.of<ApiDataProvider>(
+                                      context, listen: false).showSnackbar(
+                                      context, 'Please enter phone number',
+                                      redColor);
+                                } else {
+                                  if (!numberValid) {
+                                    Provider.of<ApiDataProvider>(
+                                        context, listen: false).showSnackbar(
+                                        context,
+                                        'Please enter valid phone number',
+                                        redColor);
+                                  } else {
+                                    // if(deviceToken==''){ CircularProgressIndicator(
+                                    //   color: newColor,
+                                    // ); }else {
                                     await Provider.of<ApiDataProvider>(
-                                        context, listen: false).setRegisterUserCountryName(CountryPickerUtils.getCountryByIsoCode(countryCode).name.toString());
+                                        context, listen: false).setContact(
+                                        phoneNumber.toString());
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setUserId(
+                                        usernameController.text);
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setFirstName(
+                                        firstName);
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setLastName(
+                                        lastName);
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setEmail(
+                                        email.trim());
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setPassword(
+                                        password);
+                                    //await Provider.of<ApiDataProvider>(context, listen: false).setToken(deviceToken);
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setCountryCode(
+                                        countryCode);
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false).setRoleId(5);
+                                    // await Provider.of<ApiDataProvider>(
+                                    //     context, listen: false).setUserId('');
+                                    await Provider.of<ApiDataProvider>(
+                                        context, listen: false)
+                                        .setRegisterUserCountryName(
+                                        CountryPickerUtils
+                                            .getCountryByIsoCode(countryCode)
+                                            .name
+                                            .toString());
 
                                     Provider.of<ApiDataProvider>(
                                         context, listen: false)
-                                        .otpRequest(phoneNumber, context,0);
-                                      // await Provider.of<ApiDataProvider>(
-                                      //     context, listen: false)
-                                      //     .registerRequest(
-                                      //     context,
-                                      //     firstName,
-                                      //     lastName,
-                                      //     email.trim(),
-                                      //     password,
-                                      //     phoneNumber.toString(),
-                                      //     countryCode,
-                                      //     userId,
-                                      //     5,
-                                      //     deviceToken);
+                                        .otpRequest(phoneNumber, context, 0);
+                                    // await Provider.of<ApiDataProvider>(
+                                    //     context, listen: false)
+                                    //     .registerRequest(
+                                    //     context,
+                                    //     firstName,
+                                    //     lastName,
+                                    //     email.trim(),
+                                    //     password,
+                                    //     phoneNumber.toString(),
+                                    //     countryCode,
+                                    //     userId,
+                                    //     5,
+                                    //     deviceToken);
                                     clearControllers();
 
-                                  //}
+                                    //}
+                                  }
                                 }
-
                               }
-
                             }
                           }
                         }
