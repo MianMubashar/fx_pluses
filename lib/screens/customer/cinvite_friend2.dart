@@ -48,6 +48,7 @@ class CInviteFriend2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    contacts = contacts.where((element) => element.phones != null && element.phones!.isNotEmpty).toList();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
@@ -145,7 +146,7 @@ class CInviteFriend2 extends StatelessWidget {
                                           SizedBox(
                                             width: size.width * 0.45,
                                             child: Text(
-                                              contacts[index].displayName!,
+                                              contacts[index].displayName ?? "Contact",
                                               softWrap: false,
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
@@ -161,7 +162,7 @@ class CInviteFriend2 extends StatelessWidget {
                                         height: 10,
                                       ),
                                       Text(
-                                        contacts[index].phones!.length > 0
+                                        contacts[index].phones!.isNotEmpty
                                             ? contacts[index]
                                                 .phones![0]
                                                 .value
@@ -182,7 +183,6 @@ class CInviteFriend2 extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () async {
-
                                     showDialog(context: context, builder: (dialogContext){
                                       return Dialog(
                                         child: Container(
@@ -197,7 +197,7 @@ class CInviteFriend2 extends StatelessWidget {
                                             children: [
                                               Padding(
                                                 padding: const EdgeInsets.only(bottom: 5.0),
-                                                child: Text('Watsapp',textAlign: TextAlign.center,style: TextStyle(
+                                                child: Text('Whatsapp',textAlign: TextAlign.center,style: TextStyle(
                                                     color: buttonColor
                                                 ),),
                                               ),
@@ -264,7 +264,7 @@ class CInviteFriend2 extends StatelessWidget {
                                             height: size.height * 0.02,
                                           ),
                                           Text(
-                                            'watsapp',
+                                            'Whatsapp',
                                             style: TextStyle(
                                                 color: Colors.white, fontSize: 10),
                                           )
