@@ -269,7 +269,11 @@ class _WalletToWalletTransferState extends State<WalletToWalletTransfer> {
                                             SizedBox(
                                               width:size.width * 0.2,
                                               child: Text(
-                                                Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['business'],
+                                                Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['business'] != null
+                                                    && Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['business'] != "null"
+                                                    && Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['business'] != "" ?
+                                                Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['business'] :
+                                                Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['user_id'],
                                                     // +" "+
                                                     // Provider.of<ApiDataProvider>(context,listen: false).acceptedRequestMerchantsList[index].from_user['last_name'],
                                                 maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
