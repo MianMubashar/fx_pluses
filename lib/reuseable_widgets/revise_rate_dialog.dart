@@ -68,7 +68,7 @@ class ReviseRateDialog extends StatelessWidget {
                     fromCountryId = value.id.toString();
                     // fromCountryId=value!.id;
                     // print('fromcountryId is $fromCountryId');
-                    Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.currency['symbol']);
+                    // Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.currency['symbol']);
                   },
                   onSaved: (value) {
                     print('bbbbbbbbbbbbbbbbbbbbbbb ${value}');
@@ -104,7 +104,7 @@ class ReviseRateDialog extends StatelessWidget {
                     toCountry=value!.currency['name'];
                     toCountryId=value.id.toString();
 
-                    // Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.currency['symbol']);
+                    Provider.of<ApiDataProvider>(context, listen: false).setcurrencySymbolForExchangeRateScreen(value.currency['symbol']);
                     // print('tocountryId is $toCountryId');
 
                   },

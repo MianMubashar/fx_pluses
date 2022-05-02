@@ -65,12 +65,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
     if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 5 && Provider.of<ApiDataProvider>(context,listen: true).chatOffers != null ) {
       var size = MediaQuery.of(context).size;
-
       if(widget.transactionId != null) {
         if (Provider.of<ApiDataProvider>(context, listen: true).chatOffers?['title'] == 'pending') {
           print('pending');
-
-
           return IconButton(
             icon: Icon(Icons.thumbs_up_down, color: whiteColor,),
             onPressed: () async {
@@ -281,8 +278,7 @@ class _ChatScreenState extends State<ChatScreen> {
           }, icon: Icon(Icons.local_offer_outlined, color: whiteColor,));
         }
       }else{
-        return Container(
-        );
+        return Container();
       }
     }
 
@@ -665,7 +661,9 @@ class Stream_Builder extends StatelessWidget {
                     String? message=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].message;
                     String? filePath=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].file;
                     String? isAdmin=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].isAdmin;
-                    String? firstName=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender['first_name'];
+                    String? username=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender['user_id'];
+                    String? business=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender['business'];
+                    String? firstName = (username != null && username != "null" && username.isNotEmpty) ? username : business;
                     final isMe;
                     isAdmin=='1'? isMe=false:
                     isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;
@@ -680,7 +678,9 @@ class Stream_Builder extends StatelessWidget {
                   String? message=data[i].message;
                   String? filePath=data[i].file;
                   String? isAdmin=data[i].isAdmin;
-                  String? firstName=data[i].sender['first_name'];
+                  String? username=data[i].sender['user_id'];
+                  String? business=data[i].sender['business'];
+                  String? firstName = (username != null && username != "null" && username.isNotEmpty) ? username : business;
                   final isMe;
                   isAdmin=='1'? isMe=false:
                   isMe=Provider.of<ApiDataProvider>(context,listen: false).showChatList[i].sender_id==Provider.of<ApiDataProvider>(context,listen: false).id?true:false;

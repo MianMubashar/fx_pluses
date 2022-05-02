@@ -149,7 +149,7 @@ class _ListOfUsersHavingChatState extends State<ListOfUsersHavingChat> {
                           SizedBox(
                             width:size.width * 0.45,
                             child: Text(
-                              widget.userName != null && widget.userName != 'null' && widget.userName != '' ? widget.userName! :widget.firstName+" "+widget.lastName,
+                              widget.userName != null && widget.userName != 'null' && widget.userName != '' ? widget.userName! : widget.buisness!,
                               maxLines: 1,softWrap: false,overflow: TextOverflow.ellipsis,style: TextStyle(
                                 color: textBlackColor,
                                 fontSize: 17,
