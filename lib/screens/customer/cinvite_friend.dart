@@ -10,6 +10,9 @@ import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:fx_pluses/screens/customer/cinvite_friend2.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/api_data_provider.dart';
 
 
 class CInviteFriend extends StatelessWidget {
@@ -23,6 +26,8 @@ class CInviteFriend extends StatelessWidget {
       var serviceStatus = await Permission.contacts.status;
       if (serviceStatus == PermissionStatus.granted) {
         contacts = await ContactsService.getContacts(withThumbnails: false);
+        await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
+
         Get.back();
         Navigator.push(context, MaterialPageRoute(
             builder: (context) => CInviteFriend2(contacts: contacts,)));
@@ -31,6 +36,7 @@ class CInviteFriend extends StatelessWidget {
         Permission.contacts.request().then((value) async {
           if (value.isGranted) {
             Get.dialog(CustomLoader());
+            await Provider.of<ApiDataProvider>(context,listen: false).getAppData(context, Provider.of<ApiDataProvider>(context,listen: false).bearerToken);
             contacts = await ContactsService.getContacts(withThumbnails: false);
             Get.back();
             Navigator.push(context, MaterialPageRoute(

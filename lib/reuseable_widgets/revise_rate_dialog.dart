@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
 import 'package:fx_pluses/reuseable_widgets/customloader.dart';
 import 'package:get/get.dart';
@@ -120,6 +121,9 @@ class ReviseRateDialog extends StatelessWidget {
                 child: TextField(
                   // controller: amount,
                   keyboardType: TextInputType.number,
+                  // inputFormatters: [
+                  //   FilteringTextInputFormatter.digitsOnly
+                  // ],
                   decoration: Provider.of<ApiDataProvider>(context, listen: true).currencySymbolForExchangeRateScreen==''? InputDecoration(
                       // prefixIcon: Padding(
                       //   padding:  EdgeInsets.only(left: 20.0,top: 15),
@@ -156,7 +160,7 @@ class ReviseRateDialog extends StatelessWidget {
                 onTap:() async{
                   if(fromCountry !=''){
                     if(toCountry !=''){
-                      if(rate !='' && !rate.contains('.')){
+                      if(rate !=''){
 
                         Navigator.pop(context);
 

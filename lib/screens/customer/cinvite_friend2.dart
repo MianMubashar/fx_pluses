@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants.dart';
@@ -183,68 +185,73 @@ class CInviteFriend2 extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () async {
-                                    showDialog(context: context, builder: (dialogContext){
-                                      return Dialog(
-                                        child: Container(
-                                          height: size.height * 0.3,
-                                          width:  size.width * 0.3,
-                                          padding: EdgeInsets.only(top: size.height * 0.04,left: 20,right: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              color: whiteColor
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 5.0),
-                                                child: Text('Whatsapp',textAlign: TextAlign.center,style: TextStyle(
-                                                    color: buttonColor
-                                                ),),
-                                              ),
-                                              SizedBox(
-                                                height:size.height * 0.15,
-                                                child: TextField(
-                                                  controller: messageController,
-                                                  textInputAction: TextInputAction.newline,
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: 50,
-                                                  decoration: InputDecoration(
-                                                    border: OutlineInputBorder(
-                                                        borderRadius: BorderRadius.circular(20)
-                                                    ),
-                                                    filled: true,
-                                                    hintText: 'Enter you message here',
-                                                    isDense: true,
+                                    // showDialog(context: context, builder: (dialogContext){
+                                    //   return Dialog(
+                                    //     child: Container(
+                                    //       height: size.height * 0.3,
+                                    //       width:  size.width * 0.3,
+                                    //       padding: EdgeInsets.only(top: size.height * 0.04,left: 20,right: 20),
+                                    //       decoration: BoxDecoration(
+                                    //           borderRadius: BorderRadius.circular(30),
+                                    //           color: whiteColor
+                                    //       ),
+                                    //       child: Column(
+                                    //         children: [
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(bottom: 5.0),
+                                    //             child: Text('Whatsapp',textAlign: TextAlign.center,style: TextStyle(
+                                    //                 color: buttonColor
+                                    //             ),),
+                                    //           ),
+                                    //           SizedBox(
+                                    //             height:size.height * 0.15,
+                                    //             child: TextField(
+                                    //               controller: messageController,
+                                    //               textInputAction: TextInputAction.newline,
+                                    //               keyboardType: TextInputType.multiline,
+                                    //               maxLines: 50,
+                                    //               decoration: InputDecoration(
+                                    //                 border: OutlineInputBorder(
+                                    //                     borderRadius: BorderRadius.circular(20)
+                                    //                 ),
+                                    //                 filled: true,
+                                    //                 hintText: 'Enter you message here',
+                                    //                 isDense: true,
+                                    //
+                                    //               ),
+                                    //             ),
+                                    //           ),
+                                    //           InkWell(
+                                    //             onTap: () async{
+                                    //               Get.back(closeOverlays: true);
+                                    //               var whatsappUrl = Uri.encodeFull(
+                                    //                   "https://api.whatsapp.com/send?phone=${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}&text='${messageController.text}'");
+                                    //               if (!await launch(whatsappUrl))
+                                    //                 throw 'Could not launch $whatsappUrl';
+                                    //             },
+                                    //             child: Container(
+                                    //               height: MediaQuery.of(context).size.height * 0.05,
+                                    //               width: MediaQuery.of(context).size.width * 0.4,
+                                    //               margin: EdgeInsets.only(top: size.height * 0.02),
+                                    //               decoration: BoxDecoration(
+                                    //                 borderRadius: BorderRadius.circular(20),
+                                    //                 gradient: gradient,
+                                    //               ),
+                                    //               child: Center(child: Text('Send',style: TextStyle(
+                                    //                   color: Colors.white
+                                    //               ),)),
+                                    //             ),
+                                    //           )
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   );
+                                    // });
+                                    var whatsappUrl = Uri.encodeFull(
+                                    "https://api.whatsapp.com/send?phone=${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}&text='${Provider.of<ApiDataProvider>(context,listen: false).appSetting?['text_msg']}'");
+                    if (!await launch(whatsappUrl))
+                    throw 'Could not launch $whatsappUrl';
 
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () async{
-                                                  Get.back(closeOverlays: true);
-                                                  var whatsappUrl = Uri.encodeFull(
-                                                      "https://api.whatsapp.com/send?phone=${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}&text='${messageController.text}'");
-                                                  if (!await launch(whatsappUrl))
-                                                    throw 'Could not launch $whatsappUrl';
-                                                },
-                                                child: Container(
-                                                  height: MediaQuery.of(context).size.height * 0.05,
-                                                  width: MediaQuery.of(context).size.width * 0.4,
-                                                  margin: EdgeInsets.only(top: size.height * 0.02),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(20),
-                                                    gradient: gradient,
-                                                  ),
-                                                  child: Center(child: Text('Send',style: TextStyle(
-                                                      color: Colors.white
-                                                  ),)),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    });
 
                                   },
                                   child: Container(
@@ -273,64 +280,66 @@ class CInviteFriend2 extends StatelessWidget {
                                 ),
                                 InkWell(
                                   onTap:() async{
-                                    showDialog(context: context, builder: (dialogContext){
-                                      return Dialog(
-                                        child: Container(
-                                          height: size.height * 0.3,
-                                          width:  size.width * 0.3,
-                                          padding: EdgeInsets.only(top: size.height * 0.02,left: 20,right: 20),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(30),
-                                              color: whiteColor
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(bottom: 5.0),
-                                                child: Text('Via sms',textAlign: TextAlign.center,style: TextStyle(
-                                                  color: buttonColor
-                                                ),),
-                                              ),
-                                              SizedBox(
-                                                height:size.height * 0.15,
-                                                child: TextField(
-                                                  controller: messageController,
-                                                  textInputAction: TextInputAction.newline,
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: 50,
-                                                  decoration: InputDecoration(
-                                                    border: OutlineInputBorder(
-                                                        borderRadius: BorderRadius.circular(20)
-                                                    ),
-                                                    filled: true,
-                                                    hintText: 'Enter you message here',
-                                                    isDense: true,
+                                    // showDialog(context: context, builder: (dialogContext){
+                                    //   return Dialog(
+                                    //     child: Container(
+                                    //       height: size.height * 0.3,
+                                    //       width:  size.width * 0.3,
+                                    //       padding: EdgeInsets.only(top: size.height * 0.02,left: 20,right: 20),
+                                    //       decoration: BoxDecoration(
+                                    //           borderRadius: BorderRadius.circular(30),
+                                    //           color: whiteColor
+                                    //       ),
+                                    //       child: Column(
+                                    //         children: [
+                                    //           Padding(
+                                    //             padding: const EdgeInsets.only(bottom: 5.0),
+                                    //             child: Text('Via sms',textAlign: TextAlign.center,style: TextStyle(
+                                    //               color: buttonColor
+                                    //             ),),
+                                    //           ),
+                                    //           SizedBox(
+                                    //             height:size.height * 0.15,
+                                    //             child: TextField(
+                                    //               controller: messageController,
+                                    //               textInputAction: TextInputAction.newline,
+                                    //               keyboardType: TextInputType.multiline,
+                                    //               maxLines: 50,
+                                    //               decoration: InputDecoration(
+                                    //                 border: OutlineInputBorder(
+                                    //                     borderRadius: BorderRadius.circular(20)
+                                    //                 ),
+                                    //                 filled: true,
+                                    //                 hintText: 'Enter you message here',
+                                    //                 isDense: true,
+                                    //
+                                    //               ),
+                                    //             ),
+                                    //           ),
+                                    //           InkWell(
+                                    //             onTap: () async{
+                                    //               await mess("${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}", '${messageController.text} ');
+                                    //             },
+                                    //             child: Container(
+                                    //               height: MediaQuery.of(context).size.height * 0.05,
+                                    //               width: MediaQuery.of(context).size.width * 0.4,
+                                    //               margin: EdgeInsets.only(top: size.height * 0.02),
+                                    //               decoration: BoxDecoration(
+                                    //                 borderRadius: BorderRadius.circular(20),
+                                    //                 gradient: gradient,
+                                    //               ),
+                                    //               child: Center(child: Text('Send',style: TextStyle(
+                                    //                   color: Colors.white
+                                    //               ),)),
+                                    //             ),
+                                    //           )
+                                    //         ],
+                                    //       ),
+                                    //     ),
+                                    //   );
+                                    // });
+                                    await mess("${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}", '${Provider.of<ApiDataProvider>(context,listen: false).appSetting?['text_msg']} ');
 
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () async{
-                                                  await mess("${contacts[index].phones!.length > 0 ? contacts[index].phones![0].value : ''}", '${messageController.text} ');
-                                                },
-                                                child: Container(
-                                                  height: MediaQuery.of(context).size.height * 0.05,
-                                                  width: MediaQuery.of(context).size.width * 0.4,
-                                                  margin: EdgeInsets.only(top: size.height * 0.02),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(20),
-                                                    gradient: gradient,
-                                                  ),
-                                                  child: Center(child: Text('Send',style: TextStyle(
-                                                      color: Colors.white
-                                                  ),)),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    });
                                   },
                                   child: Container(
                                     padding: EdgeInsets.only(left: 6, right: 6),

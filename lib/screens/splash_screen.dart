@@ -133,8 +133,8 @@ class _SplashScreenState extends State<SplashScreen> {
         Map<String, dynamic> wallet=jsonDecode(event.data['wallet']);
         if(wallet['user_id']==Provider.of<ApiDataProvider>(Get.context!,listen: false).id && event.data['wallet_action_id']=='3'){
 
-          int? beforeDeduction;
-          int amount3=0;
+          double? beforeDeduction;
+          double amount3=0.0;
           String? wallletList = await pref.getString(SharedPreference.userWalletsKey);
           List<UserWalletsModel> list = UserWalletsModel.decode(wallletList!);
           String? totalAmountRecieved = event.data['amount'].toString();
@@ -146,9 +146,9 @@ class _SplashScreenState extends State<SplashScreen> {
               // List a = amount1.split('.');
               // int amount2 = int.parse(a[0]);
               print(element.wallet);
-              amount3 = double.parse(wallet['wallet'].toString()).round();
+              amount3 = double.parse(wallet['wallet'].toString());
               // int total = amount2 + amount3;
-              beforeDeduction=amount3 - double.parse(element.wallet).round();
+              beforeDeduction=amount3 - double.parse(element.wallet);
 
 
               element.wallet=amount3.toString();
@@ -194,7 +194,7 @@ class _SplashScreenState extends State<SplashScreen> {
             list.forEach((element) async {
               if(element.currency_id == wallet['currency_id']){
 
-                int amount3 = double.parse(wallet['wallet'].toString()).round();
+                double amount3 = double.parse(wallet['wallet'].toString());
                 element.wallet=amount3.toString();
                 Provider.of<ApiDataProvider>(Get.context!,listen: false).setBalance(amount3.toString());
                 Provider.of<ApiDataProvider>(Get.context!,listen: false).setSelectedWalletBalance(amount3.toString());

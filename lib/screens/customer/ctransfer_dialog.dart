@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/customloader.dart';
 import 'package:get/get.dart';
@@ -18,8 +19,8 @@ class CTransferDialog extends StatefulWidget {
 }
 
 class _CTransferDialogState extends State<CTransferDialog> {
-  int charges=0;
-  int? balance=0;
+  double charges=0;
+  double? balance=0;
 
   TextEditingController amountController=TextEditingController();
 
@@ -61,6 +62,9 @@ class _CTransferDialogState extends State<CTransferDialog> {
                   margin: EdgeInsets.only(bottom: 25, top: 5),
                   child: TextField(
                     keyboardType: TextInputType.number,
+                    // inputFormatters: [
+                    //   FilteringTextInputFormatter.digitsOnly
+                    // ],
                     controller: amountController,
                     decoration: InputDecoration(
                         hintText: 'amount',
@@ -81,16 +85,16 @@ class _CTransferDialogState extends State<CTransferDialog> {
                         balance=0;
                         charges=0;
                       Provider.of<ApiDataProvider>(context, listen: false).serviceFeeModelList.forEach((element) {
-                        if(int.parse(value) >= double.parse(element.min.toString()).round() && int.parse(value) <= double.parse(element.max.toString()).round()){
-                          charges=double.parse(element.charges!.toString()).round();
+                        if(double.parse(value) >= double.parse(element.min.toString()) && double.parse(value) <= double.parse(element.max.toString())){
+                          charges=double.parse(element.charges!.toString());
                         }
                       });
                       if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 5) {
-                        balance = int.parse(amountController.text) +
+                        balance = double.parse(amountController.text) +
                             charges;
                       }
                       if(Provider.of<ApiDataProvider>(context,listen: false).roleId == 4) {
-                        balance = int.parse(amountController.text);
+                        balance = double.parse(amountController.text);
                       }
                       setState(() {
 
@@ -151,16 +155,16 @@ class _CTransferDialogState extends State<CTransferDialog> {
                     if(amountController.text.isEmpty){
                       Provider.of<ApiDataProvider>(context,listen: false).showSnackbar(context, 'Please enter amount',redColor);
                     }else {
-                      if (amountController.text.contains('.')) {
-                        Provider.of<ApiDataProvider>(context, listen: false)
-                            .showSnackbar(
-                            context, 'Please enter valid amount', redColor);
-                      } else {
+                      // if (amountController.text.contains('.')) {
+                      //   Provider.of<ApiDataProvider>(context, listen: false)
+                      //       .showSnackbar(
+                      //       context, 'Please enter valid amount', redColor);
+                      // } else {
 
                         // balance = int.parse(amountController.text) + int.parse(charges.toString());
                         //List a = Provider.of<ApiDataProvider>(context, listen: false).balance.split('.');
                         double b = double.parse(Provider.of<ApiDataProvider>(context, listen: false).balance);
-                        int balance2 = b.round();
+                        double balance2 = b;
                         if(balance2 >= balance!) {
                           Navigator.pop(context);
                           await Provider.of<ApiDataProvider>(
@@ -185,7 +189,7 @@ class _CTransferDialogState extends State<CTransferDialog> {
                           Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
                               context, 'Your wallet balance is insufficient', redColor);
                         }
-                      }
+                      // }
                     }
 
 

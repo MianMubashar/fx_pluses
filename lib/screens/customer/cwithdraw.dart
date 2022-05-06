@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fx_pluses/providers/api_data_provider.dart';
 import 'package:fx_pluses/reuseable_widgets/appbar.dart';
 import 'package:fx_pluses/reuseable_widgets/main_button.dart';
@@ -181,6 +182,9 @@ class _CWithdrawState extends State<CWithdraw> {
               child: TextField(
                 controller: amount,
                 keyboardType: TextInputType.number,
+                // inputFormatters: [
+                //   FilteringTextInputFormatter.digitsOnly
+                // ],
                 decoration: InputDecoration(
                     hintText: 'Amount',
                     helperStyle: TextStyle(color: blackColor),
@@ -198,15 +202,15 @@ class _CWithdrawState extends State<CWithdraw> {
 
             MainButton(text: 'Withdraw', onPress: () async{
     if(accountHolderName.text.isNotEmpty && accountNumber.text.isNotEmpty && amount.text.isNotEmpty && bankName.text.isNotEmpty) {
-    if(amount.text.contains('.')){
-    Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(context, 'Please enter valid amount to proceed',redColor);
-    }else {
-      int balance = int.parse(amount.text);
+    // if(amount.text.contains('.')){
+    // Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(context, 'Please enter valid amount to proceed',redColor);
+    // }else {
+      double balance = double.parse(amount.text);
       //List a = Provider.of<ApiDataProvider>(context, listen: false).balance.split('.');
-      double b = double.parse(Provider
+      double balance2 = double.parse(Provider
           .of<ApiDataProvider>(context, listen: false)
           .balance);
-      int balance2 = b.round();
+      //int balance2 = b.round();
       if (balance2 >= balance) {
         if (balance2 == 0) {
           Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
@@ -240,7 +244,7 @@ class _CWithdrawState extends State<CWithdraw> {
         Provider.of<ApiDataProvider>(context, listen: false).showSnackbar(
             context, 'Your wallet balance is insufficient', redColor);
       }
-    }
+
     }else{
       Provider.of<ApiDataProvider>(context, listen: false)
           .showSnackbar(

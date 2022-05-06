@@ -730,11 +730,11 @@ setRegisterUserCountryName(String n){
             list.forEach((element) {
               if (element.currency_id == selectedCurrencyId) {
                 String amount1 = element.wallet;
-                double a = double.parse(amount1);
-                int amount2 = a.round();
+                double amount2 = double.parse(amount1);
+                //int amount2 = a.round();
 
-                int amount3 = int.parse(amount);
-                int total=0;
+                double amount3 = double.parse(amount);
+                double total=0;
                 if (wallet_action_id == 1) {
                   total = amount3 + amount2;
                 } else {

@@ -1,5 +1,6 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fx_pluses/constants.dart';
 import 'package:fx_pluses/model/get_countries_for_merchants.dart';
 import 'package:fx_pluses/model/get_currencies_model.dart';
@@ -125,12 +126,26 @@ class _MExchangeRatesState extends State<MExchangeRates> {
                           Container(
                             margin: EdgeInsets.only(bottom: 25,left: 10,right: 10),
                             child: TextField(
+                              keyboardType: TextInputType.number,
+                              // inputFormatters: [
+                              //   FilteringTextInputFormatter.digitsOnly
+                              // ],
                               controller: amount,
-                              decoration: InputDecoration(
+                              decoration: Provider.of<ApiDataProvider>(context, listen: true).currencySymbolForExchangeRateScreen=='' ?
+                  InputDecoration(
+                  hintText: 'amount',
+                  helperStyle: TextStyle(color: blackColor),
+                  isDense: true,
+                  filled: true,
+                  border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(20),
+                  ))
+                                  :InputDecoration(
                                   prefixIcon: Padding(
                                     padding:  EdgeInsets.only(left: 20.0,top: 15),
                                     child: Provider.of<ApiDataProvider>(context, listen: true).currencySymbolForExchangeRateScreen==''
-                                        ?Text(Provider.of<ApiDataProvider>(context,listen: false).selectedCurrencySymbol,)
+                                        ?Text('0')
                                         :Text(Provider.of<ApiDataProvider>(context, listen: true).currencySymbolForExchangeRateScreen),
                                   ),
                                   hintText: 'amount',
@@ -270,6 +285,10 @@ class _MExchangeRatesState extends State<MExchangeRates> {
                                 child: Row(
                                   children: [
                                     Flexible(child: TextField(
+                                      keyboardType: TextInputType.number,
+                                      // inputFormatters: [
+                                      //   FilteringTextInputFormatter.digitsOnly
+                                      // ],
                                       decoration: InputDecoration(
                                           hintText: Provider.of<ApiDataProvider>(context,listen: false).getCurrencyRateModelList[index].exchange_rate,
                                           isDense: true,
